@@ -15,7 +15,7 @@ public class UserService implements IUserService{
 	}
 	
 	@Override
-	public String getMessage() {
+	public String getName() {
 		System.out.println("ok");
 		User user = this.repository.findById(1).get();
 		return user.getName();
