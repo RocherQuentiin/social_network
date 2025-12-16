@@ -1,9 +1,0 @@
-
-Service URI : mysql://avnadmin:AVNS_rqa7rNmLJw5fR5UZqaM@mysql-94ec797-kaladevi549-1ada.l.aivencloud.com:17694/defaultdb?ssl-mode=REQUIRED
-Host : mysql-94ec797-kaladevi549-1ada.l.aivencloud.com
-Port : 17694
-Nom de la base MySQL : defaultdb
-Utilisateur MySQL : avnadmin
-Mot de passe de l'utilisateur MySQL : AVNS_rqa7rNmLJw5fR5UZqaM
-SSL Activé
-Ne pas oublier d'ajouter le fichier de certificat SSL (CA certificat) que vous retrouverez dans le dossier certificat 
