@@ -1,5 +1,7 @@
 package com.socialnetwork.socialnetwork.business.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IUserRepository;
@@ -16,8 +18,9 @@ public class UserService implements IUserService{
 	
 	@Override
 	public String getName() {
-		User user = this.repository.findById(1).get();
-		return user.getName();
+		Optional<User> user = this.repository.findById(1);
+		String name = user.isPresent() ? user.get().getName() : "";
+		return name;
 	}
 	
 }
