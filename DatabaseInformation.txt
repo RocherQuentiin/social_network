@@ -1,0 +1,10 @@
+Se connecter sur cette URL : https://phpmyadmin.hangar.garageisep.com/
+Fournir le nom d'utilisateur et le mot de passe
+
+
+Service URI : jdbc:mariadb://178.33.122.21:3306/hangardb_akse63476
+Host : 178.33.122.21
+Port : 3306
+Nom de la base MySQL : hangardb_akse63476
+Utilisateur MySQL : akse63476
+Mot de passe de l'utilisateur MySQL : pf8kN1ewa66jwRm3YeVeE2f6
