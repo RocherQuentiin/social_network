@@ -30,6 +30,8 @@
 - `profession` (VARCHAR)
 - `company` (VARCHAR)
 - `education` (VARCHAR)
+- `specialization` (ENUM: SOFTWARE_ENGINEERING, DATA_SCIENCE, CYBERSECURITY, EMBEDDED_SYSTEMS)
+- `promo_year` (SMALLINT, nullable, check 1950–2100)
 - `interests` (TEXT - JSON format)
 - `created_at` (TIMESTAMP)
 - `updated_at` (TIMESTAMP)
@@ -225,6 +227,10 @@ CREATE INDEX idx_notification_recipient_id ON notification(recipient_id);
 CREATE INDEX idx_notification_is_read ON notification(is_read);
 CREATE INDEX idx_follow_follower_id ON follow(follower_id);
 CREATE INDEX idx_follow_following_id ON follow(following_id);
+-- Directory filters (Filières/Promo)
+CREATE INDEX idx_profile_specialization ON profile(specialization);
+CREATE INDEX idx_profile_promo_year ON profile(promo_year);
+CREATE INDEX idx_profile_spec_promo ON profile(specialization, promo_year);
 ```
 
 ---
@@ -239,3 +245,41 @@ CREATE INDEX idx_follow_following_id ON follow(following_id);
 6. **Scalability**: Indexes on frequently queried columns for optimal performance
 7. **Media Flexibility**: Media can be associated with Posts, Comments, or Messages
 8. **Real-time**: Notification and Message tables support real-time features
+9. **Directory Filters**: `specialization` and `promo_year` enable fast filtering in the student directory UI.
+
+---
+
+## Enums
+
+- `user_gender`: `MALE`, `FEMALE`, `OTHER`, `PREFER_NOT_TO_SAY`
+- `visibility_type`: `PUBLIC`, `FRIENDS`, `PRIVATE`
+- `media_type`: `IMAGE`, `VIDEO`, `AUDIO`, `DOCUMENT`
+- `reaction_type`: `LIKE`, `LOVE`, `HAHA`, `WOW`, `SAD`, `ANGRY`
+- `connection_status`: `PENDING`, `ACCEPTED`, `BLOCKED`
+- `notification_type`: `FRIEND_REQUEST`, `POST_LIKE`, `COMMENT`, `MESSAGE`, `MENTION`, `FOLLOW`
+- `event_attendance_status`: `PENDING`, `ACCEPTED`, `DECLINED`, `MAYBE`
+- `project_member_role`: `OWNER`, `ADMIN`, `MEMBER`
+- `isep_specialization`: `SOFTWARE_ENGINEERING`, `DATA_SCIENCE`, `CYBERSECURITY`, `EMBEDDED_SYSTEMS`
+
+---
+
+## Typical Queries
+
+- Find users by specialization and promo:
+```sql
+SELECT u.id, u.username, p.promo_year, p.specialization
+FROM "user" u
+JOIN profile p ON p.user_id = u.id
+WHERE (p.specialization = 'DATA_SCIENCE')
+	AND (p.promo_year = 2025);
+```
+
+- Top posts by reactions (likes+loves...):
+```sql
+SELECT p.id, COUNT(l.id) AS reactions
+FROM post p
+LEFT JOIN "like" l ON l.post_id = p.id
+GROUP BY p.id
+ORDER BY reactions DESC
+LIMIT 20;
+```

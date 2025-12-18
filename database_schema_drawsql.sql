@@ -12,6 +12,7 @@ CREATE TYPE connection_status AS ENUM ('PENDING', 'ACCEPTED', 'BLOCKED');
 CREATE TYPE notification_type AS ENUM ('FRIEND_REQUEST', 'POST_LIKE', 'COMMENT', 'MESSAGE', 'MENTION', 'FOLLOW');
 CREATE TYPE event_attendance_status AS ENUM ('PENDING', 'ACCEPTED', 'DECLINED', 'MAYBE');
 CREATE TYPE project_member_role AS ENUM ('OWNER', 'ADMIN', 'MEMBER');
+CREATE TYPE isep_specialization AS ENUM ('SOFTWARE_ENGINEERING', 'DATA_SCIENCE', 'CYBERSECURITY', 'EMBEDDED_SYSTEMS');
 
 -- Core tables
 CREATE TABLE "user" (
@@ -41,6 +42,8 @@ CREATE TABLE profile (
     profession VARCHAR(100),
     company VARCHAR(100),
     education VARCHAR(255),
+    specialization isep_specialization,
+    promo_year SMALLINT,
     interests JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

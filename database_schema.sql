@@ -10,6 +10,8 @@ CREATE TYPE connection_status AS ENUM ('PENDING', 'ACCEPTED', 'BLOCKED');
 CREATE TYPE notification_type AS ENUM ('FRIEND_REQUEST', 'POST_LIKE', 'COMMENT', 'MESSAGE', 'MENTION', 'FOLLOW');
 CREATE TYPE event_attendance_status AS ENUM ('PENDING', 'ACCEPTED', 'DECLINED', 'MAYBE');
 CREATE TYPE project_member_role AS ENUM ('OWNER', 'ADMIN', 'MEMBER');
+-- ISEP specializations (from UI: Ingénieur Logiciel, Data Science, Cybersécurité, Systèmes Embarqués)
+CREATE TYPE isep_specialization AS ENUM ('SOFTWARE_ENGINEERING', 'DATA_SCIENCE', 'CYBERSECURITY', 'EMBEDDED_SYSTEMS');
 
 -- ============================================
 -- Core Tables
@@ -42,6 +44,8 @@ CREATE TABLE profile (
     profession VARCHAR(100),
     company VARCHAR(100),
     education VARCHAR(255),
+    specialization isep_specialization,
+    promo_year SMALLINT,
     interests JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -218,6 +222,10 @@ CREATE TABLE privacy_settings (
     CONSTRAINT fk_privacy_settings_user FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE
 );
 
+-- Data quality checks for new fields
+ALTER TABLE profile
+    ADD CONSTRAINT chk_profile_promo_year_range CHECK (promo_year IS NULL OR promo_year BETWEEN 1950 AND 2100);
+
 -- ============================================
 -- Collaboration Tables (Projects & Events)
 -- ============================================
@@ -340,3 +348,8 @@ CREATE INDEX idx_recommendation_score ON recommendation(score DESC);
 CREATE INDEX idx_media_post_id ON media(post_id);
 CREATE INDEX idx_media_comment_id ON media(comment_id);
 CREATE INDEX idx_media_message_id ON media(message_id);
+
+-- New indexes to support directory filters (Filières, Promo)
+CREATE INDEX idx_profile_specialization ON profile(specialization);
+CREATE INDEX idx_profile_promo_year ON profile(promo_year);
+CREATE INDEX idx_profile_spec_promo ON profile(specialization, promo_year);
