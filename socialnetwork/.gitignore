@@ -1,2 +1,13 @@
 /target/
 /bin/
+
+# Maven
+/maven/
+.mvn/
+
+# Configuration files
+application.properties
+application.yml
+application.yaml
+application-*.properties
+application-*.yml
