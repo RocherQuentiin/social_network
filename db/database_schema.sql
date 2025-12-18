@@ -12,6 +12,8 @@ CREATE TYPE event_attendance_status AS ENUM ('PENDING', 'ACCEPTED', 'DECLINED', 
 CREATE TYPE project_member_role AS ENUM ('OWNER', 'ADMIN', 'MEMBER');
 -- ISEP specializations (from UI: Ingénieur Logiciel, Data Science, Cybersécurité, Systèmes Embarqués)
 CREATE TYPE isep_specialization AS ENUM ('SOFTWARE_ENGINEERING', 'DATA_SCIENCE', 'CYBERSECURITY', 'EMBEDDED_SYSTEMS');
+CREATE TYPE report_type AS ENUM ('SPAM', 'HARASSMENT', 'INAPPROPRIATE_CONTENT', 'HATE_SPEECH', 'FAKE_ACCOUNT', 'VIOLENCE', 'MISINFORMATION', 'OTHER');
+CREATE TYPE report_status AS ENUM ('PENDING', 'UNDER_REVIEW', 'RESOLVED', 'DISMISSED');
 
 -- ============================================
 -- Core Tables
@@ -227,6 +229,34 @@ ALTER TABLE profile
     ADD CONSTRAINT chk_profile_promo_year_range CHECK (promo_year IS NULL OR promo_year BETWEEN 1950 AND 2100);
 
 -- ============================================
+-- Report Table (Signalements)
+-- ============================================
+
+CREATE TABLE report (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    reporter_id UUID NOT NULL,
+    reported_user_id UUID,
+    reported_post_id UUID,
+    reported_comment_id UUID,
+    report_type report_type NOT NULL,
+    description TEXT,
+    status report_status DEFAULT 'PENDING',
+    reviewed_by UUID,
+    reviewed_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_report_reporter FOREIGN KEY (reporter_id) REFERENCES "user"(id) ON DELETE CASCADE,
+    CONSTRAINT fk_report_reported_user FOREIGN KEY (reported_user_id) REFERENCES "user"(id) ON DELETE CASCADE,
+    CONSTRAINT fk_report_reported_post FOREIGN KEY (reported_post_id) REFERENCES post(id) ON DELETE CASCADE,
+    CONSTRAINT fk_report_reported_comment FOREIGN KEY (reported_comment_id) REFERENCES comment(id) ON DELETE CASCADE,
+    CONSTRAINT fk_report_reviewed_by FOREIGN KEY (reviewed_by) REFERENCES "user"(id) ON DELETE SET NULL,
+    CHECK (
+        (reported_user_id IS NOT NULL AND reported_post_id IS NULL AND reported_comment_id IS NULL) OR
+        (reported_user_id IS NULL AND reported_post_id IS NOT NULL AND reported_comment_id IS NULL) OR
+        (reported_user_id IS NULL AND reported_post_id IS NULL AND reported_comment_id IS NOT NULL)
+    )
+);
+
+-- ============================================
 -- Collaboration Tables (Projects & Events)
 -- ============================================
 
@@ -348,6 +378,13 @@ CREATE INDEX idx_recommendation_score ON recommendation(score DESC);
 CREATE INDEX idx_media_post_id ON media(post_id);
 CREATE INDEX idx_media_comment_id ON media(comment_id);
 CREATE INDEX idx_media_message_id ON media(message_id);
+
+CREATE INDEX idx_report_reporter_id ON report(reporter_id);
+CREATE INDEX idx_report_reported_user_id ON report(reported_user_id);
+CREATE INDEX idx_report_reported_post_id ON report(reported_post_id);
+CREATE INDEX idx_report_reported_comment_id ON report(reported_comment_id);
+CREATE INDEX idx_report_status ON report(status);
+CREATE INDEX idx_report_created_at ON report(created_at DESC);
 
 -- New indexes to support directory filters (Filières, Promo)
 CREATE INDEX idx_profile_specialization ON profile(specialization);
