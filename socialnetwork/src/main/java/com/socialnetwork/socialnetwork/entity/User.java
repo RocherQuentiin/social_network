@@ -1,53 +1,162 @@
 
 package com.socialnetwork.socialnetwork.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
-@Table(name = "users")
+@Table(name = "\"user\"")
 public class User {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    private String name;
-    private String family;
-    
-    public User() {
-    	
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(unique = true, nullable = false, length = 50)
+    private String username;
+
+    @Column(unique = true, nullable = false, length = 100)
+    private String email;
+
+    @Column(name = "password_hash", nullable = false)
+    private String passwordHash;
+
+    @Column(name = "first_name", length = 100)
+    private String firstName;
+
+    @Column(name = "last_name", length = 100)
+    private String lastName;
+
+    @Column(columnDefinition = "TEXT")
+    private String bio;
+
+    @Column(name = "profile_picture_url")
+    private String profilePictureUrl;
+
+    @Column(name = "cover_picture_url")
+    private String coverPictureUrl;
+
+    @Column(name = "is_verified")
+    private Boolean isVerified = false;
+
+    @Column(name = "is_active")
+    private Boolean isActive = true;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    // Getters and setters
+
+    public UUID getId() {
+        return id;
     }
-    
-    public User(String name, String family) {
-    	this.name = name;
-    	this.family = family;
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
-	public Integer getId() {
-		return id;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public String getFamily() {
-		return family;
-	}
+    public String getPasswordHash() {
+        return passwordHash;
+    }
 
-	public void setFamily(String family) {
-		this.family = family;
-	}
-    
-    
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
+
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
+    }
+
+    public String getCoverPictureUrl() {
+        return coverPictureUrl;
+    }
+
+    public void setCoverPictureUrl(String coverPictureUrl) {
+        this.coverPictureUrl = coverPictureUrl;
+    }
+
+    public Boolean getIsVerified() {
+        return isVerified;
+    }
+
+    public void setIsVerified(Boolean isVerified) {
+        this.isVerified = isVerified;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }
