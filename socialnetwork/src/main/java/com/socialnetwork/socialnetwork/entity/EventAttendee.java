@@ -26,6 +26,7 @@ public class EventAttendee {
     private User user;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "event_attendance_status")
     private EventAttendanceStatus status = EventAttendanceStatus.PENDING;
 
     @CreationTimestamp
