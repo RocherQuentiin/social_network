@@ -1,12 +1,23 @@
 package com.socialnetwork.socialnetwork.entity;
 
-import com.socialnetwork.socialnetwork.enums.VisibilityType;
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+import com.socialnetwork.socialnetwork.enums.VisibilityType;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "event")
@@ -33,7 +44,8 @@ public class Event {
     private String location;
 
     @Enumerated(EnumType.STRING)
-    private VisibilityType visibility = VisibilityType.PUBLIC;
+    @Column(name = "visibility_type")
+    private VisibilityType visibilityType = VisibilityType.PUBLIC;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -93,12 +105,12 @@ public class Event {
         this.location = location;
     }
 
-    public VisibilityType getVisibility() {
-        return visibility;
+    public VisibilityType getVisibilityType() {
+        return visibilityType;
     }
 
-    public void setVisibility(VisibilityType visibility) {
-        this.visibility = visibility;
+    public void setVisibilityType(VisibilityType visibilityType) {
+        this.visibilityType = visibilityType;
     }
 
     public LocalDateTime getCreatedAt() {

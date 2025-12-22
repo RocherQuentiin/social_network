@@ -37,7 +37,8 @@ public class Profile {
     private LocalDate birthdate;
 
     @Enumerated(EnumType.STRING)
-    private UserGender gender;
+    @Column(name = "user_gender")
+    private UserGender userGender;
 
     @Column(length = 100)
     private String profession;
@@ -49,7 +50,8 @@ public class Profile {
     private String education;
 
     @Enumerated(EnumType.STRING)
-    private IsepSpecialization specialization;
+    @Column(name = "isep_specialization")
+    private IsepSpecialization isepSpecialization;
 
     @Column(name = "promo_year")
     private Short promoYear;
@@ -116,12 +118,12 @@ public class Profile {
         this.birthdate = birthdate;
     }
 
-    public UserGender getGender() {
-        return gender;
+    public UserGender getUserGender() {
+        return userGender;
     }
 
-    public void setGender(UserGender gender) {
-        this.gender = gender;
+    public void setUserGender(UserGender userGender) {
+        this.userGender = userGender;
     }
 
     public String getProfession() {
@@ -148,12 +150,12 @@ public class Profile {
         this.education = education;
     }
 
-    public IsepSpecialization getSpecialization() {
-        return specialization;
+    public IsepSpecialization getIsepSpecialization() {
+        return isepSpecialization;
     }
 
-    public void setSpecialization(IsepSpecialization specialization) {
-        this.specialization = specialization;
+    public void setIsepSpecialization(IsepSpecialization isepSpecialization) {
+        this.isepSpecialization = isepSpecialization;
     }
 
     public Short getPromoYear() {
