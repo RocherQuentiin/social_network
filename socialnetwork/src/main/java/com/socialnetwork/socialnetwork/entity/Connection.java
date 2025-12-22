@@ -27,6 +27,7 @@ public class Connection {
     private User receiver;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "connection_status")
     private ConnectionStatus status = ConnectionStatus.PENDING;
 
     @CreationTimestamp
