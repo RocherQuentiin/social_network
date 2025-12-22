@@ -38,6 +38,9 @@ public class Post {
     @Column(name = "visibility_type")
     private VisibilityType visibilityType = VisibilityType.PUBLIC;
 
+    @Column(name = "allow_comments")
+    private Boolean allowComments = true;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -81,6 +84,14 @@ public class Post {
 
     public void setVisibilityType(VisibilityType visibilityType) {
         this.visibilityType = visibilityType;
+    }
+
+    public Boolean getAllowComments() {
+        return allowComments;
+    }
+
+    public void setAllowComments(Boolean allowComments) {
+        this.allowComments = allowComments;
     }
 
     public LocalDateTime getCreatedAt() {
