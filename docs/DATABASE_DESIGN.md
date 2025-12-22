@@ -26,11 +26,11 @@
 - `website` (VARCHAR)
 - `phone_number` (VARCHAR)
 - `birthdate` (DATE)
-- `gender` (ENUM: MALE, FEMALE, OTHER, PREFER_NOT_TO_SAY)
+- `user_gender` (ENUM: MALE, FEMALE, OTHER, PREFER_NOT_TO_SAY)
 - `profession` (VARCHAR)
 - `company` (VARCHAR)
 - `education` (VARCHAR)
-- `specialization` (ENUM: SOFTWARE_ENGINEERING, DATA_SCIENCE, CYBERSECURITY, EMBEDDED_SYSTEMS)
+- `isep_specialization` (ENUM: SOFTWARE_ENGINEERING, DATA_SCIENCE, CYBERSECURITY, EMBEDDED_SYSTEMS)
 - `promo_year` (SMALLINT, nullable, check 1950–2100)
 - `interests` (TEXT - JSON format)
 - `created_at` (TIMESTAMP)
@@ -40,7 +40,7 @@
 - `id` (PK, UUID)
 - `author_id` (FK -> User)
 - `content` (TEXT)
-- `visibility` (ENUM: PUBLIC, FRIENDS, PRIVATE)
+- `visibility_type` (ENUM: PUBLIC, FRIENDS, PRIVATE)
 - `created_at` (TIMESTAMP)
 - `updated_at` (TIMESTAMP)
 - `deleted_at` (TIMESTAMP, nullable)
@@ -74,7 +74,7 @@
 - `comment_id` (FK -> Comment, nullable)
 - `reaction_type` (ENUM: LIKE, LOVE, HAHA, WOW, SAD, ANGRY)
 - `created_at` (TIMESTAMP)
-- UNIQUE(user_id, post_id, comment_id)
+- UNIQUE constraints: `UNIQUE(user_id, post_id)` and `UNIQUE(user_id, comment_id)` (a reaction targets either a post or a comment)
 
 #### 7. **Connection** (Graph-based relationships)
 - `id` (PK, UUID)
@@ -143,7 +143,7 @@
 - `creator_id` (FK -> User)
 - `name` (VARCHAR)
 - `description` (TEXT)
-- `visibility` (ENUM: PUBLIC, PRIVATE, MEMBERS_ONLY)
+- `visibility_type` (ENUM: PUBLIC, FRIENDS, PRIVATE)
 - `created_at` (TIMESTAMP)
 - `updated_at` (TIMESTAMP)
 
@@ -162,7 +162,7 @@
 - `description` (TEXT)
 - `event_date` (TIMESTAMP)
 - `location` (VARCHAR)
-- `visibility` (ENUM: PUBLIC, PRIVATE, MEMBERS_ONLY)
+- `visibility_type` (ENUM: PUBLIC, FRIENDS, PRIVATE)
 - `created_at` (TIMESTAMP)
 - `updated_at` (TIMESTAMP)
 
@@ -214,7 +214,7 @@
 CREATE INDEX idx_user_username ON user(username);
 CREATE INDEX idx_user_email ON user(email);
 CREATE INDEX idx_post_author_id ON post(author_id);
-CREATE INDEX idx_post_visibility ON post(visibility);
+CREATE INDEX idx_post_visibility_type ON post(visibility_type);
 CREATE INDEX idx_comment_post_id ON comment(post_id);
 CREATE INDEX idx_comment_author_id ON comment(author_id);
 CREATE INDEX idx_like_user_id ON like(user_id);
@@ -228,9 +228,9 @@ CREATE INDEX idx_notification_is_read ON notification(is_read);
 CREATE INDEX idx_follow_follower_id ON follow(follower_id);
 CREATE INDEX idx_follow_following_id ON follow(following_id);
 -- Directory filters (Filières/Promo)
-CREATE INDEX idx_profile_specialization ON profile(specialization);
+CREATE INDEX idx_profile_specialization ON profile(isep_specialization);
 CREATE INDEX idx_profile_promo_year ON profile(promo_year);
-CREATE INDEX idx_profile_spec_promo ON profile(specialization, promo_year);
+CREATE INDEX idx_profile_spec_promo ON profile(isep_specialization, promo_year);
 ```
 
 ---
@@ -267,10 +267,10 @@ CREATE INDEX idx_profile_spec_promo ON profile(specialization, promo_year);
 
 - Find users by specialization and promo:
 ```sql
-SELECT u.id, u.username, p.promo_year, p.specialization
+SELECT u.id, u.username, p.promo_year, p.isep_specialization
 FROM "user" u
 JOIN profile p ON p.user_id = u.id
-WHERE (p.specialization = 'DATA_SCIENCE')
+WHERE (p.isep_specialization = 'DATA_SCIENCE')
 	AND (p.promo_year = 2025);
 ```
 
