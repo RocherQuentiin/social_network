@@ -31,8 +31,6 @@ public class UserController {
 
 	@PostMapping("/register")
 	public String registerUser( User user) {
-		// In this simple example we accept the provided password directly as "passwordHash".
-		// In production you must hash passwords before saving.
 		userService.create(user);
 		return "redirect:/users";
 	}
