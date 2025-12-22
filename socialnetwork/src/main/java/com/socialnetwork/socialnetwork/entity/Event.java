@@ -46,6 +46,11 @@ public class Event {
     @Enumerated(EnumType.STRING)
     @Column(name = "visibility_type")
     private VisibilityType visibilityType = VisibilityType.PUBLIC;
+    
+    @Column(name = "capacity")
+    private Integer capacity = 0;
+
+    
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -111,6 +116,14 @@ public class Event {
 
     public void setVisibilityType(VisibilityType visibilityType) {
         this.visibilityType = visibilityType;
+    }
+
+    public Integer getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
     }
 
     public LocalDateTime getCreatedAt() {
