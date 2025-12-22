@@ -247,3 +247,23 @@ CREATE TABLE IF NOT EXISTS recommendation (
     CONSTRAINT fk_recommendation_recommended_user FOREIGN KEY (recommended_user_id) REFERENCES user(id) ON DELETE CASCADE,
     CONSTRAINT prevent_self_recommendation CHECK (user_id != recommended_user_id)
 );
+ 
+-- Reports
+CREATE TABLE IF NOT EXISTS report (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    reporter_id CHAR(36) NOT NULL,
+    reported_user_id CHAR(36),
+    reported_post_id CHAR(36),
+    reported_comment_id CHAR(36),
+    report_type ENUM('SPAM','HARASSMENT','INAPPROPRIATE_CONTENT','HATE_SPEECH','FAKE_ACCOUNT','VIOLENCE','MISINFORMATION','OTHER') NOT NULL,
+    description TEXT,
+    status ENUM('PENDING','UNDER_REVIEW','RESOLVED','DISMISSED') DEFAULT 'PENDING',
+    reviewed_by CHAR(36),
+    reviewed_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_report_reporter FOREIGN KEY (reporter_id) REFERENCES user(id) ON DELETE CASCADE,
+    CONSTRAINT fk_report_reported_user FOREIGN KEY (reported_user_id) REFERENCES user(id) ON DELETE SET NULL,
+    CONSTRAINT fk_report_reported_post FOREIGN KEY (reported_post_id) REFERENCES post(id) ON DELETE SET NULL,
+    CONSTRAINT fk_report_reported_comment FOREIGN KEY (reported_comment_id) REFERENCES comment(id) ON DELETE SET NULL,
+    CONSTRAINT fk_report_reviewed_by FOREIGN KEY (reviewed_by) REFERENCES user(id) ON DELETE SET NULL
+);

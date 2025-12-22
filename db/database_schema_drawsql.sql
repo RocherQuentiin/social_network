@@ -263,3 +263,26 @@ CREATE TABLE recommendation (
     CONSTRAINT fk_recommendation_recommended_user FOREIGN KEY (recommended_user_id) REFERENCES "user"(id) ON DELETE CASCADE,
     CONSTRAINT prevent_self_recommendation CHECK (user_id != recommended_user_id)
 );
+
+-- Reports
+CREATE TYPE report_type AS ENUM ('SPAM','HARASSMENT','INAPPROPRIATE_CONTENT','HATE_SPEECH','FAKE_ACCOUNT','VIOLENCE','MISINFORMATION','OTHER');
+CREATE TYPE report_status AS ENUM ('PENDING','UNDER_REVIEW','RESOLVED','DISMISSED');
+
+CREATE TABLE report (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    reporter_id UUID NOT NULL,
+    reported_user_id UUID,
+    reported_post_id UUID,
+    reported_comment_id UUID,
+    report_type report_type NOT NULL,
+    description TEXT,
+    status report_status DEFAULT 'PENDING',
+    reviewed_by UUID,
+    reviewed_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_report_reporter FOREIGN KEY (reporter_id) REFERENCES "user"(id) ON DELETE CASCADE,
+    CONSTRAINT fk_report_reported_user FOREIGN KEY (reported_user_id) REFERENCES "user"(id) ON DELETE SET NULL,
+    CONSTRAINT fk_report_reported_post FOREIGN KEY (reported_post_id) REFERENCES post(id) ON DELETE SET NULL,
+    CONSTRAINT fk_report_reported_comment FOREIGN KEY (reported_comment_id) REFERENCES comment(id) ON DELETE SET NULL,
+    CONSTRAINT fk_report_reviewed_by FOREIGN KEY (reviewed_by) REFERENCES "user"(id) ON DELETE SET NULL
+);
