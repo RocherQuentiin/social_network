@@ -26,6 +26,7 @@ public class ProjectMember {
     private User user;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "project_member_role")
     private ProjectMemberRole role = ProjectMemberRole.MEMBER;
 
     @CreationTimestamp
