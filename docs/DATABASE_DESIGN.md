@@ -283,3 +283,32 @@ GROUP BY p.id
 ORDER BY reactions DESC
 LIMIT 20;
 ```
+
+---
+
+## MariaDB / Compatibility Notes
+
+- The primary DDL in this repository is `db/database_schema.sql` and is written for MySQL/MariaDB. It has been tested against MariaDB 11.8.x.
+- JSON columns use MariaDB's native `JSON` type (for example `profile.interests` and `privacy_settings.block_list`). When mapping with Hibernate use `@JdbcTypeCode(SqlTypes.JSON)` and `columnDefinition = "json"` on the entity field for correct behavior.
+- A PostgreSQL-compatible DDL for DrawSQL is available in `db/database_schema_drawsql.sql`; it uses `JSONB`, PostgreSQL enums and `UUID` types which are not directly compatible with MariaDB.
+
+## DDL application order & circular foreign keys
+
+- There is a circular reference between `conversation.last_message_id` and `message.id`. To avoid creation-time errors the `db/database_schema.sql` script first creates `conversation` and `message`, then adds the `fk_conversation_last_message` constraint with an `ALTER TABLE` statement. Apply the provided `db/database_schema.sql` as-is.
+- Recommended safe procedure to apply the DDL on a MariaDB instance:
+
+```bash
+# From repository root, run (replace placeholders):
+mysql -h <host> -u <user> -p <database_name> < db/database_schema.sql
+```
+
+Or interactively inside the mysql client:
+
+```sql
+SOURCE db/database_schema.sql;
+```
+
+Notes:
+- If you apply table creation manually, ensure `conversation` and `message` exist first, then run the `ALTER TABLE conversation ADD CONSTRAINT fk_conversation_last_message ...` statement to add the circular FK.
+- The DrawSQL/Postgres DDL is intended for diagram import and may require adjustments before use in an actual PostgreSQL server.
+

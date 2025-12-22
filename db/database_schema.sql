@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS post (
     author_id CHAR(36) NOT NULL,
     content TEXT NOT NULL,
     visibility_type ENUM ('PUBLIC', 'FRIENDS', 'PRIVATE') DEFAULT 'PUBLIC',
+    allow_comments BOOLEAN DEFAULT true,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP,
@@ -59,6 +60,7 @@ CREATE TABLE IF NOT EXISTS comment (
 );
 
 -- Messaging
+-- create conversation (no circular FK to message yet)
 CREATE TABLE IF NOT EXISTS conversation (
     id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     participant_1_id CHAR(36) NOT NULL,
@@ -68,11 +70,11 @@ CREATE TABLE IF NOT EXISTS conversation (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_conversation_participant1 FOREIGN KEY (participant_1_id) REFERENCES user(id) ON DELETE CASCADE,
     CONSTRAINT fk_conversation_participant2 FOREIGN KEY (participant_2_id) REFERENCES user(id) ON DELETE CASCADE,
-    CONSTRAINT fk_conversation_last_message FOREIGN KEY (last_message_id) REFERENCES message(id) ON DELETE SET NULL,
     CONSTRAINT unique_conversation UNIQUE(participant_1_id, participant_2_id),
     CONSTRAINT prevent_self_conversation CHECK (participant_1_id < participant_2_id)
 );
 
+-- create message (references conversation)
 CREATE TABLE IF NOT EXISTS message (
     id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     sender_id CHAR(36) NOT NULL,
@@ -87,6 +89,11 @@ CREATE TABLE IF NOT EXISTS message (
     CONSTRAINT fk_message_recipient FOREIGN KEY (recipient_id) REFERENCES user(id) ON DELETE CASCADE,
     CONSTRAINT fk_message_conversation FOREIGN KEY (conversation_id) REFERENCES conversation(id) ON DELETE CASCADE
 );
+
+-- add circular FK from conversation.last_message_id -> message.id
+ALTER TABLE conversation
+  ADD CONSTRAINT fk_conversation_last_message
+  FOREIGN KEY (last_message_id) REFERENCES message(id) ON DELETE SET NULL;
 
 CREATE TABLE IF NOT EXISTS media (
     id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
@@ -173,7 +180,6 @@ CREATE TABLE IF NOT EXISTS privacy_settings (
     can_see_location BOOLEAN DEFAULT false,
     allow_direct_messages BOOLEAN DEFAULT true,
     allow_friend_requests BOOLEAN DEFAULT true,
-    allow_comments_on_posts BOOLEAN DEFAULT true,
     block_list JSON DEFAULT ('{}'),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -211,7 +217,7 @@ CREATE TABLE IF NOT EXISTS event (
     event_date TIMESTAMP NOT NULL,
     capacity INT DEFAULT 0,
     location VARCHAR(255),
-    ENUM ('PUBLIC', 'FRIENDS', 'PRIVATE') DEFAULT 'PUBLIC',
+    visibility_type ENUM('PUBLIC','FRIENDS','PRIVATE') DEFAULT 'PUBLIC',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_event_creator FOREIGN KEY (creator_id) REFERENCES user(id) ON DELETE CASCADE
