@@ -6,6 +6,9 @@
 </head>
 <body>
 <h1>Register</h1>
+<div th:if="${error}">
+    <p style="color:red;" th:text="${error}"></p>
+</div>
 <form th:action="@{/register}" th:object="${user}" method="post">
     <label>Username: <input type="text" th:field="*{username}" required/></label><br/>
     <label>Email: <input type="email" th:field="*{email}" required/></label><br/>

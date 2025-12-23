@@ -1,5 +1,7 @@
 package com.socialnetwork.socialnetwork.controller;
 
+import java.util.regex.Pattern;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
 import com.socialnetwork.socialnetwork.entity.User;
+import com.socialnetwork.socialnetwork.enums.UserRole;
 
 
 
@@ -30,9 +33,31 @@ public class UserController {
 	}
 
 	@PostMapping("/register")
-	public String registerUser( User user) {
-		userService.create(user);
-		return "redirect:/users";
+	public String registerUser( User user, Model model) {
+		// email domain validation for ISEP
+		String email = user.getEmail() != null ? user.getEmail().trim().toLowerCase() : "";
+
+		Pattern studentPattern = Pattern.compile("^[^@]+@eleve\\.isep\\.fr$");
+		Pattern profPattern = Pattern.compile("^[^@]+@(isep\\.fr|ext\\.isep\\.fr)$");
+
+		if (studentPattern.matcher(email).matches()) {
+			user.setRole(UserRole.STUDENT);
+		} else if (profPattern.matcher(email).matches()) {
+			user.setRole(UserRole.PROF);
+		} else {
+			model.addAttribute("error", "Registration is restricted to ISEP email addresses.");
+			model.addAttribute("user", user);
+			return "register";
+		}
+
+		try {
+			userService.create(user);
+			return "redirect:/users";
+		} catch (IllegalArgumentException ex) {
+			model.addAttribute("error", ex.getMessage());
+			model.addAttribute("user", user);
+			return "register";
+		}
 	}
 
 	@GetMapping("/users")
