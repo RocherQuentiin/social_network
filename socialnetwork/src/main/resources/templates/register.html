@@ -31,6 +31,7 @@
                 <div class="form-group">
                     <label for="passwordHash">Mot de passe</label>
                     <input id="passwordHash" type="password" th:field="*{passwordHash}" class="input-field" placeholder="Choisissez un mot de passe" required />
+                    <span id="passwordHashMsg" class="msg-error" style="display:none" role="alert" aria-live="polite"></span>
                 </div>
 
                 <div class="form-group">
@@ -65,8 +66,11 @@
         const usernameInput = document.getElementById('username');
         const emailMsg = document.getElementById('emailMsg');
         const usernameMsg = document.getElementById('usernameMsg');
-
+        const passwordHashInput = document.getElementById('passwordHash')
+        const passwordHashMsg = document.getElementById('passwordHashMsg');
+        
         const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@(eleve\.isep\.fr|isep\.fr|ext\.isep\.fr)$/i;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
 
         function setState(el, msgEl, ok, message){
             el.classList.remove('success','error');
@@ -126,6 +130,23 @@
                 }
             }, 450);
         });
+        
+        
+        passwordHashInput.addEventListener('input', function(){
+            const val = this.value.trim();
+            if(val.length === 0){
+                this.classList.remove('success','error');
+                usernameMsg.style.display='none';
+                return;
+            }
+            
+            if(passwordRegex.test(val)){
+                setState(this, passwordHashMsg, true);
+            } else {
+                setState(this, passwordHashMsg, false, "Le mot de passe doit contenir au moins 8 caractères, avec au moins une majuscule, une minuscule, un chiffre et un caractère spécial");
+            }
+        });
+        
     })();
 </script>
 
