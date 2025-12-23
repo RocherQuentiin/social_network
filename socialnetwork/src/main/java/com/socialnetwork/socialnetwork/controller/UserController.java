@@ -35,6 +35,12 @@ public class UserController {
 		model.addAttribute("user", new User());
 		return "register";
 	}
+	
+	@GetMapping("/login")
+	public String showLoginForm(Model model) {
+		model.addAttribute("user", new User());
+		return "login";
+	}
 
 	@PostMapping("/register")
 	public String registerUser(User user, Model model) {
