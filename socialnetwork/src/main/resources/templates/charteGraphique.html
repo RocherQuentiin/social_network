@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design System - ISEP Connect</title>
+    <link rel="stylesheet" href="css/charteGraphique.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="logo-icon"></div>
+        <span>ISEP Connect</span>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="#colors" class="nav-item"><i data-lucide="palette"></i> Couleurs</a>
+        <a href="#typography" class="nav-item"><i data-lucide="type"></i> Typographie</a>
+        <a href="#forms" class="nav-item"><i data-lucide="text-cursor-input"></i> Formulaires</a>
+        <a href="#buttons" class="nav-item"><i data-lucide="mouse-pointer-2"></i> Boutons</a>
+        <a href="#cards" class="nav-item"><i data-lucide="layout"></i> Cartes & Grilles</a>
+    </nav>
+</aside>
+
+<main class="content">
+    <header class="main-header">
+        <h1>Design System <span class="version">v1.1</span></h1>
+        <p>Référentiel complet des composants d'interface pour ISEP Connect.</p>
+    </header>
+
+    <section id="colors" class="section">
+        <h2 class="section-title">Palette de Couleurs</h2>
+        <div class="color-grid">
+            <div class="color-group">
+                <h3>Identité</h3>
+                <div class="color-row">
+                    <div class="color-swatch bg-main"></div>
+                    <div class="color-info"><span>Fond Principal</span><code>#0f1419</code></div>
+                </div>
+                <div class="color-row">
+                    <div class="color-swatch primary"></div>
+                    <div class="color-info"><span>Bleu Connect</span><code>#1d9bf0</code></div>
+                </div>
+                <div class="color-row">
+                    <div class="color-swatch isep"></div>
+                    <div class="color-info"><span>Bleu ISEP</span><code>#0066CC</code></div>
+                </div>
+                <div class="color-row">
+                    <div class="color-swatch gold"></div>
+                    <div class="color-info"><span>Or Premium</span><code>#FFD700</code></div>
+                </div>
+            </div>
+            <div class="color-group">
+                <h3>États & Neutres</h3>
+                <div class="color-row">
+                    <div class="color-swatch success"></div>
+                    <div class="color-info"><span>Succès</span><code>#10b981</code></div>
+                </div>
+                <div class="color-row">
+                    <div class="color-swatch error"></div>
+                    <div class="color-info"><span>Erreur</span><code>#ef4444</code></div>
+                </div>
+                <div class="color-row">
+                    <div class="color-swatch bg-card"></div>
+                    <div class="color-info"><span>Card BG</span><code>#1c2028</code></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="typography" class="section">
+        <h2 class="section-title">Typographie & Styles</h2>
+        <div class="glass-card">
+            <div class="typo-demo">
+                <div class="spec">H1 - Heading 1 (32px / 800)</div>
+                <h1 class="h1">Collaborer. Créer. Connecter.</h1>
+
+                <div class="spec">H2 - Heading 2 (24px / 700)</div>
+                <h2 class="h2">Le futur de l'ingénierie commence ici</h2>
+
+                <div class="spec">Body Text (16px / 400)</div>
+                <p class="body-text">L'ISEP Connect est la plateforme centrale permettant aux étudiants d'échanger sur leurs projets, de partager leurs ressources et de construire leur réseau professionnel.</p>
+
+                <div class="spec">Small & Caption (14px - 12px)</div>
+                <p class="small-text">Dernière mise à jour : 23 Octobre 2023</p>
+
+                <div class="spec">Code / Mono (Fira Code)</div>
+                <code class="code-block">git commit -m "feat: added new dashboard components"</code>
+            </div>
+        </div>
+    </section>
+
+    <section id="forms" class="section">
+        <h2 class="section-title">Formulaires & Inputs</h2>
+        <div class="glass-card">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nom d'utilisateur</label>
+                    <input type="text" placeholder="ex: adupont" class="input-field">
+                </div>
+                <div class="form-group">
+                    <label>Email ISEP (Validation)</label>
+                    <input type="email" value="alex@isep.fr" class="input-field success">
+                    <span class="msg-success">Email vérifié avec succès</span>
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe (Erreur)</label>
+                    <input type="password" value="123" class="input-field error">
+                    <span class="msg-error">Le mot de passe est trop court</span>
+                </div>
+                <div class="form-group">
+                    <label>Recherche</label>
+                    <div class="input-icon-wrapper">
+                        <i data-lucide="search"></i>
+                        <input type="text" placeholder="Rechercher un projet..." class="input-field">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Promotion</label>
+                    <select class="input-field">
+                        <option>Cycle Ingénieur (A1)</option>
+                        <option>Cycle Ingénieur (A2)</option>
+                        <option>Cycle Ingénieur (A3)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Options</label>
+                    <div class="checkbox-group">
+                        <label class="check-container">
+                            <input type="checkbox" checked>
+                            <span class="checkmark"></span> Recevoir les notifications
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="buttons" class="section">
+        <h2 class="section-title">Boutons & Actions</h2>
+        <div class="glass-card">
+            <div class="btn-group">
+                <button class="btn btn-primary">Primary Button</button>
+                <button class="btn btn-isep">ISEP Action</button>
+                <button class="btn btn-gold">Premium Gold</button>
+                <button class="btn btn-outline">Outline Ghost</button>
+                <button class="btn btn-primary" disabled>Disabled</button>
+            </div>
+            <div class="btn-group" style="margin-top: 20px;">
+                <button class="btn btn-primary icon-btn"><i data-lucide="plus"></i> Nouveau Projet</button>
+                <button class="btn btn-outline icon-btn"><i data-lucide="download"></i> Export PDF</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="cards" class="section">
+        <h2 class="section-title">Cartes & Conteneurs</h2>
+        <div class="card-demo-grid">
+            <div class="content-card">
+                <div class="card-banner"></div>
+                <div class="card-content">
+                    <span class="badge">Web Design</span>
+                    <h3>ISEP Dashboard UI</h3>
+                    <p>Refonte de l'interface étudiante pour une meilleure accessibilité.</p>
+                    <div class="card-footer">
+                        <div class="avatars">
+                            <div class="av-small"></div>
+                            <div class="av-small"></div>
+                        </div>
+                        <i data-lucide="arrow-right"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card premium">
+                <div class="premium-badge"><i data-lucide="star"></i> PRO</div>
+                <div class="card-content">
+                    <h3>Accès Alumni</h3>
+                    <p>Connectez-vous avec plus de 10,000 anciens diplômés de l'ISEP.</p>
+                    <button class="btn btn-gold full-width">Débloquer</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>
