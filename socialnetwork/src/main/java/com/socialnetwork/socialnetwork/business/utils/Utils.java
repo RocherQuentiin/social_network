@@ -19,6 +19,6 @@ public class Utils {
 	}
 	
 	public static boolean checkStringContainsSpecialCharacter(String input) {
-	    return input.matches("[!@#$%&*()_+=|<>?{}\\[\\]~-]");
+		 return input.matches(".*[^a-zA-Z0-9].*");
 	}
 }
