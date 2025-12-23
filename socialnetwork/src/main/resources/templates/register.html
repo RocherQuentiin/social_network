@@ -17,35 +17,35 @@
 
             <form th:action="@{/register}" th:object="${user}" method="post" class="form-grid">
                 <div class="form-group">
-                    <label>Nom d'utilisateur</label>
+                    <label for="username">Nom d'utilisateur</label>
                     <input id="username" name="username" type="text" th:field="*{username}" class="input-field" placeholder="ex: adupont" required />
                     <span id="usernameMsg" class="msg-error" style="display:none"></span>
                 </div>
 
                 <div class="form-group">
-                    <label>Email ISEP</label>
+                    <label for="email">Email ISEP</label>
                     <input id="email" name="email" type="email" th:field="*{email}" class="input-field" required />
                     <span id="emailMsg" class="msg-error" style="display:none"></span>
                 </div>
 
                 <div class="form-group">
-                    <label>Mot de passe</label>
-                    <input type="password" th:field="*{passwordHash}" class="input-field" placeholder="Choisissez un mot de passe" required />
+                    <label for="passwordHash">Mot de passe</label>
+                    <input id="passwordHash" type="password" th:field="*{passwordHash}" class="input-field" placeholder="Choisissez un mot de passe" required />
                 </div>
 
                 <div class="form-group">
-                    <label>Prénom</label>
-                    <input type="text" th:field="*{firstName}" class="input-field" />
+                    <label for="firstName">Prénom</label>
+                    <input id="firstName" type="text" th:field="*{firstName}" class="input-field" />
                 </div>
 
                 <div class="form-group">
-                    <label>Nom</label>
-                    <input type="text" th:field="*{lastName}" class="input-field" />
+                    <label for="lastName">Nom</label>
+                    <input id="lastName" type="text" th:field="*{lastName}" class="input-field" />
                 </div>
 
                 <div class="form-group" style="grid-column: 1 / -1;">
-                    <label>Bio (optionnel)</label>
-                    <textarea th:field="*{bio}" class="input-field" rows="3" placeholder="Présentez-vous en quelques mots..."></textarea>
+                    <label for="bio">Bio (optionnel)</label>
+                    <textarea id="bio" th:field="*{bio}" class="input-field" rows="3" placeholder="Présentez-vous en quelques mots..."></textarea>
                 </div>
 
                 <div style="grid-column: 1 / -1;" class="form-actions">
