@@ -8,6 +8,7 @@ public interface IUserService {
 	String getName();
 
 	User create(User user);
+	public User getUser(User user);
 
 	List<User> findAllUsers();
 

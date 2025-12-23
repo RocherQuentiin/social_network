@@ -15,6 +15,9 @@ import com.socialnetwork.socialnetwork.business.utils.Utils;
 import com.socialnetwork.socialnetwork.entity.User;
 import com.socialnetwork.socialnetwork.enums.UserRole;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
 
 
 @Controller
@@ -39,6 +42,22 @@ public class UserController {
 	@GetMapping("/login")
 	public String showLoginForm(Model model) {
 		model.addAttribute("user", new User());
+		System.out.println("ok");
+		return "login";
+	}
+	
+	@PostMapping("/login")
+	public String loginUser(HttpServletRequest request, User user, Model model) {
+		User userLogin = userService.getUser(user);
+		
+		if(userLogin != null) {
+			HttpSession session = request.getSession(true);
+            session.setAttribute("userId", userLogin.getId());
+            session.setAttribute("userEmail", userLogin.getEmail());
+            
+            return "index"; // a changer par la bonne page
+		}
+
 		return "login";
 	}
 
