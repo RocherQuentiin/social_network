@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
+import com.socialnetwork.socialnetwork.business.utils.Utils;
 import com.socialnetwork.socialnetwork.entity.User;
 import com.socialnetwork.socialnetwork.enums.UserRole;
 
@@ -36,7 +37,7 @@ public class UserController {
 	}
 
 	@PostMapping("/register")
-	public String registerUser( User user, Model model) {
+	public String registerUser(User user, Model model) {
 		// email domain validation for ISEP
 		String email = user.getEmail() != null ? user.getEmail().trim().toLowerCase() : "";
 
@@ -48,7 +49,15 @@ public class UserController {
 		} else if (profPattern.matcher(email).matches()) {
 			user.setRole(UserRole.PROF);
 		} else {
-			model.addAttribute("error", "Registration is restricted to ISEP email addresses.");
+			model.addAttribute("error", "L'email doit être une adresse ISEP (eleve.isep.fr, isep.fr, ext.isep.fr)");
+			model.addAttribute("user", user);
+			return "register";
+		}
+		
+		boolean passwordVerification = Utils.VerifyPassword(user.getPasswordHash());
+		
+		if(!passwordVerification) {
+			model.addAttribute("error", "Le mot de passe doit contenir au moins 8 caractères, avec au moins une majuscule, une minuscule, un chiffre et un caractère spécial");
 			model.addAttribute("user", user);
 			return "register";
 		}
