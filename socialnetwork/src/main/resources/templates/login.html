@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - ISEP Connect</title>
+    <link rel="stylesheet" href="/css/charteGraphique.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<main class="content">
+    <div class="register-wrap">
+        <div class="register-card glass-card">
+            <h2 style="margin-bottom:12px;">Se connecter</h2>
+            <p class="msg-info" style="color:var(--text-dim); margin-bottom:18px;">Connectez-vous avec votre adresse email institutionnelle.</p>
+
+            <form th:action="@{/login}" th:object="${user}" method="post" class="form-grid">
+
+                <div class="form-group">
+                    <label>Email ISEP</label>
+                    <input id="email" name="email" type="email" th:field="*{email}" class="input-field" required />
+                    <span id="emailMsg" class="msg-error" style="display:none" role="alert" aria-live="polite"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="passwordHash">Mot de passe</label>
+                    <input id="passwordHash" type="password" th:field="*{passwordHash}" class="input-field" placeholder="Choisissez un mot de passe" required />
+                    <span id="passwordHashMsg" class="msg-error" style="display:none" role="alert" aria-live="polite"></span>
+                </div>
+
+                <span id="errorLogin" class="msg-error" th:if="${error}" th:text="${error}" role="alert" aria-live="polite"></span>
+                
+                
+
+                <div style="grid-column: 1 / -1;" class="form-actions">
+                    <button type="submit" class="btn btn-primary">Se connecter</button>
+                    <a th:href="@{/}" class="btn btn-outline">Annuler</a>
+                </div>
+            </form>
+
+            <p style="margin-top:14px; color:var(--text-dim);"><a th:href="@{/register}" style="color:var(--primary);">Pas de compte ?</a></p>
+            <p style="margin-top:14px; color:var(--text-dim);"><a th:href="@{/forgotpassword}" style="color:var(--primary);">Oublie de mot de passe ?</a></p>
+        </div>
+    </div>
+</main>
+
+
+</body>
+</html>

@@ -3,6 +3,8 @@ package com.socialnetwork.socialnetwork.business.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,25 +47,30 @@ public class UserService implements IUserService{
 	}
 	
 	@Override
-	public User getUser(User user) {
+	public ResponseEntity<User> getUser(User user) {
 		Optional<User> userLogin = null;
-		
-		if (user.getEmail() != null && !repository.findByEmail(user.getEmail()).isPresent()) {
+		System.out.println(user.getEmail());
+		if (user.getEmail() != null) {
 			userLogin = repository.findByEmail(user.getEmail());
-			if(userLogin.isPresent()) {
-				throw new IllegalArgumentException("Email/Mot de passe incorrect");
+			System.out.println(userLogin.isPresent());
+			if(!userLogin.isPresent()) {
+				return new ResponseEntity<User>(
+					      HttpStatus.NOT_FOUND);
 			}	
 		}
 
 		if (user.getPasswordHash() != null && !user.getPasswordHash().isEmpty()) {
-			boolean passwordVeriy = passwordEncoder.matches("motdepasse123", user.getPasswordHash());
+			boolean passwordVeriy = passwordEncoder.matches(user.getPasswordHash(), userLogin.get().getPasswordHash());
 			
 			if(!passwordVeriy) {
-				throw new IllegalArgumentException("Email/Mot de passe incorrect");
+				return new ResponseEntity<User>(
+					      HttpStatus.NOT_FOUND);
 			}
 		}
 
-		return userLogin.get();
+		return new ResponseEntity<>(
+			      userLogin.get(), 
+			      HttpStatus.OK);
 	}
 
 	@Override
