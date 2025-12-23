@@ -63,6 +63,12 @@
 			<artifactId>spring-security-crypto</artifactId>
 		</dependency>
 
+		 <dependency>
+            <groupId>io.mailtrap</groupId>
+            <artifactId>mailtrap-java</artifactId>
+            <version>1.0.0</version> 
+        </dependency>
+
 
 	</dependencies>
 

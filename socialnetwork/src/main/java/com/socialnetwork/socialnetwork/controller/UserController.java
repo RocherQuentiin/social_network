@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.socialnetwork.socialnetwork.business.interfaces.service.IMailService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
+import com.socialnetwork.socialnetwork.business.service.MailService;
 import com.socialnetwork.socialnetwork.business.utils.Utils;
 import com.socialnetwork.socialnetwork.entity.User;
 import com.socialnetwork.socialnetwork.enums.UserRole;
@@ -20,8 +22,10 @@ import com.socialnetwork.socialnetwork.enums.UserRole;
 @Controller
 public class UserController {
 	private final IUserService userService;
+	private final IMailService mailService;
 	public UserController(IUserService userService) {
 		this.userService = userService;
+		this.mailService = new MailService();
 	}
 	
 	@GetMapping("/")
@@ -64,6 +68,7 @@ public class UserController {
 
 		try {
 			userService.create(user);
+			this.mailService.sendConfirmationAccountMail(email);
 			return "redirect:/users";
 		} catch (IllegalArgumentException ex) {
 			model.addAttribute("error", ex.getMessage());
