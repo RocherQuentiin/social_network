@@ -1,4 +1,4 @@
-name: CI - Build and push Docker image
+name: CI - Build and push Docker image for hangar
 
 on:
   push:
