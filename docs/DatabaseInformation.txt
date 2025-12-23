@@ -8,3 +8,7 @@ Port : 3306
 Nom de la base MySQL : hangardb_akse63476
 Utilisateur MySQL : akse63476
 Mot de passe de l'utilisateur MySQL : pf8kN1ewa66jwRm3YeVeE2f6
+
+Remarques :
+- Le schéma SQL principal est dans `db/database_schema.sql` (format MySQL/MariaDB).
+- Un fichier compatible DrawSQL (PostgreSQL DDL) se trouve dans `db/database_schema_drawsql.sql` pour import dans DrawSQL.app.

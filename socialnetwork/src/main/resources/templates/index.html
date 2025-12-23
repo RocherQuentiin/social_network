@@ -10,5 +10,9 @@
 <body>
     <h1>Welcome to Spring Boot! <span class="guest" th:text="${name}">Guest</span></h1>
     <p>This is a simple HTML webpage served by Spring Boot.</p>
+    <p>
+        <a th:href="@{/register}">Register</a> |
+        <a th:href="@{/users}">View users</a>
+    </p>
 </body>
 </html>

@@ -1,3 +1,5 @@
 /.metadata/
 /socialnetwork/.settings
 socialnetwork/.project
+.vscode/
+.idea/
