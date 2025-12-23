@@ -30,9 +30,14 @@ public class UserService implements IUserService{
 
 	@Override
 	public User create(User user) {
+		if (user.getUsername() != null && repository.findByUsername(user.getUsername()).isPresent()) {
+			throw new IllegalArgumentException("Username already exists");
+		}
+
 		if (user.getPasswordHash() != null && !user.getPasswordHash().isEmpty()) {
 			user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
 		}
+
 		return repository.save(user);
 	}
 

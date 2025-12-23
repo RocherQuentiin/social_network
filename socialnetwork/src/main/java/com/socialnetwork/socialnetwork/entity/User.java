@@ -1,12 +1,22 @@
 
 package com.socialnetwork.socialnetwork.entity;
 
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+import com.socialnetwork.socialnetwork.enums.UserRole;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "\"user\"")
@@ -45,6 +55,10 @@ public class User {
 
     @Column(name = "is_active")
     private Boolean isActive = true;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private UserRole role = UserRole.USER;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -142,6 +156,14 @@ public class User {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 
     public LocalDateTime getCreatedAt() {
