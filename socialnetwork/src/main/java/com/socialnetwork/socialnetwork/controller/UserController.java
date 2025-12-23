@@ -40,8 +40,8 @@ public class UserController {
 		// email domain validation for ISEP
 		String email = user.getEmail() != null ? user.getEmail().trim().toLowerCase() : "";
 
-		Pattern studentPattern = Pattern.compile("^[^@]+@eleve\\.isep\\.fr$");
-		Pattern profPattern = Pattern.compile("^[^@]+@(isep\\.fr|ext\\.isep\\.fr)$");
+		Pattern studentPattern = Pattern.compile("^[A-Za-z0-9._%+-]+\\@eleve\\.isep\\.fr$");
+		Pattern profPattern = Pattern.compile("^[A-Za-z0-9._%+-]+\\@(isep\\.fr|ext\\.isep\\.fr)$");
 
 		if (studentPattern.matcher(email).matches()) {
 			user.setRole(UserRole.STUDENT);
