@@ -19,13 +19,13 @@
                 <div class="form-group">
                     <label for="username">Nom d'utilisateur</label>
                     <input id="username" name="username" type="text" th:field="*{username}" class="input-field" placeholder="ex: adupont" required />
-                    <span id="usernameMsg" class="msg-error" style="display:none"></span>
+                    <span id="usernameMsg" class="msg-error" style="display:none" role="alert" aria-live="polite"></span>
                 </div>
 
                 <div class="form-group">
-                    <label for="email">Email ISEP</label>
+                    <label>Email ISEP</label>
                     <input id="email" name="email" type="email" th:field="*{email}" class="input-field" required />
-                    <span id="emailMsg" class="msg-error" style="display:none"></span>
+                    <span id="emailMsg" class="msg-error" style="display:none" role="alert" aria-live="polite"></span>
                 </div>
 
                 <div class="form-group">
