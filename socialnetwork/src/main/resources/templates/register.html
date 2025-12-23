@@ -1,22 +1,133 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S'inscrire - ISEP Connect</title>
+    <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-<h1>Register</h1>
-<div th:if="${error}">
-    <p style="color:red;" th:text="${error}"></p>
-</div>
-<form th:action="@{/register}" th:object="${user}" method="post">
-    <label>Username: <input type="text" th:field="*{username}" required/></label><br/>
-    <label>Email: <input type="email" th:field="*{email}" required/></label><br/>
-    <label>Password: <input type="password" th:field="*{passwordHash}" required/></label><br/>
-    <label>First name: <input type="text" th:field="*{firstName}"/></label><br/>
-    <label>Last name: <input type="text" th:field="*{lastName}"/></label><br/>
-    <button type="submit">Register</button>
-</form>
-<p><a th:href="@{/users}">View all users</a></p>
+
+<main class="content">
+    <div class="register-wrap">
+        <div class="register-card glass-card">
+            <h2 style="margin-bottom:12px;">Créer un compte ISEP</h2>
+            <p class="msg-info" style="color:var(--text-dim); margin-bottom:18px;">Inscrivez-vous avec votre adresse email institutionnelle.</p>
+
+            <form th:action="@{/register}" th:object="${user}" method="post" class="form-grid">
+                <div class="form-group">
+                    <label>Nom d'utilisateur</label>
+                    <input id="username" name="username" type="text" th:field="*{username}" class="input-field" placeholder="ex: adupont" required />
+                    <span id="usernameMsg" class="msg-error" style="display:none"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Email ISEP</label>
+                    <input id="email" name="email" type="email" th:field="*{email}" class="input-field" required />
+                    <span id="emailMsg" class="msg-error" style="display:none"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <input type="password" th:field="*{passwordHash}" class="input-field" placeholder="Choisissez un mot de passe" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Prénom</label>
+                    <input type="text" th:field="*{firstName}" class="input-field" />
+                </div>
+
+                <div class="form-group">
+                    <label>Nom</label>
+                    <input type="text" th:field="*{lastName}" class="input-field" />
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>Bio (optionnel)</label>
+                    <textarea th:field="*{bio}" class="input-field" rows="3" placeholder="Présentez-vous en quelques mots..."></textarea>
+                </div>
+
+                <div style="grid-column: 1 / -1;" class="form-actions">
+                    <button type="submit" class="btn btn-primary">S'inscrire</button>
+                    <a th:href="@{/}" class="btn btn-outline">Annuler</a>
+                </div>
+            </form>
+
+            <p style="margin-top:14px; color:var(--text-dim);">Déjà inscrit ? <a th:href="@{/users}" style="color:var(--primary);">Voir les utilisateurs</a></p>
+        </div>
+    </div>
+</main>
+
+<script>
+    (function(){
+        const emailInput = document.getElementById('email');
+        const usernameInput = document.getElementById('username');
+        const emailMsg = document.getElementById('emailMsg');
+        const usernameMsg = document.getElementById('usernameMsg');
+
+        const emailRegex = /^[^@]+@(eleve\.isep\.fr|isep\.fr|ext\.isep\.fr)$/i;
+
+        function setState(el, msgEl, ok, message){
+            el.classList.remove('success','error');
+            if(ok){
+                el.classList.add('success');
+                msgEl.style.display = 'none';
+            } else {
+                el.classList.add('error');
+                msgEl.textContent = message || '';
+                msgEl.style.display = 'block';
+            }
+        }
+
+        // email validation
+        emailInput.addEventListener('input', function(){
+            const val = this.value.trim();
+            if(val.length === 0){
+                this.classList.remove('success','error');
+                emailMsg.style.display='none';
+                return;
+            }
+            if(emailRegex.test(val)){
+                setState(this, emailMsg, true);
+            } else {
+                setState(this, emailMsg, false, 'Email must be an ISEP address (eleve.isep.fr, isep.fr, ext.isep.fr)');
+            }
+        });
+
+        // username uniqueness check with debounce
+        let timer = null;
+        usernameInput.addEventListener('input', function(){
+            const val = this.value.trim();
+            clearTimeout(timer);
+            if(val.length === 0){
+                this.classList.remove('success','error');
+                usernameMsg.style.display='none';
+                return;
+            }
+            timer = setTimeout(async ()=>{
+                try{
+                    const resp = await fetch('/api/check-username?username='+encodeURIComponent(val));
+                    if(resp.ok){
+                        const data = await resp.json();
+                        if(data.exists){
+                            setState(usernameInput, usernameMsg, false, 'Username already taken');
+                        } else {
+                            setState(usernameInput, usernameMsg, true);
+                        }
+                    } else {
+                        // on error, mark neutral
+                        usernameInput.classList.remove('success','error');
+                        usernameMsg.style.display='none';
+                    }
+                }catch(e){
+                    usernameInput.classList.remove('success','error');
+                    usernameMsg.style.display='none';
+                }
+            }, 450);
+        });
+    })();
+</script>
+
 </body>
 </html>

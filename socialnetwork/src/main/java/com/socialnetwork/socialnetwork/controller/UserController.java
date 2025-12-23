@@ -2,10 +2,13 @@ package com.socialnetwork.socialnetwork.controller;
 
 import java.util.regex.Pattern;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
 import com.socialnetwork.socialnetwork.entity.User;
@@ -64,5 +67,16 @@ public class UserController {
 	public String listUsers(Model model) {
 		model.addAttribute("users", userService.findAllUsers());
 		return "users";
+	}
+
+	@GetMapping("/api/check-username")
+	@ResponseBody
+	public ResponseEntity<?> checkUsername(@RequestParam("username") String username) {
+		boolean exists = false;
+		if (username != null && !username.isBlank()) {
+			exists = userService.findAllUsers().stream()
+					.anyMatch(u -> username.equalsIgnoreCase(u.getUsername()));
+		}
+		return ResponseEntity.ok(java.util.Map.of("exists", exists));
 	}
 }
