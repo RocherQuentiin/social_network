@@ -56,7 +56,7 @@ public class UserController {
             session.setAttribute("userId", userLogin.getBody().getId());
             session.setAttribute("userEmail", userLogin.getBody().getEmail());
             
-            return "index"; //TODO: a changer par la bonne page
+            return "index"; //TODO : a changer par la bonne page
 		}
 
 		model.addAttribute("error", "Email ou le Mot de passe incorrect");
