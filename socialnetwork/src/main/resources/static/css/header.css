@@ -1,0 +1,215 @@
+/* ==========================================================================
+   HEADER (NAVBAR)
+   ========================================================================== */
+.navbar {
+    background: rgba(15, 20, 25, 0.9);
+    backdrop-filter: blur(10px);
+    height: 70px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Container pour aligner Logo, Liens et Actions */
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    align-items: center;
+}
+
+/* Alignement du Logo et du texte ISEP Connect */
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: white;
+    font-weight: 800;
+}
+
+.logo-box {
+    width: 32px;
+    height: 32px;
+    background: var(--primary);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Liens de navigation */
+.navbar-links {
+    display: flex;
+    gap: 30px;
+}
+
+.navbar-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: var(--transition);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.navbar-links a:hover, .navbar-links a.active {
+    color: white;
+}
+
+/* Barre bleue sous le lien actif */
+.navbar-links a.active {
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.navbar-links a.active::after {
+    content: "";
+    position: absolute;
+    bottom: -22px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--primary);
+}
+
+/* Bouton Déconnexion (Style Charte Graphique) */
+.btn-primary-header {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-primary-header:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+/* Menu Burger (Caché par défaut sur grand écran) */
+.menu-burger {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+.main-footer {
+    padding: 40px 0;
+    border-top: 1px solid var(--border);
+    margin-top: 80px;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    font-weight: 700;
+}
+
+.logo-box-sm {
+    width: 24px;
+    height: 24px;
+    background: var(--primary);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-nav {
+    display: flex;
+    gap: 20px;
+}
+
+.footer-nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+
+.footer-copy {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+}
+
+/* ==========================================================================
+   MOBILE MENU (Responsive)
+   ========================================================================== */
+.mobile-menu {
+    display: none;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background: var(--bg-dark);
+    z-index: 999;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.mobile-menu.open {
+    display: flex;
+}
+
+.mobile-menu a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: var(--transition);
+}
+
+@media (max-width: 800px) {
+    .navbar-links { display: none; }
+    .navbar-actions .btn-primary-header { display: none; }
+    .menu-burger { display: block; } /* N'apparaît que sous 800px */
+}
+
+@media (max-width: 850px) {
+    .footer-container {
+        flex-direction: column; /* On empile les éléments verticalement */
+        gap: 30px; /* On ajoute de l'espace entre le logo, les liens et le copyright */
+        text-align: center; /* On centre tout le texte */
+    }
+
+    .footer-nav {
+        flex-direction: column; /* Les liens "Mentions", "Contact" etc. s'empilent aussi */
+        gap: 15px;
+    }
+
+    .footer-left {
+        justify-content: center; /* Centre le logo et le texte ISEP Connect */
+    }
+
+    .main-footer {
+        padding: 60px 0 40px; /* Plus d'espace en haut pour respirer */
+        margin-top: 40px; /* On réduit un peu la marge sur mobile */
+    }
+}
