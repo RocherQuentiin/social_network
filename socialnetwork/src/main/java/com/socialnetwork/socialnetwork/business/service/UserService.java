@@ -1,13 +1,18 @@
 package com.socialnetwork.socialnetwork.business.service;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IUserRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
 import com.socialnetwork.socialnetwork.entity.User;
+
+import jakarta.servlet.http.HttpSession;
 
 @Service
 public class UserService implements IUserService{
@@ -39,6 +44,32 @@ public class UserService implements IUserService{
 		}
 
 		return repository.save(user);
+	}
+	
+	@Override
+	public ResponseEntity<User> getUser(User user) {
+		Optional<User> userLogin = null;
+		System.out.println(user.getEmail());
+		if (user.getEmail() != null) {
+			userLogin = repository.findByEmail(user.getEmail());
+			if(!userLogin.isPresent()) {
+				return new ResponseEntity<User>(
+					      HttpStatus.NOT_FOUND);
+			}	
+		}
+
+		if (user.getPasswordHash() != null && !user.getPasswordHash().isEmpty()) {
+			boolean passwordVeriy = passwordEncoder.matches(user.getPasswordHash(), userLogin.get().getPasswordHash());
+			
+			if(!passwordVeriy) {
+				return new ResponseEntity<User>(
+					      HttpStatus.NOT_FOUND);
+			}
+		}
+
+		return new ResponseEntity<>(
+			      userLogin.get(), 
+			      HttpStatus.OK);
 	}
 
 	@Override

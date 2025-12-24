@@ -2,6 +2,7 @@ package com.socialnetwork.socialnetwork.controller;
 
 import java.util.regex.Pattern;
 
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,9 @@ import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
 import com.socialnetwork.socialnetwork.business.utils.Utils;
 import com.socialnetwork.socialnetwork.entity.User;
 import com.socialnetwork.socialnetwork.enums.UserRole;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 
 
@@ -34,6 +38,31 @@ public class UserController {
 	public String showRegisterForm(Model model) {
 		model.addAttribute("user", new User());
 		return "register";
+	}
+	
+	@GetMapping("/login")
+	public String showLoginForm(Model model) {
+		model.addAttribute("user", new User());
+		System.out.println("ok showLoginForm");
+		return "login";
+	}
+	
+	@PostMapping("/login")
+	public String loginUser(HttpServletRequest request, User user, Model model) {
+		ResponseEntity<User> userLogin = userService.getUser(user);
+		
+		if(userLogin.getStatusCode() == HttpStatusCode.valueOf(200)) {
+			HttpSession session = request.getSession(true);
+            session.setAttribute("userId", userLogin.getBody().getId());
+            session.setAttribute("userEmail", userLogin.getBody().getEmail());
+            
+            return "index"; //TODO : a changer par la bonne page
+		}
+
+		model.addAttribute("error", "Email ou le Mot de passe incorrect");
+		model.addAttribute("user", user);
+
+		return "login";
 	}
 
 	@PostMapping("/register")
