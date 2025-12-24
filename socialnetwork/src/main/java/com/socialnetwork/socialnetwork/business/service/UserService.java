@@ -52,7 +52,6 @@ public class UserService implements IUserService{
 		System.out.println(user.getEmail());
 		if (user.getEmail() != null) {
 			userLogin = repository.findByEmail(user.getEmail());
-			System.out.println(userLogin.isPresent());
 			if(!userLogin.isPresent()) {
 				return new ResponseEntity<User>(
 					      HttpStatus.NOT_FOUND);
