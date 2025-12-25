@@ -60,7 +60,7 @@
 }
 
 .navbar-links a:hover, .navbar-links a.active {
-    color: white;
+    color: var(--gold);
 }
 
 /* Barre bleue sous le lien actif */
@@ -82,6 +82,7 @@
 /* Bouton Déconnexion (Style Charte Graphique) */
 .btn-primary-header {
     background: var(--primary);
+    text-decoration: none;
     color: white;
     border: none;
     padding: 8px 18px;
@@ -94,6 +95,7 @@
 .btn-primary-header:hover {
     filter: brightness(1.1);
     transform: translateY(-1px);
+    background: var(--gold);
 }
 
 /* Menu Burger (Caché par défaut sur grand écran) */
@@ -189,27 +191,27 @@
 @media (max-width: 800px) {
     .navbar-links { display: none; }
     .navbar-actions .btn-primary-header { display: none; }
-    .menu-burger { display: block; } /* N'apparaît que sous 800px */
+    .menu-burger { display: block; }
 }
 
 @media (max-width: 850px) {
     .footer-container {
-        flex-direction: column; /* On empile les éléments verticalement */
-        gap: 30px; /* On ajoute de l'espace entre le logo, les liens et le copyright */
-        text-align: center; /* On centre tout le texte */
+        flex-direction: column;
+        gap: 30px;
+        text-align: center;
     }
 
     .footer-nav {
-        flex-direction: column; /* Les liens "Mentions", "Contact" etc. s'empilent aussi */
+        flex-direction: column;
         gap: 15px;
     }
 
     .footer-left {
-        justify-content: center; /* Centre le logo et le texte ISEP Connect */
+        justify-content: center;
     }
 
     .main-footer {
-        padding: 60px 0 40px; /* Plus d'espace en haut pour respirer */
-        margin-top: 40px; /* On réduit un peu la marge sur mobile */
+        padding: 60px 0 40px;
+        margin-top: 40px;
     }
 }
