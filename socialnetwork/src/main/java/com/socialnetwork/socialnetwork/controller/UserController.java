@@ -2,6 +2,7 @@ package com.socialnetwork.socialnetwork.controller;
 
 import java.util.regex.Pattern;
 
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,9 @@ import com.socialnetwork.socialnetwork.business.service.MailService;
 import com.socialnetwork.socialnetwork.business.utils.Utils;
 import com.socialnetwork.socialnetwork.entity.User;
 import com.socialnetwork.socialnetwork.enums.UserRole;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 
 
@@ -39,6 +43,31 @@ public class UserController {
 		model.addAttribute("user", new User());
 		return "register";
 	}
+	
+	@GetMapping("/login")
+	public String showLoginForm(Model model) {
+		model.addAttribute("user", new User());
+		System.out.println("ok showLoginForm");
+		return "login";
+	}
+	
+	@PostMapping("/login")
+	public String loginUser(HttpServletRequest request, User user, Model model) {
+		ResponseEntity<User> userLogin = userService.getUser(user);
+		
+		if(userLogin.getStatusCode() == HttpStatusCode.valueOf(200)) {
+			HttpSession session = request.getSession(true);
+            session.setAttribute("userId", userLogin.getBody().getId());
+            session.setAttribute("userEmail", userLogin.getBody().getEmail());
+            
+            return "index"; //TODO : a changer par la bonne page
+		}
+
+		model.addAttribute("error", "Email ou le Mot de passe incorrect");
+		model.addAttribute("user", user);
+
+		return "login";
+	}
 
 	@PostMapping("/register")
 	public String registerUser(User user, Model model) {
@@ -53,7 +82,7 @@ public class UserController {
 		} else if (profPattern.matcher(email).matches()) {
 			user.setRole(UserRole.PROF);
 		} else {
-			model.addAttribute("error", "Registration is restricted to ISEP email addresses.");
+			model.addAttribute("error", "L'email doit être une adresse ISEP (eleve.isep.fr, isep.fr, ext.isep.fr)");
 			model.addAttribute("user", user);
 			return "register";
 		}
@@ -61,7 +90,7 @@ public class UserController {
 		boolean passwordVerification = Utils.VerifyPassword(user.getPasswordHash());
 		
 		if(!passwordVerification) {
-			model.addAttribute("error", "Password must contains at least 8 characters, contains at least one minuscule, contains at least one majuscule, contains at least one number, contains at least one special Character");
+			model.addAttribute("error", "Le mot de passe doit contenir au moins 8 caractères, avec au moins une majuscule, une minuscule, un chiffre et un caractère spécial");
 			model.addAttribute("user", user);
 			return "register";
 		}
