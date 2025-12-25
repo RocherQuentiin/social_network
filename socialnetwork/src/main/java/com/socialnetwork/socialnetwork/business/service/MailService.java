@@ -15,9 +15,9 @@ import com.socialnetwork.socialnetwork.business.interfaces.service.IMailService;
 public class MailService implements IMailService {
 
 	private final String from = "isepsocial@outlook.fr";
-	private String host = "smtp.office365.com";
-	private final String username = "isepsocial@outlook.fr";
-	private final String password = "uypjdxtshfucwhey";
+	private String host = "sandbox.smtp.mailtrap.io";
+	private final String username = "2db2becb64d611";
+	private final String password = "dbdfb555556d71";
 	private Session session;
 
 	public MailService() {
@@ -40,11 +40,9 @@ public class MailService implements IMailService {
 			message.setFrom(new InternetAddress(from));
 			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailToSend));
 			message.setSubject("Test Email");
-			message.setText("This is a test email sent from Java.");
+			message.setText("test mail");
 
-			// Send the email
 			Transport.send(message);
-			System.out.println("Email sent successfully.");
 		} catch (MessagingException e) {
 			throw new RuntimeException(e);
 		}
