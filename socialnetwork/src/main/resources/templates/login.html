@@ -4,47 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion - ISEP Connect</title>
-    <link rel="stylesheet" href="/css/charteGraphique.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 
-<main class="content">
-    <div class="register-wrap">
-        <div class="register-card glass-card">
-            <h2 style="margin-bottom:12px;">Se connecter</h2>
-            <p class="msg-info" style="color:var(--text-dim); margin-bottom:18px;">Connectez-vous avec votre adresse email institutionnelle.</p>
+<div th:replace="~{fragments/header :: header-fragment}"></div>
 
-            <form th:action="@{/login}" th:object="${user}" method="post" class="form-grid">
+<div class="login-page">
+    <main class="login-container">
+        <div class="login-card glass-effect">
 
-                <div class="form-group">
-                    <label>Email ISEP</label>
-                    <input id="email" name="email" type="email" th:field="*{email}" class="input-field" required />
-                    <span id="emailMsg" class="msg-error" style="display:none" role="alert" aria-live="polite"></span>
+            <div class="login-header">
+                <div class="logo-circle">
+                    <i data-lucide="lock" class="icon-primary"></i>
+                </div>
+                <h2>Bon retour !</h2>
+                <p class="subtitle">Utilisez vos identifiants ISEP pour accéder au réseau.</p>
+            </div>
+
+            <form th:action="@{/login}" th:object="${user}" method="post" class="login-form">
+
+                <div class="alert-error" th:if="${error}">
+                    <i data-lucide="alert-circle"></i>
+                    <span th:text="${error}">Email ou mot de passe incorrect</span>
                 </div>
 
-                <div class="form-group">
-                    <label for="passwordHash">Mot de passe</label>
-                    <input id="passwordHash" type="password" th:field="*{passwordHash}" class="input-field" placeholder="Choisissez un mot de passe" required />
-                    <span id="passwordHashMsg" class="msg-error" style="display:none" role="alert" aria-live="polite"></span>
+                <div class="input-group">
+                    <label for="email">Email Institutionnel</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="mail" class="input-icon"></i>
+                        <input id="email" th:field="*{email}" type="email"
+                               placeholder="nom.prenom@eleve.isep.fr" required />
+                    </div>
                 </div>
 
-                <span id="errorLogin" class="msg-error" th:if="${error}" th:text="${error}" role="alert" aria-live="polite"></span>
-                
-                
-
-                <div style="grid-column: 1 / -1;" class="form-actions">
-                    <button type="submit" class="btn btn-primary">Se connecter</button>
-                    <a th:href="@{/}" class="btn btn-outline">Annuler</a>
+                <div class="input-group">
+                    <div class="label-row">
+                        <label for="passwordHash">Mot de passe</label>
+                        <a th:href="@{/forgotpassword}" class="forgot-link">Oublié ?</a>
+                    </div>
+                    <div class="input-wrapper">
+                        <i data-lucide="key-round" class="input-icon"></i>
+                        <input id="passwordHash" th:field="*{passwordHash}" type="password"
+                               placeholder="••••••••" required />
+                    </div>
                 </div>
+
+                <button type="submit" class="btn-login-submit">
+                    <span>Se connecter</span>
+                    <i data-lucide="arrow-right"></i>
+                </button>
             </form>
 
-            <p style="margin-top:14px; color:var(--text-dim);"><a th:href="@{/register}" style="color:var(--primary);">Pas de compte ?</a></p>
-            <p style="margin-top:14px; color:var(--text-dim);"><a th:href="@{/forgotpassword}" style="color:var(--primary);">Oublie de mot de passe ?</a></p>
+            <div class="login-footer">
+                <p>Pas encore membre ? <a th:href="@{/register}">Rejoindre l'aventure</a></p>
+                <a th:href="@{/}" class="back-home">
+                    <i data-lucide="chevron-left"></i> Retour à l'accueil
+                </a>
+            </div>
+
         </div>
-    </div>
-</main>
+    </main>
+</div>
 
+<div th:replace="~{fragments/footer :: footer-fragment}"></div>
 
+<script>
+    lucide.createIcons();
+</script>
 </body>
 </html>
