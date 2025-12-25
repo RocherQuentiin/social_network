@@ -1,46 +1,53 @@
 package com.socialnetwork.socialnetwork.business.service;
 
-import java.net.PasswordAuthentication;
 import java.util.List;
+import java.util.Properties;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 import com.socialnetwork.socialnetwork.business.interfaces.service.IMailService;
 
-import io.mailtrap.client.MailtrapClient;
-import io.mailtrap.config.MailtrapConfig;
-import io.mailtrap.factory.MailtrapClientFactory;
-import io.mailtrap.model.request.emails.Address;
-import io.mailtrap.model.request.emails.MailtrapMail;
-
-
-
 public class MailService implements IMailService {
 
-	private final String Token = "7627ef82afcc38c1ff1e66ad839c076a";
-	
-	private MailtrapConfig  config;
+	private final String from = "isepsocial@outlook.fr";
+	private String host = "smtp.office365.com";
+	private final String username = "isepsocial@outlook.fr";
+	private final String password = "uypjdxtshfucwhey";
+	private Session session;
 
 	public MailService() {
-		this.config = new MailtrapConfig.Builder()
-	            .token(Token)
-	            .build();
+		Properties props = new Properties();
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.host", host);
+		props.put("mail.smtp.port", "587");
+
+		session = Session.getInstance(props, new jakarta.mail.Authenticator() {
+			protected jakarta.mail.PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(username, password);
+			}
+		});
 	}
 
 	public void sendConfirmationAccountMail(String emailToSend) {
-		MailtrapClient client = MailtrapClientFactory.createMailtrapClient(config);
-		
-		MailtrapMail mail = MailtrapMail.builder()
-	            .from(new Address("socialisep@isep.fr", "SocialIsep"))
-	            .to(List.of(new Address(emailToSend)))
-	            .subject("Test send mail")
-	            .text("Congrats for sending test email with Mailtrap!")
-	            .category("Integration Test")
-	            .build();
+		try {
+			Message message = new MimeMessage(session);
+			message.setFrom(new InternetAddress(from));
+			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailToSend));
+			message.setSubject("Test Email");
+			message.setText("This is a test email sent from Java.");
 
-	        try {
-	            System.out.println(client.send(mail));
-	        } catch (Exception e) {
-	            System.out.println("Caught exception : " + e);
-	        }
+			// Send the email
+			Transport.send(message);
+			System.out.println("Email sent successfully.");
+		} catch (MessagingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }
