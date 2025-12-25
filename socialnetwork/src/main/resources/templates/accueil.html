@@ -1,77 +1,95 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accueil - ISEP Connect</title>
-    <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
-    <link rel="stylesheet" th:href="@{/css/accueil.css}">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Accueil - ISEP Connect</title>
+        <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+        <link rel="stylesheet" th:href="@{/css/header.css}">
+        <link rel="stylesheet" th:href="@{/css/accueil.css}">
+        <script src="https://unpkg.com/lucide@latest"></script>
+    </head>
 
-</head>
+    <body>
 
-<body>
+        <div th:replace="~{fragments/header :: header-fragment}"></div>
 
-<div th:replace="~{fragments/header :: header-fragment}"></div>
+        <div class="hero-group">
+            <section class="hero-home">
+                <div class="container">
+                    <div class="hero-content">
+                        <span class="badge-new">Plateforme officielle</span>
+                        <h1>Connectez-vous à la communauté ISEP</h1>
+                        <p class="hero-description">
+                            Rejoignez le réseau exclusif des étudiants et anciens de l'ISEP.
+                            Partagez vos projets, trouvez vos futurs collaborateurs et restez informé de la vie du campus.
+                        </p>
+                        <div class="hero-cta">
+                            <a th:href="@{/login}" class="btn-primary-large">Rejoindre l'aventure ISEP</a>
+                            <a href="#features" class="btn-outline-large">En savoir plus</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
+            <section class="stats-ribbon">
+                <div class="container stats-container">
+                    <div class="stat-card">
+                        <span class="stat-value">+1500</span>
+                        <span class="stat-label">Étudiants</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value">450</span>
+                        <span class="stat-label">Projets</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value">12</span>
+                        <span class="stat-label">Associations</span>
+                    </div>
+                </div>
+            </section>
+        </div>
 
-<section class="hero-home">
-    <div class="container">
-        <div class="hero-content">
-            <span class="badge-new">Plateforme officielle</span>
-            <h1>Connectez-vous à la communauté ISEP</h1>
-            <p>Rejoignez le réseau exclusif des étudiants et anciens de l'ISEP. Partagez vos projets, trouvez vos futurs collaborateurs et restez informé de la vie du campus.</p>
-            <div class="hero-cta">
-                <a href="annuaire.html" class="btn-primary-large">Explorer l'Annuaire</a>
-                <a href="#features" class="btn-outline-large">En savoir plus</a>
+        <section id="features" class="features-section">
+            <div class="container container-padding">
+                <h2 class="section-title">Tout ce dont vous avez besoin</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i data-lucide="search"></i></div>
+                        <h3>Annuaire Intelligent</h3>
+                        <p>Retrouvez n'importe quel étudiant par filière, promotion ou compétences techniques.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon"><i data-lucide="code-2"></i></div>
+                        <h3>Showcase Projets</h3>
+                        <p>Mettez en avant vos réalisations techniques et recevez des feedbacks de la communauté.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon"><i data-lucide="message-circle"></i></div>
+                        <h3>Messagerie Directe</h3>
+                        <p>Échangez instantanément avec vos camarades pour collaborer sur des projets académiques.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon"><i data-lucide="message-square"></i></div>
+                        <h3>Messagerie Directe</h3>
+                        <p>Échangez instantanément avec vos camarades pour vos projets ou vos questions.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon"><i data-lucide="book-open"></i></div>
+                        <h3>Entraide & Cours</h3>
+                        <p>Accédez à des ressources partagées et trouvez des tuteurs pour réussir vos examens.</p>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</section>
+        </section>
 
-<section class="stats-ribbon">
-    <div class="container stats-container">
-        <div class="stat-card">
-            <span class="stat-value">+1500</span>
-            <span class="stat-label">Étudiants</span>
-        </div>
-        <div class="stat-card">
-            <span class="stat-value">450</span>
-            <span class="stat-label">Projets</span>
-        </div>
-        <div class="stat-card">
-            <span class="stat-value">12</span>
-            <span class="stat-label">Associations</span>
-        </div>
-    </div>
-</section>
+        <div th:replace="~{fragments/footer :: footer-fragment}"></div>
 
-<section id="features" class="features-section">
-    <div class="container">
-        <h2 class="section-title">Tout ce dont vous avez besoin</h2>
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon"><i data-lucide="search"></i></div>
-                <h3>Annuaire Intelligent</h3>
-                <p>Retrouvez n'importe quel étudiant par filière, promotion ou compétences techniques.</p>
-            </div>
-            <div class="feature-card highlighted">
-                <div class="feature-icon"><i data-lucide="code-2"></i></div>
-                <h3>Showcase Projets</h3>
-                <p>Mettez en avant vos réalisations techniques et recevez des feedbacks de la communauté.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon"><i data-lucide="message-circle"></i></div>
-                <h3>Messagerie Directe</h3>
-                <p>Échangez instantanément avec vos camarades pour collaborer sur des projets académiques.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<div th:replace="~{fragments/footer :: footer-fragment}"></div>
-
-<script th:src="@{/js/header.js}"></script>
-</body>
+        <script th:src="@{/js/header.js}"></script>
+        <script>lucide.createIcons();</script>
+    </body>
 </html>
