@@ -1,0 +1,32 @@
+<header th:fragment="header-fragment" class="navbar" xmlns:th="http://www.thymeleaf.org">
+    <div class="navbar-container">
+        <a th:href="@{/}" class="navbar-logo">
+            <div class="logo-box"><i data-lucide="graduation-cap"></i></div>
+            <span>ISEP Connect</span>
+        </a>
+
+        <nav class="navbar-links">
+            <a th:href="@{/accueil}">Accueil</a>
+            <a th:href="@{/users}">Annuaire</a>
+            <a th:href="@{/messages}">Messages</a>
+            <a th:href="@{/profil}">Mon Profil</a>
+        </nav>
+
+        <div class="navbar-actions">
+            <a th:href="@{/login}" class="btn-primary-header">Connexion</a>
+
+            <button class="menu-burger" onclick="toggleMobileMenu()">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a th:href="@{/accueil}">Accueil</a>
+        <a th:href="@{/users}">Annuaire</a>
+        <a th:href="@{/login}">Messages</a>
+        <a th:href="@{/profil}">Mon Profil</a>
+        <a th:href="@{/login}" class="btn-primary-header">Connexion</a>
+    </div>
+</header>
+

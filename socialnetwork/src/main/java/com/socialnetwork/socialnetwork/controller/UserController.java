@@ -31,11 +31,11 @@ public class UserController {
 		this.userService = userService;
 		this.mailService = new MailService();
 	}
-	
-	@GetMapping("/")
+
+    @GetMapping({"/", "/accueil"})
     public String showHomePage(Model model) {
 		model.addAttribute("name", this.userService.getName());
-        return "index";
+        return "accueil";
     }
     
 	@GetMapping("/register")
@@ -59,8 +59,8 @@ public class UserController {
 			HttpSession session = request.getSession(true);
             session.setAttribute("userId", userLogin.getBody().getId());
             session.setAttribute("userEmail", userLogin.getBody().getEmail());
-            
-            return "index"; //TODO : a changer par la bonne page
+
+            return "redirect:/accueil";
 		}
 
 		model.addAttribute("error", "Email ou le Mot de passe incorrect");
