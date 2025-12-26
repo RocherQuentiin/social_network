@@ -1,5 +1,6 @@
 package com.socialnetwork.socialnetwork.controller;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.socialnetwork.socialnetwork.business.interfaces.service.IMailService;
+import com.socialnetwork.socialnetwork.business.interfaces.service.ITokenService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
 import com.socialnetwork.socialnetwork.business.service.MailService;
 import com.socialnetwork.socialnetwork.business.utils.Utils;
+import com.socialnetwork.socialnetwork.entity.Token;
 import com.socialnetwork.socialnetwork.entity.User;
 import com.socialnetwork.socialnetwork.enums.UserRole;
 
@@ -29,9 +32,11 @@ import jakarta.servlet.http.HttpSession;
 public class UserController {
 	private final IUserService userService;
 	private final IMailService mailService;
-	public UserController(IUserService userService, IMailService mailService) {
+	private final ITokenService tokenService;
+	public UserController(IUserService userService, IMailService mailService, ITokenService tokenService) {
 		this.userService = userService;
 		this.mailService = mailService;
+		this.tokenService = tokenService;
 	}
 
     @GetMapping({"/", "/accueil"})
@@ -69,7 +74,8 @@ public class UserController {
 			HttpSession session = request.getSession(true);
             session.setAttribute("userId", userLogin.getBody().getId());
             session.setAttribute("userEmail", userLogin.getBody().getEmail());
-            session.setAttribute("code", code);
+            
+            this.tokenService.create(code, userLogin.getBody());
 			
 			this.mailService.sendConfirmationAccountMail(userLogin.getBody().getEmail(), code, userLogin.getBody().getFirstName());
 			
@@ -128,7 +134,8 @@ public class UserController {
 			HttpSession session = request.getSession(true);
             session.setAttribute("userId", user.getId());
             session.setAttribute("userEmail", user.getEmail());
-            session.setAttribute("code", code);
+           
+            this.tokenService.create(code, userSave.getBody());
 			
 			this.mailService.sendConfirmationAccountMail(email, code, user.getFirstName());
 			model.addAttribute("information", "Un mail de confirmation de création de compte à était envoyé sur votre adresse mail.");
@@ -146,17 +153,28 @@ public class UserController {
 	@GetMapping("/user/{code}/confirm")
 	public String showConfirmLinkPage(HttpServletRequest request, @PathVariable("code") String code) {
 		HttpSession session = request.getSession(false);
-		Object codeUser = session.getAttribute("code");
-		System.out.println(codeUser);
-		if(codeUser == null || !codeUser.toString().equals(code)) {
+		Object userObject =   session.getAttribute("userId");
+		System.out.println("out 1");
+		if(userObject == null) {
 			return "accueil";
 		}
 		
 		
-		String userID =   session.getAttribute("userId").toString();
-		System.out.println(userID);
+		String userID =   userObject.toString();
+		
+		ResponseEntity<Token> token = this.tokenService.getToken(UUID.fromString(userID));
+		System.out.println("out 2");
+		if(token.getStatusCode() != HttpStatusCode.valueOf(200)) {
+			return "accueil";
+		}
+		LocalDateTime now = LocalDateTime.now();
+		System.out.println(token.getBody().getValue());
+		System.out.println(token.getBody().getExpirationDate().isAfter(now));
+		if(!token.getBody().getValue().equals(code) || token.getBody().getExpirationDate().isAfter(now)) {
+			return "accueil";
+		}
+		System.out.println("out 4");
 		this.userService.update(UUID.fromString(userID));
-		session.removeAttribute("code");
 		
 		return "confirmRegister";
 	}

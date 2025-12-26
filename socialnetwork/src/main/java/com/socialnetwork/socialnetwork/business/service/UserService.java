@@ -90,9 +90,12 @@ public class UserService implements IUserService{
 	public ResponseEntity<User> update(UUID userID) {
 		Optional<User> existingUser = repository.findById(userID);
 		
-		existingUser.get().setIsVerified(true);
+		if(existingUser.isPresent()) {
+			existingUser.get().setIsVerified(true);
+			
+			repository.save(existingUser.get());
+		}
 		
-		repository.save(existingUser.get());
 		
 		return new ResponseEntity<>(
 			      HttpStatus.OK);
