@@ -23,9 +23,9 @@ public class Token {
 	
 	@Column(nullable = false)
     private String value;
-	
-	@CreationTimestamp
-	@Column(name = "expiration_date", updatable = false)
+
+
+	@Column(name = "expiration_date", columnDefinition="DATETIME")
     private LocalDateTime expirationDate;
 	
 	@ManyToOne

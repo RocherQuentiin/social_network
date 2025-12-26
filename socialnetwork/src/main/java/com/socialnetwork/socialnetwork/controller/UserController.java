@@ -153,6 +153,11 @@ public class UserController {
 	@GetMapping("/user/{code}/confirm")
 	public String showConfirmLinkPage(HttpServletRequest request, @PathVariable("code") String code) {
 		HttpSession session = request.getSession(false);
+		
+		if(session == null) {
+			return "accueil";
+		}
+		
 		Object userObject =   session.getAttribute("userId");
 		System.out.println("out 1");
 		if(userObject == null) {
@@ -170,7 +175,7 @@ public class UserController {
 		LocalDateTime now = LocalDateTime.now();
 		System.out.println(token.getBody().getValue());
 		System.out.println(token.getBody().getExpirationDate().isAfter(now));
-		if(!token.getBody().getValue().equals(code) || token.getBody().getExpirationDate().isAfter(now)) {
+		if(!token.getBody().getValue().equals(code) || token.getBody().getExpirationDate().isBefore(now)) {
 			return "accueil";
 		}
 		System.out.println("out 4");

@@ -29,7 +29,8 @@ public class TokenService implements ITokenService{
 	public ResponseEntity<Token> create(String value, User user) {
 		Token token = new Token();
 		
-		
+		System.out.println(LocalDateTime.now());
+		System.out.println(LocalDateTime.now().plusHours(1));
 		LocalDateTime nowPlusOneHour = LocalDateTime.now().plusHours(1);
 		
 		token.setExpirationDate(nowPlusOneHour);
@@ -37,6 +38,8 @@ public class TokenService implements ITokenService{
 		token.setUser(user);
 		
 		Token saveToken = repository.save(token);
+		
+		System.out.println("Saved expiration date: " + saveToken.getExpirationDate());
 		
 		return new ResponseEntity<>(
 				saveToken, 
