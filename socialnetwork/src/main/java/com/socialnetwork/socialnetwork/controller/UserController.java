@@ -159,26 +159,22 @@ public class UserController {
 		}
 		
 		Object userObject =   session.getAttribute("userId");
-		System.out.println("out 1");
+
 		if(userObject == null) {
 			return "accueil";
 		}
 		
-		
 		String userID =   userObject.toString();
 		
 		ResponseEntity<Token> token = this.tokenService.getToken(UUID.fromString(userID));
-		System.out.println("out 2");
 		if(token.getStatusCode() != HttpStatusCode.valueOf(200)) {
 			return "accueil";
 		}
+		
 		LocalDateTime now = LocalDateTime.now();
-		System.out.println(token.getBody().getValue());
-		System.out.println(token.getBody().getExpirationDate().isAfter(now));
 		if(!token.getBody().getValue().equals(code) || token.getBody().getExpirationDate().isBefore(now)) {
 			return "accueil";
 		}
-		System.out.println("out 4");
 		this.userService.update(UUID.fromString(userID));
 		
 		return "confirmRegister";
