@@ -1,81 +1,91 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion - ISEP Connect</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion - ISEP Connect</title>
 
-    <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
-    <link rel="stylesheet" th:href="@{/css/login.css}">
+<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/login.css}">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+<link
+	href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+	rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 
-<div th:replace="~{fragments/header :: header-fragment}"></div>
+	<div th:replace="~{fragments/header :: header-fragment}"></div>
 
-<div class="login-page">
-    <main class="login-container">
-        <div class="login-card glass-effect">
+	<div class="login-page">
+		<main class="login-container">
+			<div class="login-card glass-effect">
 
-            <div class="login-header">
-                <div class="logo-circle">
-                    <i data-lucide="lock" class="icon-primary"></i>
-                </div>
-                <h2>Bon retour !</h2>
-                <p class="subtitle">Utilisez vos identifiants ISEP pour accéder au réseau.</p>
-            </div>
+				<div class="login-header">
+					<div class="logo-circle">
+						<i data-lucide="lock" class="icon-primary"></i>
+					</div>
+					<h2>Bon retour !</h2>
+					<p class="subtitle">Utilisez vos identifiants ISEP pour accéder
+						au réseau.</p>
+				</div>
 
-            <form th:action="@{/login}" th:object="${user}" method="post" class="login-form">
+				<form th:action="@{/login}" th:object="${user}" method="post"
+					class="login-form">
 
-                <div class="alert-error" th:if="${error}">
-                    <i data-lucide="alert-circle"></i>
-                    <span th:text="${error}">Email ou mot de passe incorrect</span>
-                </div>
+					<div class="alert-error" th:if="${error}">
+						<i data-lucide="alert-circle"></i> <span th:text="${error}">Email
+							ou mot de passe incorrect</span>
+					</div>
 
-                <div class="input-group">
-                    <label for="email">Email Institutionnel</label>
-                    <div class="input-wrapper">
-                        <i data-lucide="mail" class="input-icon"></i>
-                        <input id="email" th:field="*{email}" type="email"
-                               placeholder="nom.prenom@eleve.isep.fr" required />
-                    </div>
-                </div>
+					<div class="alert-information" th:if="${information}">
+						<i data-lucide="alert-circle"></i> <span th:text="${information}"></span>
+					</div>
 
-                <div class="input-group">
-                    <div class="label-row">
-                        <label for="passwordHash">Mot de passe</label>
-                        <a th:href="@{/forgotpassword}" class="forgot-link">Oublié ?</a>
-                    </div>
-                    <div class="input-wrapper">
-                        <i data-lucide="key-round" class="input-icon"></i>
-                        <input id="passwordHash" th:field="*{passwordHash}" type="password"
-                               placeholder="••••••••" required />
-                    </div>
-                </div>
+					<div class="input-group">
+						<label for="email">Email Institutionnel</label>
+						<div class="input-wrapper">
+							<i data-lucide="mail" class="input-icon"></i> <input id="email"
+								th:field="*{email}" type="email"
+								placeholder="nom.prenom@eleve.isep.fr" required />
+						</div>
+					</div>
 
-                <button type="submit" class="btn-login-submit">
-                    <span>Se connecter</span>
-                    <i data-lucide="arrow-right"></i>
-                </button>
-            </form>
+					<div class="input-group">
+						<div class="label-row">
+							<label for="passwordHash">Mot de passe</label> <a
+								th:href="@{/forgotpassword}" class="forgot-link">Oublié ?</a>
+						</div>
+						<div class="input-wrapper">
+							<i data-lucide="key-round" class="input-icon"></i> <input
+								id="passwordHash" th:field="*{passwordHash}" type="password"
+								placeholder="••••••••" required />
+						</div>
+					</div>
 
-            <div class="login-footer">
-                <p>Pas encore membre ? <a th:href="@{/register}">Rejoindre l'aventure</a></p>
-                <a th:href="@{/}" class="back-home">
-                    <i data-lucide="chevron-left"></i> Retour à l'accueil
-                </a>
-            </div>
+					<button type="submit" class="btn-login-submit">
+						<span>Se connecter</span> <i data-lucide="arrow-right"></i>
+					</button>
+				</form>
 
-        </div>
-    </main>
-</div>
+				<div class="login-footer">
+					<p>
+						Pas encore membre ? <a th:href="@{/register}">Rejoindre
+							l'aventure</a>
+					</p>
+					<a th:href="@{/}" class="back-home"> <i
+						data-lucide="chevron-left"></i> Retour à l'accueil
+					</a>
+				</div>
 
-<div th:replace="~{fragments/footer :: footer-fragment}"></div>
+			</div>
+		</main>
+	</div>
 
-<script>
+	<div th:replace="~{fragments/footer :: footer-fragment}"></div>
+
+	<script>
     lucide.createIcons();
 </script>
 </body>

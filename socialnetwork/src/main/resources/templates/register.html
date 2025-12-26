@@ -1,97 +1,121 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S'inscrire - ISEP Connect</title>
-    <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
-    <link rel="stylesheet" th:href="@{/css/login.css}"> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S'inscrire - ISEP Connect</title>
+<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/login.css}">
+<link
+	href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+	rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
-<div th:replace="~{fragments/header :: header-fragment}"></div>
-<div class="login-page">
-<main class="login-container" style="max-width: 650px;"> <div class="login-card glass-effect">
-    <div class="login-header">
-        <div class="logo-circle">
-            <i data-lucide="user-plus" class="icon-primary"></i>
-        </div>
-        <h2>Créer un compte</h2>
-        <p class="subtitle">Rejoignez la communauté exclusive de l'ISEP.</p>
-    </div>
+	<div th:replace="~{fragments/header :: header-fragment}"></div>
+	<div class="login-page">
+		<main class="login-container" style="max-width: 650px;">
+			<div class="login-card glass-effect">
+				<div class="login-header">
+					<div class="logo-circle">
+						<i data-lucide="user-plus" class="icon-primary"></i>
+					</div>
+					<h2>Créer un compte</h2>
+					<p class="subtitle">Rejoignez la communauté exclusive de
+						l'ISEP.</p>
+				</div>
+				
+				<div class="alert-error" th:if="${error}">
+							<i data-lucide="alert-circle"></i> <span th:text="${error}"></span>
+						</div>
+						
+				<div class="alert-information" th:if="${information}">
+							<i data-lucide="alert-circle"></i> <span th:text="${information}"></span>
+						</div>
 
-    <form th:action="@{/register}" th:object="${user}" method="post" class="login-form">
+				<form th:action="@{/register}" th:object="${user}" method="post"
+					class="login-form">
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div class="input-group">
-                <label for="username">Nom d'utilisateur</label>
-                <div class="input-wrapper">
-                    <i data-lucide="at-sign" class="input-icon"></i>
-                    <input id="username" th:field="*{username}" type="text" placeholder="adupont" required />
-                </div>
-                <span id="usernameMsg" class="msg-error-tiny"></span>
-            </div>
+					<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
 
-            <div class="input-group">
-                <label for="email">Email ISEP</label>
-                <div class="input-wrapper">
-                    <i data-lucide="mail" class="input-icon"></i>
-                    <input id="email" th:field="*{email}" type="email" placeholder="prenom.nom@isep.fr" required />
-                </div>
-                <span id="emailMsg" class="msg-error-tiny"></span>
-            </div>
+						<div class="input-group">
+							<label for="username">Nom d'utilisateur</label>
+							<div class="input-wrapper">
+								<i data-lucide="at-sign" class="input-icon"></i> <input
+									id="username" th:field="*{username}" type="text"
+									placeholder="adupont" required />
+							</div>
+							<span id="usernameMsg" class="msg-error-tiny"></span>
+						</div>
 
-            <div class="input-group">
-                <label for="firstName">Prénom</label>
-                <div class="input-wrapper">
-                    <i data-lucide="user" class="input-icon"></i>
-                    <input id="firstName" th:field="*{firstName}" type="text" placeholder="Alex" />
-                </div>
-            </div>
+						<div class="input-group">
+							<label for="email">Email ISEP</label>
+							<div class="input-wrapper">
+								<i data-lucide="mail" class="input-icon"></i> <input id="email"
+									th:field="*{email}" type="email"
+									placeholder="prenom.nom@isep.fr" required />
+							</div>
+							<span id="emailMsg" class="msg-error-tiny"></span>
+						</div>
 
-            <div class="input-group">
-                <label for="lastName">Nom</label>
-                <div class="input-wrapper">
-                    <i data-lucide="users" class="input-icon"></i>
-                    <input id="lastName" th:field="*{lastName}" type="text" placeholder="Dupont" />
-                </div>
-            </div>
-        </div>
+						<div class="input-group">
+							<label for="firstName">Prénom</label>
+							<div class="input-wrapper">
+								<i data-lucide="user" class="input-icon"></i> <input
+									id="firstName" th:field="*{firstName}" type="text"
+									placeholder="Alex" />
+							</div>
+						</div>
 
-        <div class="input-group">
-            <label for="passwordHash">Mot de passe</label>
-            <div class="input-wrapper">
-                <i data-lucide="shield-check" class="input-icon"></i>
-                <input id="passwordHash" th:field="*{passwordHash}" type="password" placeholder="Mot de passe complexe" required />
-            </div>
-            <span id="passwordHashMsg" class="msg-error-tiny"></span>
-        </div>
+						<div class="input-group">
+							<label for="lastName">Nom</label>
+							<div class="input-wrapper">
+								<i data-lucide="users" class="input-icon"></i> <input
+									id="lastName" th:field="*{lastName}" type="text"
+									placeholder="Dupont" />
+							</div>
+						</div>
+					</div>
 
-        <div class="input-group">
-            <label for="bio">Bio (optionnel)</label>
-            <div class="input-wrapper">
-                <i data-lucide="pencil" class="input-icon" style="top: 15px;"></i>
-                <textarea id="bio" th:field="*{bio}" rows="2" style="padding-left: 42px; padding-top: 10px; width: 100%; background: #00000033; border: 1px solid var(--border); border-radius: 12px; color: white;" placeholder="Dites-nous en plus..."></textarea>
-            </div>
-        </div>
+					<div class="input-group">
+						<label for="passwordHash">Mot de passe</label>
+						<div class="input-wrapper">
+							<i data-lucide="shield-check" class="input-icon"></i> <input
+								id="passwordHash" th:field="*{passwordHash}" type="password"
+								placeholder="Mot de passe complexe" required />
+						</div>
+						<span id="passwordHashMsg" class="msg-error-tiny"></span>
+					</div>
 
-        <button type="submit" class="btn-login-submit">
-            <span>Créer mon compte</span>
-            <i data-lucide="rocket"></i>
-        </button>
-    </form>
+					<div class="input-group">
+						<label for="bio">Bio (optionnel)</label>
+						<div class="input-wrapper">
+							<i data-lucide="pencil" class="input-icon" style="top: 15px;"></i>
+							<textarea id="bio" th:field="*{bio}" rows="2"
+								style="padding-left: 42px; padding-top: 10px; width: 100%; background: #00000033; border: 1px solid var(- -border); border-radius: 12px; color: white;"
+								placeholder="Dites-nous en plus..."></textarea>
+						</div>
+					</div>
 
-    <div class="login-footer">
-        <p>Déjà inscrit ? <a th:href="@{/login}">Se connecter</a></p>
-        <a th:href="@{/}" class="back-home"><i data-lucide="chevron-left"></i> Retour à l'accueil</a>
-    </div>
-</div>
-</main>
-</div>
-<div th:replace="~{fragments/footer :: footer-fragment}"></div>
-    <script th:src="@{/js/register.js}"></script>
+					<button type="submit" class="btn-login-submit">
+						<span>Créer mon compte</span> <i data-lucide="rocket"></i>
+					</button>
+				</form>
+
+				<div class="login-footer">
+					<p>
+						Déjà inscrit ? <a th:href="@{/login}">Se connecter</a>
+					</p>
+					<a th:href="@{/}" class="back-home"><i
+						data-lucide="chevron-left"></i> Retour à l'accueil</a>
+				</div>
+			</div>
+		</main>
+	</div>
+	<div th:replace="~{fragments/footer :: footer-fragment}"></div>
+	<script th:src="@{/js/register.js}"></script>
 
 </body>
 </html>

@@ -2,6 +2,7 @@ package com.socialnetwork.socialnetwork.business.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,16 +35,24 @@ public class UserService implements IUserService{
 	}
 
 	@Override
-	public User create(User user) {
+	public ResponseEntity<User> create(User user) {
 		if (user.getUsername() != null && repository.findByUsername(user.getUsername()).isPresent()) {
-			throw new IllegalArgumentException("Username already exists");
+			return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		if (user.getEmail() != null && repository.findByEmail(user.getEmail()).isPresent()) {
+			return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
 		}
 
 		if (user.getPasswordHash() != null && !user.getPasswordHash().isEmpty()) {
 			user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
 		}
 
-		return repository.save(user);
+		User saveUser = repository.save(user);
+		
+		return new ResponseEntity<>(
+			      saveUser, 
+			      HttpStatus.OK);
 	}
 	
 	@Override
@@ -75,6 +84,18 @@ public class UserService implements IUserService{
 	@Override
 	public List<User> findAllUsers() {
 		return repository.findAll();
+	}
+
+	@Override
+	public ResponseEntity<User> update(UUID userID) {
+		Optional<User> existingUser = repository.findById(userID);
+		
+		existingUser.get().setIsVerified(true);
+		
+		repository.save(existingUser.get());
+		
+		return new ResponseEntity<>(
+			      HttpStatus.OK);
 	}
     
 }

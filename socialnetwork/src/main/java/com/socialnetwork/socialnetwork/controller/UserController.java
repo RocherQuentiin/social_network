@@ -1,5 +1,6 @@
 package com.socialnetwork.socialnetwork.controller;
 
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.springframework.http.HttpStatusCode;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -55,22 +57,39 @@ public class UserController {
 	public String loginUser(HttpServletRequest request, User user, Model model) {
 		ResponseEntity<User> userLogin = userService.getUser(user);
 		
-		if(userLogin.getStatusCode() == HttpStatusCode.valueOf(200)) {
+		if(userLogin.getStatusCode() == HttpStatusCode.valueOf(404)) {
+			model.addAttribute("error", "Email ou le Mot de passe incorrect");
+			model.addAttribute("user", user);
+			return "login";
+		}
+		
+		else if(!userLogin.getBody().getIsVerified()) {
+            String code = UUID.randomUUID().toString();
+			
+			HttpSession session = request.getSession(true);
+            session.setAttribute("userId", userLogin.getBody().getId());
+            session.setAttribute("userEmail", userLogin.getBody().getEmail());
+            session.setAttribute("code", code);
+			
+			this.mailService.sendConfirmationAccountMail(userLogin.getBody().getEmail(), code, userLogin.getBody().getFirstName());
+			
+			model.addAttribute("information", "Un mail de confirmation de création de compte à était envoyé sur votre adresse mail.");
+			model.addAttribute("user", user);
+
+			return "login";
+		}
+		
+		else {
 			HttpSession session = request.getSession(true);
             session.setAttribute("userId", userLogin.getBody().getId());
             session.setAttribute("userEmail", userLogin.getBody().getEmail());
 
             return "redirect:/accueil";
 		}
-
-		model.addAttribute("error", "Email ou le Mot de passe incorrect");
-		model.addAttribute("user", user);
-
-		return "login";
 	}
 
 	@PostMapping("/register")
-	public String registerUser(User user, Model model) {
+	public String registerUser(HttpServletRequest request, User user, Model model) {
 		// email domain validation for ISEP
 		String email = user.getEmail() != null ? user.getEmail().trim().toLowerCase() : "";
 
@@ -96,14 +115,50 @@ public class UserController {
 		}
 
 		try {
-			userService.create(user);
-			this.mailService.sendConfirmationAccountMail(email);
-			return "redirect:/users";
+			ResponseEntity<User> userSave = userService.create(user);
+			
+			if(userSave.getStatusCode() != HttpStatusCode.valueOf(200)) {
+				model.addAttribute("error", "Utilisateur déja existant");
+				model.addAttribute("user", user);
+				return "register";
+			}
+			
+			String code = UUID.randomUUID().toString();
+			
+			HttpSession session = request.getSession(true);
+            session.setAttribute("userId", user.getId());
+            session.setAttribute("userEmail", user.getEmail());
+            session.setAttribute("code", code);
+			
+			this.mailService.sendConfirmationAccountMail(email, code, user.getFirstName());
+			model.addAttribute("information", "Un mail de confirmation de création de compte à était envoyé sur votre adresse mail.");
+			model.addAttribute("user", user);
+
+			return "register";
 		} catch (IllegalArgumentException ex) {
 			model.addAttribute("error", ex.getMessage());
 			model.addAttribute("user", user);
 			return "register";
 		}
+	}
+	
+	
+	@GetMapping("/user/{code}/confirm")
+	public String showConfirmLinkPage(HttpServletRequest request, @PathVariable("code") String code) {
+		HttpSession session = request.getSession(false);
+		Object codeUser = session.getAttribute("code");
+		System.out.println(codeUser);
+		if(codeUser == null || !codeUser.toString().equals(code)) {
+			return "accueil";
+		}
+		
+		
+		String userID =   session.getAttribute("userId").toString();
+		System.out.println(userID);
+		this.userService.update(UUID.fromString(userID));
+		session.removeAttribute("code");
+		
+		return "confirmRegister";
 	}
 
 	@GetMapping("/users")

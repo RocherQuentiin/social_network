@@ -1,0 +1,49 @@
+.confirm-register-page {
+    background-color: var(--bg-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    background: radial-gradient(circle at center, #1e2530 0%, #15181c 100%);
+}
+
+.confirm-register-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 20px;
+}
+
+.glass-effect {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+}
+
+.confirm-register-footer {
+    margin-top: 30px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+}
+
+.confirm-register-footer p { color: var(--text-dim); font-size: 0.9rem; }
+
+.confirm-register-footer a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.back-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 15px;
+    font-size: 0.85rem;
+    color: var(--text-dim) !important;
+}
