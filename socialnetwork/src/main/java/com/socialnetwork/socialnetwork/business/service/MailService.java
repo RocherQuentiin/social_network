@@ -2,6 +2,9 @@ package com.socialnetwork.socialnetwork.business.service;
 
 import java.util.List;
 import java.util.Properties;
+
+import org.springframework.stereotype.Service;
+
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.PasswordAuthentication;
@@ -13,16 +16,23 @@ import jakarta.mail.internet.MimeMessage;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IMailService;
 
 import io.github.cdimascio.dotenv.Dotenv;
-
+@Service
 public class MailService implements IMailService {
 
-	private final String from = "isepsocial@outlook.fr";
-	private String host = "sandbox.smtp.mailtrap.io";
-	private final String username = "2db2becb64d611";
-	private final String password = "dbdfb555556d71";
+	private String from;
+	private String host;
+	private String username;
+	private String password;
 	private Session session;
 
 	public MailService() {
+		Dotenv dotenv = Dotenv.load();
+		this.from = "isepsocial@outlook.fr";
+		this.host = dotenv.get("HOST_MAIL");
+		this.username = dotenv.get("USERNAME_MAIL");
+		this.password = dotenv.get("PASSWORD_MAIL");
+		
+		
 		Properties props = new Properties();
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.starttls.enable", "true");
@@ -39,9 +49,7 @@ public class MailService implements IMailService {
 	public void sendConfirmationAccountMail(String emailToSend, String code, String firstName) {
 		try {
 			Dotenv dotenv = Dotenv.load();
-			System.out.println(dotenv.get("FRONT_BASE_URL"));
 			String confirmationLink = dotenv.get("FRONT_BASE_URL") + "/user/" + code + "/confirm";
-			System.out.println(confirmationLink);
 			
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(from));

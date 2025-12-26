@@ -29,9 +29,9 @@ import jakarta.servlet.http.HttpSession;
 public class UserController {
 	private final IUserService userService;
 	private final IMailService mailService;
-	public UserController(IUserService userService) {
+	public UserController(IUserService userService, IMailService mailService) {
 		this.userService = userService;
-		this.mailService = new MailService();
+		this.mailService = mailService;
 	}
 
     @GetMapping({"/", "/accueil"})
