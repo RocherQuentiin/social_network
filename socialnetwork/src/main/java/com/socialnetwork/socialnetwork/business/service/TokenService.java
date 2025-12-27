@@ -26,6 +26,7 @@ public class TokenService implements ITokenService{
 		this.repository = repository;
 	}
 	
+	@Override
 	public ResponseEntity<Token> create(String value, User user) {
 		Token token = new Token();
 		LocalDateTime nowPlusOneHour = LocalDateTime.now().plusHours(1);
@@ -42,10 +43,11 @@ public class TokenService implements ITokenService{
 		
 	}
 	
+	@Override
 	public ResponseEntity<Token> getToken(UUID userID) {
 		List<Token> listToken = this.repository.findByUser_Id(userID, Sort.by(Sort.Direction.DESC, "expirationDate"));
 		
-		if(listToken.size() == 0) {
+		if(listToken.isEmpty()) {
 			return new ResponseEntity<>(
 					HttpStatus.NOT_FOUND);
 		}

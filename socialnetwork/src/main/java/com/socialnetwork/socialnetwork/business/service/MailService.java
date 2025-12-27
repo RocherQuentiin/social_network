@@ -1,6 +1,5 @@
 package com.socialnetwork.socialnetwork.business.service;
 
-import java.util.List;
 import java.util.Properties;
 
 import org.springframework.stereotype.Service;
@@ -45,7 +44,8 @@ public class MailService implements IMailService {
 			}
 		});
 	}
-
+	
+	@Override
 	public void sendConfirmationAccountMail(String emailToSend, String code, String firstName) {
 		try {
 			Dotenv dotenv = Dotenv.load();
