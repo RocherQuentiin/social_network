@@ -1,6 +1,8 @@
 package com.socialnetwork.socialnetwork.business.service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,9 +31,9 @@ public class TokenService implements ITokenService{
 	@Override
 	public ResponseEntity<Token> create(String value, User user) {
 		Token token = new Token();
-		LocalDateTime nowPlusOneHour = LocalDateTime.now().plusHours(1);
+		ZonedDateTime nowPlusOneHour = ZonedDateTime.now(ZoneId.of("Europe/Paris")).plusHours(1);
 		
-		token.setExpirationDate(nowPlusOneHour);
+		token.setExpirationDate(nowPlusOneHour.toLocalDateTime());
 		token.setValue(value);
 		token.setUser(user);
 		

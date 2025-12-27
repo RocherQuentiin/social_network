@@ -2,6 +2,7 @@ package com.socialnetwork.socialnetwork.business.service;
 
 import java.util.Properties;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import jakarta.mail.Message;
@@ -19,24 +20,26 @@ import com.socialnetwork.socialnetwork.business.interfaces.service.IMailService;
 public class MailService implements IMailService {
 
 	private String from;
-	private String host;
-	private String username;
-	private String password;
 	private Session session;
 
-	public MailService() {
-		//Dotenv dotenv = Dotenv.load();
+
+	@Value("${frontbaseurl}")
+	private String frontBaseUrl;
+
+	public MailService(@Value("${spring.mail.host}") String host,
+            @Value("${spring.mail.username}") String username,
+            @Value("${spring.mail.password}") String password,
+            @Value("${frontbaseurl}") String frontBaseUrl) {
+
 		this.from = "isepsocial@outlook.fr";
-		this.host = "sandbox.smtp.mailtrap.io";
-		this.username = "2db2becb64d611";
-		this.password = "dbdfb555556d71";
-		
 		
 		Properties props = new Properties();
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.starttls.enable", "true");
 		props.put("mail.smtp.host", host);
 		props.put("mail.smtp.port", "587");
+		
+		this.frontBaseUrl = frontBaseUrl;
 
 		session = Session.getInstance(props, new jakarta.mail.Authenticator() {
 			protected jakarta.mail.PasswordAuthentication getPasswordAuthentication() {
@@ -49,7 +52,7 @@ public class MailService implements IMailService {
 	public void sendConfirmationAccountMail(String emailToSend, String code, String firstName) {
 		try {
 			//Dotenv dotenv = Dotenv.load();
-			String confirmationLink = "http://localhost:8080" + "/user/" + code + "/confirm";
+			String confirmationLink = this.frontBaseUrl + "/user/" + code + "/confirm";
 			
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(from));
