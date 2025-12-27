@@ -56,7 +56,6 @@ public class UserController {
 	@GetMapping("/login")
 	public String showLoginForm(Model model) {
 		model.addAttribute("user", new User());
-		System.out.println("ok showLoginForm");
 		return "login";
 	}
 	
@@ -205,12 +204,100 @@ public class UserController {
 	
 	@GetMapping("/forgotpassword/email")
 	public String showForgotPasswordMailForm(Model model) {
-		System.out.println("ok");
+		model.addAttribute("user", new User());
 		return "emailForgotPassword";
 	}
 	
 	@PostMapping("/forgotpassword/email")
-	public String ForgotPasswordMailForm(HttpServletRequest request, String email) {
+	public String ForgotPasswordMailForm(HttpServletRequest request, User user, Model model) {
+		ResponseEntity<User> existUser = this.userService.getUserByEmail(user.getEmail());
+		
+		if(existUser.getStatusCode() != HttpStatusCode.valueOf(200)) {
+			model.addAttribute("error", "Utilisateur non existant");
+			model.addAttribute("user", user);
+			return "emailForgotPassword";
+		}
+		
+		String code = UUID.randomUUID().toString();
+		
+		HttpSession session = request.getSession(true);
+        session.setAttribute("userTokenId", existUser.getBody().getId());
+        session.setAttribute("userEmail", existUser.getBody().getEmail());
+       
+        this.tokenService.create(code, existUser.getBody());
+		
+		this.mailService.sendForgotPassword(existUser.getBody().getEmail(), code, existUser.getBody().getFirstName());
+		model.addAttribute("information", "Un mail permettant de modifier votre mot de passe à était envoyé sur votre adresse mail.");
+		model.addAttribute("user", user);
+		
 		return "emailForgotPassword";
+	}
+	
+	@GetMapping("/user/{code}/forgotpassword")
+	public String showConfirmLinkPageForForgotPassword(HttpServletRequest request, @PathVariable("code") String code) {
+		HttpSession session = request.getSession(false);
+		
+		if(session == null) {
+			return "accueil";
+		}
+
+		Object userObject =   session.getAttribute("userTokenId");
+
+		if(userObject == null) {
+			return "accueil";
+		}
+		
+		String userID =   userObject.toString();
+		
+		ResponseEntity<Token> token = this.tokenService.getToken(UUID.fromString(userID));
+		if(token.getStatusCode() != HttpStatusCode.valueOf(200)) {
+			return "accueil";
+		}
+
+		
+		ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Paris"));
+		if(!token.getBody().getValue().equals(code) || token.getBody().getExpirationDate().isBefore(now.toLocalDateTime())) {
+			return "accueil";
+		}
+		
+		return "forgotpassword";
+	}
+	
+	@PostMapping("/forgotpassword/changepassword")
+	public String changePassword(HttpServletRequest request, Model model, @RequestParam("passwordHash") String passwordHash, @RequestParam("confirmpasswordHash") String confirmpasswordHash) {
+		HttpSession session = request.getSession(false);
+		
+		if(session == null) {
+			return "accueil";
+		}
+
+		Object userObject =   session.getAttribute("userTokenId");
+
+		if(userObject == null) {
+			return "accueil";
+		}
+		
+		if(!passwordHash.equals(confirmpasswordHash)) {
+			model.addAttribute("error", "Les deux mots de passes doivent être identiques");
+			return "forgotpassword";
+		}
+		
+		boolean passwordVerification = Utils.VerifyPassword(passwordHash);
+		
+		if(!passwordVerification) {
+			model.addAttribute("error", "Le mot de passe doit contenir au moins 8 caractères, avec au moins une majuscule, une minuscule, un chiffre et un caractère spécial");
+			return "forgotpassword";
+		}
+
+		String userID =   userObject.toString();
+		
+        this.userService.updatePassword(UUID.fromString(userID), passwordHash);
+		
+		session.setAttribute("userId", userID);
+		
+		session.removeAttribute("userTokenId");
+		model.addAttribute("information", "Votre mot de passe à bien été modifié");
+		
+		return "forgotpassword";
 	}
 }

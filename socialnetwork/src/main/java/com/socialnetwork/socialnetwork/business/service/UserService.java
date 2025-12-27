@@ -13,8 +13,6 @@ import com.socialnetwork.socialnetwork.business.interfaces.repository.IUserRepos
 import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
 import com.socialnetwork.socialnetwork.entity.User;
 
-import jakarta.servlet.http.HttpSession;
-
 @Service
 public class UserService implements IUserService{
 	private final IUserRepository repository;
@@ -33,6 +31,17 @@ public class UserService implements IUserService{
 				.map(User::getUsername)
 				.orElse("");
 	}
+	
+	@Override
+	public ResponseEntity<User> getUserByEmail(String email) {
+		Optional<User> user = repository.findByEmail(email);
+		if (email != "" && !user.isPresent()) {
+			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity<User>(user.get(), HttpStatus.OK);
+	}
+	
 
 	@Override
 	public ResponseEntity<User> create(User user) {
@@ -92,6 +101,21 @@ public class UserService implements IUserService{
 		
 		if(existingUser.isPresent()) {
 			existingUser.get().setIsVerified(true);
+			
+			repository.save(existingUser.get());
+		}
+		
+		
+		return new ResponseEntity<>(
+			      HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<User> updatePassword(UUID userID, String password) {
+		Optional<User> existingUser = repository.findById(userID);
+		
+		if(existingUser.isPresent()) {
+			existingUser.get().setPasswordHash(passwordEncoder.encode(password));
 			
 			repository.save(existingUser.get());
 		}
