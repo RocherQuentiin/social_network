@@ -1,0 +1,7 @@
+spring:
+  mail:
+    host: ${HOST_MAIL}
+    username: ${USERNAME_MAIL}
+    password: ${PASSWORD_MAIL}
+
+front-base-url: ${FRONT_BASE_URL}

@@ -1,6 +1,8 @@
 package com.socialnetwork.socialnetwork.controller;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -171,8 +173,8 @@ public class UserController {
 			return "accueil";
 		}
 		
-		LocalDateTime now = LocalDateTime.now();
-		if(!token.getBody().getValue().equals(code) || token.getBody().getExpirationDate().isBefore(now)) {
+		ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Paris"));
+		if(!token.getBody().getValue().equals(code) || token.getBody().getExpirationDate().isBefore(now.toLocalDateTime())) {
 			return "accueil";
 		}
 		this.userService.update(UUID.fromString(userID));

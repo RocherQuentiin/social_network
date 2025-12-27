@@ -1,0 +1,7 @@
+spring:
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    username: 2db2becb64d611
+    password: dbdfb555556d71
+
+front-base-url: https://localhost:8080
