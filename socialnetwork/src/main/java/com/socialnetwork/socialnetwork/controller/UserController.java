@@ -72,7 +72,7 @@ public class UserController {
             String code = UUID.randomUUID().toString();
 			
 			HttpSession session = request.getSession(true);
-            session.setAttribute("userId", userLogin.getBody().getId());
+            session.setAttribute("userTokenId", userLogin.getBody().getId());
             session.setAttribute("userEmail", userLogin.getBody().getEmail());
             
             this.tokenService.create(code, userLogin.getBody());
@@ -132,7 +132,7 @@ public class UserController {
 			String code = UUID.randomUUID().toString();
 			
 			HttpSession session = request.getSession(true);
-            session.setAttribute("userId", user.getId());
+            session.setAttribute("userTokenId", user.getId());
             session.setAttribute("userEmail", user.getEmail());
            
             this.tokenService.create(code, userSave.getBody());
@@ -158,7 +158,7 @@ public class UserController {
 			return "accueil";
 		}
 		
-		Object userObject =   session.getAttribute("userId");
+		Object userObject =   session.getAttribute("userTokenId");
 
 		if(userObject == null) {
 			return "accueil";
@@ -176,6 +176,10 @@ public class UserController {
 			return "accueil";
 		}
 		this.userService.update(UUID.fromString(userID));
+		
+		session.setAttribute("userId", userID);
+		
+		session.removeAttribute("userTokenId");
 		
 		return "confirmRegister";
 	}

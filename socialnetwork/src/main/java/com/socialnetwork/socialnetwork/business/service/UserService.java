@@ -37,11 +37,11 @@ public class UserService implements IUserService{
 	@Override
 	public ResponseEntity<User> create(User user) {
 		if (user.getUsername() != null && repository.findByUsername(user.getUsername()).isPresent()) {
-			return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<User>(HttpStatus.CONFLICT);
 		}
 		
 		if (user.getEmail() != null && repository.findByEmail(user.getEmail()).isPresent()) {
-			return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<User>(HttpStatus.CONFLICT);
 		}
 
 		if (user.getPasswordHash() != null && !user.getPasswordHash().isEmpty()) {
