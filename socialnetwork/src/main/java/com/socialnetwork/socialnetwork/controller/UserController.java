@@ -203,6 +203,7 @@ public class UserController {
 	
 	@GetMapping("/forgotpassword/email")
 	public String showForgotPasswordMailForm(Model model) {
+		System.out.println("ok");
 		return "emailForgotPassword";
 	}
 	
