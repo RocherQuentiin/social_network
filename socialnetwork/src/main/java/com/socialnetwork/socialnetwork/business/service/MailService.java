@@ -14,7 +14,7 @@ import jakarta.mail.internet.MimeMessage;
 
 import com.socialnetwork.socialnetwork.business.interfaces.service.IMailService;
 
-import io.github.cdimascio.dotenv.Dotenv;
+//import io.github.cdimascio.dotenv.Dotenv;
 @Service
 public class MailService implements IMailService {
 
@@ -25,11 +25,11 @@ public class MailService implements IMailService {
 	private Session session;
 
 	public MailService() {
-		Dotenv dotenv = Dotenv.load();
+		//Dotenv dotenv = Dotenv.load();
 		this.from = "isepsocial@outlook.fr";
-		this.host = dotenv.get("HOST_MAIL");
-		this.username = dotenv.get("USERNAME_MAIL");
-		this.password = dotenv.get("PASSWORD_MAIL");
+		this.host = "sandbox.smtp.mailtrap.io";
+		this.username = "2db2becb64d611";
+		this.password = "dbdfb555556d71";
 		
 		
 		Properties props = new Properties();
@@ -48,8 +48,8 @@ public class MailService implements IMailService {
 	@Override
 	public void sendConfirmationAccountMail(String emailToSend, String code, String firstName) {
 		try {
-			Dotenv dotenv = Dotenv.load();
-			String confirmationLink = dotenv.get("FRONT_BASE_URL") + "/user/" + code + "/confirm";
+			//Dotenv dotenv = Dotenv.load();
+			String confirmationLink = "http://localhost:8080" + "/user/" + code + "/confirm";
 			
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(from));
