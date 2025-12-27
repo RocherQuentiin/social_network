@@ -118,6 +118,18 @@ input:focus {
     font-size: 0.9rem;
 }
 
+.alert-information {
+    background: rgba(135,206,250, 0.1);
+    color: #87cefa;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
 .btn-login-submit {
     width: 100%;
     background: var(--primary);

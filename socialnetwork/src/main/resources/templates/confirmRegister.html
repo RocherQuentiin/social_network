@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation inscription</title>
+
+    <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/confirmRegister.css}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header-fragment}"></div>
+
+<div class="confirm-register-page">
+    <main class="confirm-register-container">
+        <div class="confirm-register-card glass-effect">
+
+            
+			<p class="subtitle">Votre compte a bien été crée.</p>
+          
+
+            <div class="login-footer">
+                <a th:href="@{/}" class="back-home">
+                    <i data-lucide="chevron-left"></i> Retour à l'accueil
+                </a>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<div th:replace="~{fragments/footer :: footer-fragment}"></div>
+
+<script>
+    lucide.createIcons();
+</script>
+</body>
+</html>
