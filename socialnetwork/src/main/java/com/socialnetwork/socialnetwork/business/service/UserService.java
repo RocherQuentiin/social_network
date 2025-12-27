@@ -67,7 +67,7 @@ public class UserService implements IUserService{
 	@Override
 	public ResponseEntity<User> getUser(User user) {
 		Optional<User> userLogin = null;
-		System.out.println(user.getEmail());
+
 		if (user.getEmail() != null) {
 			userLogin = repository.findByEmail(user.getEmail());
 			if(!userLogin.isPresent()) {
@@ -87,6 +87,26 @@ public class UserService implements IUserService{
 
 		return new ResponseEntity<>(
 			      userLogin.get(), 
+			      HttpStatus.OK);
+	}
+	
+	@Override
+	public ResponseEntity<User> changePassword(UUID userId, String oldPassword, String newPassword) {
+		Optional<User> user = repository.findById(userId);
+		
+		boolean passwordVeriy = passwordEncoder.matches(oldPassword, user.get().getPasswordHash());
+		
+		if(!passwordVeriy) {
+			return new ResponseEntity<User>(
+				      HttpStatus.CONFLICT);
+		}
+		
+		user.get().setPasswordHash(passwordEncoder.encode(newPassword));
+		
+		repository.save(user.get());
+
+		return new ResponseEntity<>(
+				  user.get(), 
 			      HttpStatus.OK);
 	}
 
