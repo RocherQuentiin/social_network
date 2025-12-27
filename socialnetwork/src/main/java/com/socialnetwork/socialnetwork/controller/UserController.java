@@ -200,4 +200,14 @@ public class UserController {
 		}
 		return ResponseEntity.ok(java.util.Map.of("exists", exists));
 	}
+	
+	@GetMapping("/forgotpassword/email")
+	public String showForgotPasswordMailForm(Model model) {
+		return "emailForgotPassword";
+	}
+	
+	@PostMapping("/forgotpassword/email")
+	public String ForgotPasswordMailForm(HttpServletRequest request, String email) {
+		return "emailForgotPassword";
+	}
 }
