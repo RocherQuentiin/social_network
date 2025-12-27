@@ -15,7 +15,7 @@ import jakarta.mail.internet.MimeMessage;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IMailService;
 
 import io.github.cdimascio.dotenv.Dotenv;
-@Service
+
 public class MailService implements IMailService {
 
 	private String from;

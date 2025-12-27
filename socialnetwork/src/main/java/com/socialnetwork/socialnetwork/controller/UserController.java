@@ -33,9 +33,9 @@ public class UserController {
 	private final IUserService userService;
 	private final IMailService mailService;
 	private final ITokenService tokenService;
-	public UserController(IUserService userService, IMailService mailService, ITokenService tokenService) {
+	public UserController(IUserService userService, ITokenService tokenService) {
 		this.userService = userService;
-		this.mailService = mailService;
+		this.mailService = new MailService();
 		this.tokenService = tokenService;
 	}
 
