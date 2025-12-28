@@ -19,6 +19,7 @@ import com.socialnetwork.socialnetwork.business.interfaces.repository.IUserRepos
 import com.socialnetwork.socialnetwork.dto.PostDto;
 import com.socialnetwork.socialnetwork.entity.Post;
 import com.socialnetwork.socialnetwork.entity.User;
+import com.socialnetwork.socialnetwork.enums.VisibilityType;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -85,6 +86,38 @@ public class PostController {
 
         postRepository.save(p);
 
+        return ResponseEntity.ok().build();
+    }
+
+    @org.springframework.web.bind.annotation.DeleteMapping("/post/{id}")
+    public ResponseEntity<?> deletePost(@PathVariable("id") UUID id, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("userId") == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authenticated");
+        }
+        UUID sessionUserId;
+        try {
+            sessionUserId = UUID.fromString(session.getAttribute("userId").toString());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid session user");
+        }
+
+        Optional<Post> opt = postRepository.findById(id);
+        if (opt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post not found");
+        }
+        Post p = opt.get();
+        User author = p.getAuthor();
+        if (author == null || !sessionUserId.equals(author.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only author can delete");
+        }
+
+        // set deletedAt to now (Europe/Paris) and mark visibility to PRIVATE to hide
+        ZonedDateTime nowParis = ZonedDateTime.now(ZoneId.of("Europe/Paris"));
+        p.setDeletedAt(LocalDateTime.of(nowParis.toLocalDate(), nowParis.toLocalTime()));
+        p.setVisibilityType(VisibilityType.PRIVATE);
+
+        postRepository.save(p);
         return ResponseEntity.ok().build();
     }
 }
