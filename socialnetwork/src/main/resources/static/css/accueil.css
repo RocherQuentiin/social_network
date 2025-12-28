@@ -264,3 +264,50 @@
         padding: 0 20px;
     }
 }
+
+/* --- Publication block styles --- */
+.publish-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 16px;
+    border-radius: 12px;
+}
+
+.publish-inner img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.publish-form textarea {
+    background: transparent;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+}
+
+.icon-btn i {
+    vertical-align: middle;
+}
+
+.publish-visibility {
+    background: transparent;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+
+.allow-comments input {
+    width: 16px;
+    height: 16px;
+}

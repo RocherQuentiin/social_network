@@ -2,6 +2,9 @@ package com.socialnetwork.socialnetwork.controller;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -15,13 +18,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.socialnetwork.socialnetwork.business.interfaces.repository.IPostRepository;
+import com.socialnetwork.socialnetwork.business.interfaces.repository.IUserRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IMailService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.ITokenService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
 import com.socialnetwork.socialnetwork.business.utils.Utils;
+import com.socialnetwork.socialnetwork.entity.Post;
 import com.socialnetwork.socialnetwork.entity.Token;
 import com.socialnetwork.socialnetwork.entity.User;
 import com.socialnetwork.socialnetwork.enums.UserRole;
+import com.socialnetwork.socialnetwork.enums.VisibilityType;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -33,10 +40,15 @@ public class UserController {
 	private final IUserService userService;
 	private final IMailService mailService;
 	private final ITokenService tokenService;
-	public UserController(IUserService userService, IMailService mailService, ITokenService tokenService) {
+	private final IUserRepository userRepository;
+	private final IPostRepository postRepository;
+
+	public UserController(IUserService userService, IMailService mailService, ITokenService tokenService, IUserRepository userRepository, IPostRepository postRepository) {
 		this.userService = userService;
 		this.mailService = mailService;
 		this.tokenService = tokenService;
+		this.userRepository = userRepository;
+		this.postRepository = postRepository;
 	}
 
     @GetMapping({"/", "/accueil"})
@@ -44,6 +56,23 @@ public class UserController {
 		model.addAttribute("name", this.userService.getName());
         return "accueil";
     }
+
+	@GetMapping("/feed")
+	public String showFeed(Model model, HttpServletRequest request) {
+		model.addAttribute("name", this.userService.getName());
+		// load posts ordered by createdAt desc
+		List<Post> posts = postRepository.findAll();
+		posts.sort(Comparator.comparing(Post::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed());
+		model.addAttribute("posts", posts);
+
+		// pass session existence to template (optional)
+		HttpSession session = request.getSession(false);
+		if (session != null && session.getAttribute("userId") != null) {
+			model.addAttribute("loggedUserId", session.getAttribute("userId"));
+		}
+
+		return "feed";
+	}
     
 	@GetMapping("/register")
 	public String showRegisterForm(Model model) {
@@ -86,10 +115,10 @@ public class UserController {
 		
 		else {
 			HttpSession session = request.getSession(true);
-            session.setAttribute("userId", userLogin.getBody().getId());
-            session.setAttribute("userEmail", userLogin.getBody().getEmail());
+			session.setAttribute("userId", userLogin.getBody().getId());
+			session.setAttribute("userEmail", userLogin.getBody().getEmail());
 
-            return "redirect:/accueil";
+			return "redirect:/feed";
 		}
 	}
 
@@ -146,6 +175,39 @@ public class UserController {
 			model.addAttribute("user", user);
 			return "register";
 		}
+	}
+
+	@PostMapping("/post")
+	public String handleCreatePost(HttpServletRequest request, @RequestParam("content") String content, @RequestParam(value = "visibilityType", required = false) String visibilityTypeStr, @RequestParam(value = "allowComments", required = false) String[] allowCommentsValues) {
+		HttpSession session = request.getSession(false);
+		if (session == null || session.getAttribute("userId") == null) {
+			return "redirect:/login";
+		}
+		try {
+			UUID userId = UUID.fromString(session.getAttribute("userId").toString());
+			User author = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("User not found"));
+			Post post = new Post();
+			post.setAuthor(author);
+			post.setContent(content);
+			if (visibilityTypeStr != null) {
+				try {
+					post.setVisibilityType(VisibilityType.valueOf(visibilityTypeStr));
+				} catch (Exception e) {
+					post.setVisibilityType(VisibilityType.PUBLIC);
+				}
+			} else {
+				post.setVisibilityType(VisibilityType.PUBLIC);
+			}
+			boolean allowComments = false;
+			if (allowCommentsValues != null) {
+				allowComments = Arrays.stream(allowCommentsValues).anyMatch(v -> "true".equalsIgnoreCase(v));
+			}
+			post.setAllowComments(allowComments);
+			postRepository.save(post);
+		} catch (Exception e) {
+			return "redirect:/accueil";
+		}
+		return "redirect:/accueil";
 	}
 	
 	
