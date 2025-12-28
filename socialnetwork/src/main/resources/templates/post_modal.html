@@ -1,0 +1,30 @@
+<div th:fragment="post-modal">
+    <div id="postModal" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:1000;">
+        <div class="modal-content" style="max-width:600px; margin:60px auto; background:#fff; padding:16px; border-radius:6px;">
+            <h3>Créer une publication</h3>
+            <form th:action="@{/post}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <div>
+                    <label for="content">Contenu</label>
+                    <textarea id="content" name="content" rows="4" style="width:100%;" required></textarea>
+                </div>
+                <div>
+                    <label for="visibilityType">Visibilité</label>
+                    <select id="visibilityType" name="visibilityType">
+                        <option value="PUBLIC">Public</option>
+                        <option value="FRIENDS">Amis</option>
+                        <option value="PRIVATE">Privé</option>
+                    </select>
+                </div>
+                <div>
+                    <label><input type="checkbox" name="allowComments" checked/> Autoriser les commentaires</label>
+                </div>
+                <div style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end;">
+                    <button type="button" id="cancelPost" class="btn">Annuler</button>
+                    <button type="submit" class="btn-primary">Publier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script th:src="@{/js/post.js}"></script>
+</div>
