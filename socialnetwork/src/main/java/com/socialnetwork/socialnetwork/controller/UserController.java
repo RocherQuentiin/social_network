@@ -60,7 +60,7 @@ public class UserController {
 
 	@GetMapping("/feed")
 	public String showFeed(Model model, HttpServletRequest request) {
-		model.addAttribute("name", this.userService.getName());
+		model.addAttribute("name", "");
 		// load posts ordered by createdAt desc
 		List<Post> posts = postRepository.findAll();
 		posts.sort(Comparator.comparing(Post::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed());
@@ -70,6 +70,7 @@ public class UserController {
 		HttpSession session = request.getSession(false);
 		if (session != null && session.getAttribute("userId") != null) {
 			model.addAttribute("loggedUserId", session.getAttribute("userId"));
+			model.addAttribute("name", this.userService.getName(UUID.fromString(session.getAttribute("userId").toString())));
 		}
 
 		return "feed";

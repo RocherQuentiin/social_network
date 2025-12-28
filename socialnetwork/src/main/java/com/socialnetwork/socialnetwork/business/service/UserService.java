@@ -23,6 +23,15 @@ public class UserService implements IUserService{
 		this.passwordEncoder = passwordEncoder;
 	}
 	
+
+	@Override
+	public String getName(UUID userId) {
+		return repository.findById(userId)
+				.map(User::getUsername)
+				.orElse("");
+	}
+
+	
 	@Override
 	public ResponseEntity<User> getUserByEmail(String email) {
 		Optional<User> user = repository.findByEmail(email);
