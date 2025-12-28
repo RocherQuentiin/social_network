@@ -16,9 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.socialnetwork.socialnetwork.business.interfaces.service.IMailService;
+import com.socialnetwork.socialnetwork.business.interfaces.service.IProfileService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.ITokenService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
 import com.socialnetwork.socialnetwork.business.utils.Utils;
+import com.socialnetwork.socialnetwork.dto.UserProfileDto;
+import com.socialnetwork.socialnetwork.entity.Profile;
 import com.socialnetwork.socialnetwork.entity.Token;
 import com.socialnetwork.socialnetwork.entity.User;
 import com.socialnetwork.socialnetwork.enums.UserRole;
@@ -33,10 +36,12 @@ public class UserController {
 	private final IUserService userService;
 	private final IMailService mailService;
 	private final ITokenService tokenService;
-	public UserController(IUserService userService, IMailService mailService, ITokenService tokenService) {
+	private final IProfileService profileService;
+	public UserController(IUserService userService, IMailService mailService, ITokenService tokenService, IProfileService profileService) {
 		this.userService = userService;
 		this.mailService = mailService;
 		this.tokenService = tokenService;
+		this.profileService = profileService;
 	}
 
     @GetMapping({"/", "/accueil"})
@@ -134,6 +139,7 @@ public class UserController {
 
 		try {
 			ResponseEntity<User> userSave = userService.create(user);
+			ResponseEntity<Profile> profileSave = this.profileService.create(userSave.getBody());
 			
 			if(userSave.getStatusCode() != HttpStatusCode.valueOf(200)) {
 				model.addAttribute("error", "Utilisateur déja existant");
@@ -376,5 +382,25 @@ public class UserController {
         }
 		
 		return "accueil";
+	}
+	
+	@GetMapping("/profil")
+	public String showUserProfil(HttpServletRequest request, Model model) {
+		Object userIsConnect = Utils.validPage(request, true);
+		if(userIsConnect == null) {
+			model.addAttribute("isConnect", userIsConnect);
+			return "accueil";
+		}
+		
+		ResponseEntity<User> user = this.userService.getUserById(UUID.fromString(userIsConnect.toString()));
+		ResponseEntity<Profile> userProfile = this.profileService.getUserProfileByUserID(user.getBody());
+		
+		UserProfileDto userProfileDto = new UserProfileDto();
+		userProfileDto.setUser(user.getBody());
+		userProfileDto.setProfil(userProfile.getBody());
+		
+		
+		model.addAttribute("userProfile", userProfileDto);
+		return "userProfil";
 	}
 }

@@ -135,5 +135,17 @@ public class UserService implements IUserService{
 		return new ResponseEntity<>(
 			      HttpStatus.OK);
 	}
+
+	@Override
+	public ResponseEntity<User> getUserById(UUID userID) {
+		Optional<User> user = repository.findById(userID);
+		
+		if(user.isPresent()) {
+			 return new ResponseEntity<>(
+				      HttpStatus.OK);
+		}
+		return new ResponseEntity<User>(
+			      HttpStatus.NOT_FOUND);
+	}
     
 }

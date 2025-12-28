@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Profil utilisateur</title>
+        <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+        <link rel="stylesheet" th:href="@{/css/header.css}">
+        <script src="https://unpkg.com/lucide@latest"></script>
+    </head>
+
+    <body>
+        <div th:replace="~{fragments/header :: header-fragment}"></div>
+
+
+        <div th:replace="~{fragments/footer :: footer-fragment}"></div>
+
+        <script th:src="@{/js/header.js}"></script>
+        <script>lucide.createIcons();</script>
+    </body>
+</html>
