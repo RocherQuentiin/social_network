@@ -7,7 +7,7 @@ public class UserProfileDto {
 
 	private User user;
 	
-	private Profile profil;
+	private Profile profile;
 
 	public User getUser() {
 		return user;
@@ -17,11 +17,11 @@ public class UserProfileDto {
 		this.user = user;
 	}
 
-	public Profile getProfil() {
-		return profil;
+	public Profile getProfile() {
+		return profile;
 	}
 
-	public void setProfil(Profile profil) {
-		this.profil = profil;
+	public void setProfile(Profile profile) {
+		this.profile = profile;
 	}
 }

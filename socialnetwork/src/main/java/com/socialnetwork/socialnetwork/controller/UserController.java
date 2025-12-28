@@ -397,9 +397,29 @@ public class UserController {
 		
 		UserProfileDto userProfileDto = new UserProfileDto();
 		userProfileDto.setUser(user.getBody());
-		userProfileDto.setProfil(userProfile.getBody());
+		userProfileDto.setProfile(userProfile.getBody());
 
 		model.addAttribute("userProfile", userProfileDto);
-		return "userProfil";
+		return "userProfile";
+	}
+	
+	@GetMapping("/editProfil")
+	public String showEditUserProfil(HttpServletRequest request, Model model) {
+		Object userIsConnect = Utils.validPage(request, true);
+		if(userIsConnect == null) {
+			model.addAttribute("isConnect", userIsConnect);
+			return "accueil";
+		}
+		
+		ResponseEntity<User> user = this.userService.getUserById(UUID.fromString(userIsConnect.toString()));
+		ResponseEntity<Profile> userProfile = this.profileService.getUserProfileByUserID(user.getBody());
+		
+		UserProfileDto userProfileDto = new UserProfileDto();
+		userProfileDto.setUser(user.getBody());
+		userProfileDto.setProfile(userProfile.getBody());
+
+		model.addAttribute("userProfile", userProfileDto);
+		model.addAttribute("isConnect", userIsConnect);
+		return "editProfile";
 	}
 }
