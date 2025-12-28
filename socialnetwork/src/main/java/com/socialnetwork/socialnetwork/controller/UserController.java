@@ -1,6 +1,5 @@
 package com.socialnetwork.socialnetwork.controller;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IMailService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.ITokenService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
-import com.socialnetwork.socialnetwork.business.service.MailService;
 import com.socialnetwork.socialnetwork.business.utils.Utils;
 import com.socialnetwork.socialnetwork.entity.Token;
 import com.socialnetwork.socialnetwork.entity.User;
@@ -227,7 +225,7 @@ public class UserController {
         this.tokenService.create(code, existUser.getBody());
 		
 		this.mailService.sendForgotPassword(existUser.getBody().getEmail(), code, existUser.getBody().getFirstName());
-		model.addAttribute("information", "Un mail permettant de modifier votre mot de passe à était envoyé sur votre adresse mail.");
+		model.addAttribute("information", "Un mail permettant de modifier votre mot de passe a été envoyé sur votre adresse mail.");
 		model.addAttribute("user", user);
 		
 		return "emailForgotPassword";
@@ -299,5 +297,56 @@ public class UserController {
 		model.addAttribute("information", "Votre mot de passe à bien été modifié");
 		
 		return "forgotpassword";
+	}
+	
+	@GetMapping("/changePassword")
+	public String showChangePasswordForm(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession(false);
+		
+		if(session == null) {
+			return "accueil";
+		}
+		
+		return "changePassword";
+	}
+	
+	@PostMapping("/changePassword")
+	public String changePassword(HttpServletRequest request, Model model, @RequestParam("oldpasswordHash") String oldpasswordHash, @RequestParam("passwordHash") String passwordHash, @RequestParam("confirmpasswordHash") String confirmpasswordHash) {
+        HttpSession session = request.getSession(false);
+		System.out.println("ok");
+		if(session == null) {
+			return "accueil";
+		}
+		System.out.println("ok2");
+		Object userObject =   session.getAttribute("userId");
+		
+		if(userObject == null) {
+			return "accueil";
+		}
+		
+		if(!passwordHash.equals(confirmpasswordHash)) {
+			model.addAttribute("error", "Les deux mots de passes doivent être identiques");
+			return "changePassword";
+		}
+		
+		boolean passwordVerification = Utils.VerifyPassword(passwordHash);
+		
+		if(!passwordVerification) {
+			model.addAttribute("error", "Le mot de passe doit contenir au moins 8 caractères, avec au moins une majuscule, une minuscule, un chiffre et un caractère spécial");
+			return "changePassword";
+		}
+		
+		String userID =   userObject.toString();
+		
+		ResponseEntity<User> user = this.userService.changePassword(UUID.fromString(userID), oldpasswordHash, confirmpasswordHash);
+		
+		if(user.getStatusCode() != HttpStatusCode.valueOf(200)) {
+			model.addAttribute("error", "L'ancien mot de passe est incorrect");
+			return "changePassword";
+		}
+		
+		model.addAttribute("information", "Votre mot de passe a bien été modifié");
+		
+		return "changePassword";
 	}
 }
