@@ -345,7 +345,7 @@ public class UserController {
 			return "changePassword";
 		}
 		
-		model.addAttribute("information", "Votre mot de passe à bien été modifié");
+		model.addAttribute("information", "Votre mot de passe a bien été modifié");
 		
 		return "changePassword";
 	}
