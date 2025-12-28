@@ -98,6 +98,24 @@
     background: var(--gold);
 }
 
+.btn-primary-disconnect-header {
+    background: var(--error);
+    text-decoration: none;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-primary-disconnect-header:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    background: var(--gold);
+}
+
 /* Menu Burger (Caché par défaut sur grand écran) */
 .menu-burger {
     display: none;
