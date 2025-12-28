@@ -53,7 +53,7 @@
 
             <!-- posts list -->
                 <div>
-                <div th:each="post : ${posts}" class="card" style="margin-bottom:12px; padding:16px; background:var(--bg-card); border:1px solid var(--border); border-radius:12px;">
+                <div th:each="post : ${posts}" class="card" th:attr="data-post-card-id=${post.id}" style="margin-bottom:12px; padding:16px; background:var(--bg-card); border:1px solid var(--border); border-radius:12px;">
                     <div style="display:flex; gap:12px; align-items:flex-start;">
                         <div style="width:48px;">
                             <img th:src="@{/images/default-avatar.png}" alt="avatar" style="width:48px; height:48px; border-radius:50%; object-fit:cover;"/>
@@ -68,6 +68,9 @@
                                     <div style="font-size:0.85rem; color:var(--text-dim);" th:text="${post.visibilityType}">VIS</div>
                                     <button type="button" class="btn-icon" th:if="${loggedUserId != null and loggedUserId.toString() == post.author.id.toString()}" th:attr="data-post-id=${post.id}" title="Modifier" style="border:none; background:transparent; cursor:pointer;">
                                         <i data-lucide="edit-2"></i>
+                                    </button>
+                                    <button type="button" class="btn-icon btn-delete" th:if="${loggedUserId != null and loggedUserId.toString() == post.author.id.toString()}" th:attr="data-post-id=${post.id}" title="Supprimer" style="border:none; background:transparent; cursor:pointer; color:var(--danger);">
+                                        <i data-lucide="trash-2"></i>
                                     </button>
                                 </div>
                             </div>
@@ -97,7 +100,7 @@
         <div style="background:white; padding:16px; width:640px; max-width:94%; border-radius:8px;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <h3>Modifier la publication</h3>
-                <button id="closeEditModal" style="border:none; background:transparent; font-size:1.2rem; cursor:pointer;">✕</button>
+                <button id="closeEditModal" aria-label="Fermer" style="border:none; background:transparent; font-size:1.2rem; cursor:pointer;">✕</button>
             </div>
             <div style="margin-top:8px;">
                 <textarea id="editContent" rows="4" style="width:100%;"></textarea>

@@ -41,6 +41,20 @@ document.addEventListener('DOMContentLoaded', function(){
         if(!btn) return;
         var postId = btn.getAttribute('data-post-id');
         if(!postId) return;
+        // if this is a delete button
+        if(btn.classList.contains('btn-delete')){
+            if(!confirm('Voulez-vous vraiment supprimer cette publication ?')) return;
+            window.fetchWithCsrf('/post/' + postId, { method: 'DELETE' })
+                .then(function(r){
+                    if(r.ok){
+                        // remove element from DOM
+                        var card = document.querySelector('[data-post-card-id="' + postId + '"]');
+                        if(card) card.remove();
+                    } else if(r.status === 403){ alert('Accès refusé'); }
+                    else { r.text().then(function(t){ console.error(t); alert('Erreur lors de la suppression'); }); }
+                }).catch(function(err){ console.error(err); alert('Erreur réseau'); });
+            return;
+        }
         e.preventDefault();
         // fetch the post
         fetch('/post/' + postId)
