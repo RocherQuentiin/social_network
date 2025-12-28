@@ -14,6 +14,50 @@
 
         <div th:replace="~{fragments/header :: header-fragment}"></div>
 
+        <!-- Publication block (visible only for authenticated users) -->
+        <div th:if="${session.userId != null}">
+            <div class="container container-narrow" style="margin-top:20px;">
+                <div class="publish-card" style="background:var(--bg-card); border:1px solid var(--border); padding:16px; border-radius:12px;">
+                    <div class="publish-inner" style="display:flex; gap:12px; align-items:flex-start;">
+                        <div class="avatar-box">
+                            <img th:src="@{/images/default-avatar.png}" alt="avatar" style="width:48px; height:48px; border-radius:50%; object-fit:cover;"/>
+                        </div>
+                        <form th:action="@{/post}" method="post" class="publish-form" style="flex:1;">
+                            <!-- CSRF token removed to avoid rendering error when security context is absent -->
+                            <textarea name="content" placeholder="Quoi de neuf ? Partagez avec les étudiants..." rows="2" style="width:100%; padding:12px; border-radius:8px; background:transparent; border:1px solid var(--border); color:var(--text); resize:vertical;"></textarea>
+                            <div style="display:flex; align-items:center; justify-content:space-between; margin-top:10px;">
+                                <div style="display:flex; gap:12px; align-items:center;">
+                                    <div class="publish-icons" style="display:flex; gap:8px;">
+                                        <button type="button" class="icon-btn" style="background:transparent; border:none; color:var(--text-dim);"><i data-lucide="image"></i></button>
+                                        <button type="button" class="icon-btn" style="background:transparent; border:none; color:var(--text-dim);"><i data-lucide="link"></i></button>
+                                        <button type="button" class="icon-btn" style="background:transparent; border:none; color:var(--text-dim);"><i data-lucide="paperclip"></i></button>
+                                    </div>
+
+                                    <div class="visibility-select" style="display:flex; align-items:center; gap:8px;">
+                                        <label for="visibilityType" style="color:var(--text-dim); font-size:0.9rem;">Visibilité</label>
+                                        <select id="visibilityType" name="visibilityType" class="publish-visibility" style="background:transparent; border:1px solid var(--border); color:var(--text); padding:6px 8px; border-radius:6px;">
+                                            <option value="PUBLIC">Public</option>
+                                            <option value="FRIENDS">Amis</option>
+                                            <option value="PRIVATE">Privé</option>
+                                        </select>
+                                    </div>
+
+                                    <label class="allow-comments" style="display:flex; align-items:center; gap:6px; color:var(--text-dim);">
+                                        <input type="hidden" name="allowComments" value="false" />
+                                        <input type="checkbox" name="allowComments" value="true" checked /> Autoriser les commentaires
+                                    </label>
+
+                                    <div>
+                                        <button type="submit" class="btn-primary">Publier</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="hero-group">
             <section class="hero-home">
                 <div class="container">
