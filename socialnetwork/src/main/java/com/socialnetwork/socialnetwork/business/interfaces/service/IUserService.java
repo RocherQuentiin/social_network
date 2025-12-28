@@ -16,5 +16,10 @@ public interface IUserService {
 	List<User> findAllUsers();
 	
 	ResponseEntity<User> update(UUID userID);
+	
+
+	ResponseEntity<User> getUserByEmail(String email);
+
+	ResponseEntity<User> updatePassword(UUID userID, String password);
 
 }
