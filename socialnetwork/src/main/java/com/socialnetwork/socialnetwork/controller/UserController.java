@@ -244,7 +244,7 @@ public class UserController {
         this.tokenService.create(code, existUser.getBody());
 		
 		this.mailService.sendForgotPassword(existUser.getBody().getEmail(), code, existUser.getBody().getFirstName());
-		model.addAttribute("information", "Un mail permettant de modifier votre mot de passe à était envoyé sur votre adresse mail.");
+		model.addAttribute("information", "Un mail permettant de modifier votre mot de passe a été envoyé sur votre adresse mail.");
 		model.addAttribute("user", user);
 		
 		return "emailForgotPassword";
@@ -362,7 +362,7 @@ public class UserController {
 			return "changePassword";
 		}
 		
-		model.addAttribute("information", "Votre mot de passe à bien été modifié");
+		model.addAttribute("information", "Votre mot de passe a bien été modifié");
 		
 		return "changePassword";
 	}
