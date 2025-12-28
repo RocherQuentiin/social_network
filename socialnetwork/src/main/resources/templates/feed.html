@@ -8,6 +8,8 @@
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/accueil.css}">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}" />
+    <meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>
 <body>
 
@@ -50,7 +52,7 @@
             </div>
 
             <!-- posts list -->
-            <div>
+                <div>
                 <div th:each="post : ${posts}" class="card" style="margin-bottom:12px; padding:16px; background:var(--bg-card); border:1px solid var(--border); border-radius:12px;">
                     <div style="display:flex; gap:12px; align-items:flex-start;">
                         <div style="width:48px;">
@@ -62,7 +64,12 @@
                                     <strong th:text="${post.author.username}">Auteur</strong>
                                     <div style="font-size:0.85rem; color:var(--text-dim);" th:text="${post.createdAt}">date</div>
                                 </div>
-                                <div style="font-size:0.85rem; color:var(--text-dim);" th:text="${post.visibilityType}">VIS</div>
+                                <div style="display:flex; gap:8px; align-items:center;">
+                                    <div style="font-size:0.85rem; color:var(--text-dim);" th:text="${post.visibilityType}">VIS</div>
+                                    <button type="button" class="btn-icon" th:if="${loggedUserId != null and loggedUserId.toString() == post.author.id.toString()}" th:attr="data-post-id=${post.id}" title="Modifier" style="border:none; background:transparent; cursor:pointer;">
+                                        <i data-lucide="edit-2"></i>
+                                    </button>
+                                </div>
                             </div>
                             <p style="margin-top:8px;" th:text="${post.content}">Contenu du post</p>
                         </div>
@@ -83,6 +90,30 @@
 
     <div th:replace="~{fragments/footer :: footer-fragment}"></div>
     <script th:src="@{/js/header.js}"></script>
+    <script th:src="@{/js/feed-posts.js}"></script>
     <script>lucide.createIcons();</script>
+    <!-- Edit modal -->
+    <div id="editModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); align-items:center; justify-content:center;">
+        <div style="background:white; padding:16px; width:640px; max-width:94%; border-radius:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3>Modifier la publication</h3>
+                <button id="closeEditModal" style="border:none; background:transparent; font-size:1.2rem; cursor:pointer;">✕</button>
+            </div>
+            <div style="margin-top:8px;">
+                <textarea id="editContent" rows="4" style="width:100%;"></textarea>
+                <div style="display:flex; gap:8px; align-items:center; margin-top:8px;">
+                    <select id="editVisibility" style="padding:4px;">
+                        <option value="PUBLIC">Public</option>
+                        <option value="FRIENDS">Amis</option>
+                        <option value="PRIVATE">Privé</option>
+                    </select>
+                    <label style="display:flex; align-items:center; gap:6px;"><input id="editAllowComments" type="checkbox"/> Autoriser les commentaires</label>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:12px;">
+                    <button id="saveEditBtn" class="btn-primary">Enregistrer</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
