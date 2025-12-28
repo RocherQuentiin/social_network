@@ -398,8 +398,7 @@ public class UserController {
 		UserProfileDto userProfileDto = new UserProfileDto();
 		userProfileDto.setUser(user.getBody());
 		userProfileDto.setProfil(userProfile.getBody());
-		
-		
+
 		model.addAttribute("userProfile", userProfileDto);
 		return "userProfil";
 	}

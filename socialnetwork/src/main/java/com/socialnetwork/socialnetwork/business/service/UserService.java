@@ -139,9 +139,9 @@ public class UserService implements IUserService{
 	@Override
 	public ResponseEntity<User> getUserById(UUID userID) {
 		Optional<User> user = repository.findById(userID);
-		
+
 		if(user.isPresent()) {
-			 return new ResponseEntity<>(
+			 return new ResponseEntity<>(user.get(),
 				      HttpStatus.OK);
 		}
 		return new ResponseEntity<User>(

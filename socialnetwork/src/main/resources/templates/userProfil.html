@@ -11,8 +11,9 @@
 
     <body>
         <div th:replace="~{fragments/header :: header-fragment}"></div>
-
-
+			<p>Email : <span th:text="${userProfile.user.email}"></span></p>
+            <p>FirstName : <span th:text="${userProfile.user.firstName}"></span></p>
+            <p>location : <span th:text="${userProfile.profil.location}"></span></p> <!-- pas d'infos surement car c'est null -->
         <div th:replace="~{fragments/footer :: footer-fragment}"></div>
 
         <script th:src="@{/js/header.js}"></script>
