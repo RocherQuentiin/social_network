@@ -3,6 +3,8 @@ package com.socialnetwork.socialnetwork.controller;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -54,6 +56,23 @@ public class UserController {
 		model.addAttribute("name", this.userService.getName());
         return "accueil";
     }
+
+	@GetMapping("/feed")
+	public String showFeed(Model model, HttpServletRequest request) {
+		model.addAttribute("name", this.userService.getName());
+		// load posts ordered by createdAt desc
+		List<Post> posts = postRepository.findAll();
+		posts.sort(Comparator.comparing(Post::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed());
+		model.addAttribute("posts", posts);
+
+		// pass session existence to template (optional)
+		HttpSession session = request.getSession(false);
+		if (session != null && session.getAttribute("userId") != null) {
+			model.addAttribute("loggedUserId", session.getAttribute("userId"));
+		}
+
+		return "feed";
+	}
     
 	@GetMapping("/register")
 	public String showRegisterForm(Model model) {
@@ -96,10 +115,10 @@ public class UserController {
 		
 		else {
 			HttpSession session = request.getSession(true);
-            session.setAttribute("userId", userLogin.getBody().getId());
-            session.setAttribute("userEmail", userLogin.getBody().getEmail());
+			session.setAttribute("userId", userLogin.getBody().getId());
+			session.setAttribute("userEmail", userLogin.getBody().getEmail());
 
-            return "redirect:/accueil";
+			return "redirect:/feed";
 		}
 	}
 
