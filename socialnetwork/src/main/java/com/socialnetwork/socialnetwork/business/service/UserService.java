@@ -22,15 +22,6 @@ public class UserService implements IUserService{
 		this.repository = repository;
 		this.passwordEncoder = passwordEncoder;
 	}
-    
-	@Override
-	public String getName() {
-		return repository.findAll()
-				.stream()
-				.findFirst()
-				.map(User::getUsername)
-				.orElse("");
-	}
 	
 	@Override
 	public ResponseEntity<User> getUserByEmail(String email) {

@@ -52,8 +52,9 @@ public class UserController {
 	}
 
     @GetMapping({"/", "/accueil"})
-    public String showHomePage(Model model) {
-		model.addAttribute("name", this.userService.getName());
+    public String showHomePage(HttpServletRequest request, Model model) {
+    	HttpSession session = request.getSession(true);
+		model.addAttribute("isConnect", session.getAttribute("userId"));
         return "accueil";
     }
 
@@ -75,13 +76,25 @@ public class UserController {
 	}
     
 	@GetMapping("/register")
-	public String showRegisterForm(Model model) {
+	public String showRegisterForm(HttpServletRequest request, Model model) {
+		Object userIsConnect = Utils.validPage(request, false);
+		if(userIsConnect != null) {
+			model.addAttribute("isConnect", userIsConnect);
+			return "accueil";
+		}
+		
 		model.addAttribute("user", new User());
 		return "register";
 	}
 	
 	@GetMapping("/login")
-	public String showLoginForm(Model model) {
+	public String showLoginForm(HttpServletRequest request, Model model) {
+		Object userIsConnect = Utils.validPage(request, false);
+		if(userIsConnect != null) {
+			model.addAttribute("isConnect", userIsConnect);
+			return "accueil";
+		}
+		
 		model.addAttribute("user", new User());
 		return "login";
 	}
@@ -263,7 +276,13 @@ public class UserController {
 	}
 	
 	@GetMapping("/forgotpassword/email")
-	public String showForgotPasswordMailForm(Model model) {
+	public String showForgotPasswordMailForm(HttpServletRequest request, Model model) {
+		Object userIsConnect = Utils.validPage(request, false);
+		if(userIsConnect != null) {
+			model.addAttribute("isConnect", userIsConnect);
+			return "accueil";
+		}
+		
 		model.addAttribute("user", new User());
 		return "emailForgotPassword";
 	}
@@ -363,9 +382,9 @@ public class UserController {
 	
 	@GetMapping("/changePassword")
 	public String showChangePasswordForm(HttpServletRequest request, Model model) {
-        HttpSession session = request.getSession(false);
-		
-		if(session == null) {
+		Object userIsConnect = Utils.validPage(request, true);
+		if(userIsConnect == null) {
+			model.addAttribute("isConnect", userIsConnect);
 			return "accueil";
 		}
 		
@@ -375,11 +394,9 @@ public class UserController {
 	@PostMapping("/changePassword")
 	public String changePassword(HttpServletRequest request, Model model, @RequestParam("oldpasswordHash") String oldpasswordHash, @RequestParam("passwordHash") String passwordHash, @RequestParam("confirmpasswordHash") String confirmpasswordHash) {
         HttpSession session = request.getSession(false);
-		System.out.println("ok");
 		if(session == null) {
 			return "accueil";
 		}
-		System.out.println("ok2");
 		Object userObject =   session.getAttribute("userId");
 		
 		if(userObject == null) {
@@ -410,5 +427,16 @@ public class UserController {
 		model.addAttribute("information", "Votre mot de passe a bien été modifié");
 		
 		return "changePassword";
+	}
+	
+	@GetMapping("/logout")
+	public String logOut(HttpServletRequest request, Model model) {
+		HttpSession session = request.getSession(false);
+		
+		if (session != null) {
+            session.invalidate();
+        }
+		
+		return "accueil";
 	}
 }
