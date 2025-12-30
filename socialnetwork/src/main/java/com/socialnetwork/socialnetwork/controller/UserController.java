@@ -53,7 +53,6 @@ public class UserController {
 	private final ITokenService tokenService;
 	private final IProfileService profileService;
 	private final IPrivacySettingsService privacySettingsService;
-	private final IUserRepository userRepository;
 	private final IPostRepository postRepository;
 	public UserController(IUserService userService, IMailService mailService, IPostRepository postRepository, ITokenService tokenService, IProfileService profileService, IPrivacySettingsService privacySettingsService) {
 		this.userService = userService;
@@ -214,9 +213,14 @@ public class UserController {
 		}
 		try {
 			UUID userId = UUID.fromString(session.getAttribute("userId").toString());
-			User author = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("User not found"));
+			ResponseEntity<User> author = userService.getUserById(userId);
+			
+			if(author.getStatusCode() != HttpStatusCode.valueOf(200)) {
+				throw new IllegalArgumentException("User not found");
+			}
+			
 			Post post = new Post();
-			post.setAuthor(author);
+			post.setAuthor(author.getBody());
 			post.setContent(content);
 			if (visibilityTypeStr != null) {
 				try {
