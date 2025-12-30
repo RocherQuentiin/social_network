@@ -147,5 +147,30 @@ public class UserService implements IUserService{
 		return new ResponseEntity<User>(
 			      HttpStatus.NOT_FOUND);
 	}
+	
+	@Override
+	public ResponseEntity<User> updateUser(UUID userID, User user, String uploadProfilePictureUrl, String uploadCoverPictureUrl) {
+		Optional<User> existingUser = repository.findById(userID);
+		System.out.println(existingUser.isPresent());
+		if(existingUser.isPresent()) {
+			existingUser.get().setFirstName(user.getFirstName());
+			existingUser.get().setFirstName(user.getLastName());
+			existingUser.get().setBio(user.getBio());
+			if(!uploadProfilePictureUrl.equals("")) {
+				existingUser.get().setProfilePictureUrl(uploadProfilePictureUrl);
+			}
+			
+			if(!uploadCoverPictureUrl.equals("")) {
+				existingUser.get().setCoverPictureUrl(uploadCoverPictureUrl);
+			}
+			
+			
+			User userSave = repository.save(existingUser.get());
+			return new ResponseEntity<>(userSave,
+				      HttpStatus.OK);
+		}
+		return new ResponseEntity<>(
+			      HttpStatus.NOT_FOUND);
+	}
     
 }

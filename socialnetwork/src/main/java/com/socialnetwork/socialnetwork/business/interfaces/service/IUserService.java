@@ -25,4 +25,6 @@ public interface IUserService {
 
 	ResponseEntity<User>  getUserById(UUID fromString);
 
+	ResponseEntity<User> updateUser(UUID userID, User user, String ProfilePictureUrl, String CoverPictureUrl);
+
 }

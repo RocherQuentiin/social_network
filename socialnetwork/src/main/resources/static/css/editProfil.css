@@ -16,7 +16,7 @@
 }
 
 
-input, textarea, select {
+input, textarea, select, option {
     width: 100%;
     background: #00000033;
     border: 1px solid var(--border);
@@ -44,3 +44,29 @@ input, textarea, select {
     transition: var(--transition);
     margin-top: 10px;
 }
+
+/* BOUTON ET ERREUR */
+.alert-error {
+    background: rgba(255, 68, 68, 0.1);
+    color: #ff4444;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.alert-information {
+    background: rgba(135,206,250, 0.1);
+    color: #87cefa;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+

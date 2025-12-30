@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.socialnetwork.socialnetwork.enums.IsepSpecialization;
 import com.socialnetwork.socialnetwork.enums.UserGender;
@@ -45,6 +46,7 @@ public class Profile {
     @Column(name = "phone_number", length = 20)
     private String phoneNumber;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthdate;
 
     @Enumerated(EnumType.STRING)

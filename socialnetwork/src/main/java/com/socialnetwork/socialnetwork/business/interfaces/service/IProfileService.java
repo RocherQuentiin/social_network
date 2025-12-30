@@ -14,4 +14,6 @@ public interface IProfileService {
 
 	ResponseEntity<Profile> getUserProfileByUserID(User user);
 
+	ResponseEntity<Profile> updateProfile(User user, Profile profile);
+
 }

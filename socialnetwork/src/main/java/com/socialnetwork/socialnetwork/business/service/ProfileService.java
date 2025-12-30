@@ -11,6 +11,7 @@ import com.socialnetwork.socialnetwork.business.interfaces.repository.IProfileRe
 import com.socialnetwork.socialnetwork.business.interfaces.service.IProfileService;
 import com.socialnetwork.socialnetwork.entity.Profile;
 import com.socialnetwork.socialnetwork.entity.User;
+import com.socialnetwork.socialnetwork.enums.UserGender;
 
 @Service
 public class ProfileService implements IProfileService{
@@ -45,6 +46,31 @@ public class ProfileService implements IProfileService{
 		
 		return new ResponseEntity<>(
 				profile.get(), 
+			      HttpStatus.OK);
+	}
+	
+	@Override
+	public ResponseEntity<Profile> updateProfile(User user, Profile profile) {
+		Optional<Profile> existingProfile = this.repository.findByUser(user);
+		System.out.println("profile : " + existingProfile.isPresent());
+		System.out.println(user.getId());
+		if(existingProfile.isPresent()) {
+			System.out.println("company : " + profile.getCompany());
+			existingProfile.get().setBirthdate(profile.getBirthdate());
+			existingProfile.get().setCompany(profile.getCompany());
+			existingProfile.get().setUserGender(profile.getUserGender());
+			existingProfile.get().setLocation(profile.getLocation());
+			existingProfile.get().setPhoneNumber(profile.getPhoneNumber());
+			existingProfile.get().setEducation(profile.getEducation());
+			existingProfile.get().setIsepSpecialization(profile.getIsepSpecialization());
+			existingProfile.get().setPromoYear(profile.getPromoYear());
+			existingProfile.get().setWebsite(profile.getWebsite());
+			existingProfile.get().setProfession(profile.getProfession());
+			repository.save(existingProfile.get());
+		}
+		
+		
+		return new ResponseEntity<>(
 			      HttpStatus.OK);
 	}
 	
