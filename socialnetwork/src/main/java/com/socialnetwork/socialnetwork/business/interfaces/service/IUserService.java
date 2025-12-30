@@ -22,9 +22,12 @@ public interface IUserService {
 	ResponseEntity<User> updatePassword(UUID userID, String password);
 
 	ResponseEntity<User> changePassword(UUID userId, String oldPassword, String newPassword);
-
+	
 	ResponseEntity<User>  getUserById(UUID fromString);
 
 	ResponseEntity<User> updateUser(UUID userID, User user, String ProfilePictureUrl, String CoverPictureUrl);
+
+	String getName(UUID userId);
+
 
 }
