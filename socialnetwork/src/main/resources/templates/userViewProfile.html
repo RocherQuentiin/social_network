@@ -29,7 +29,7 @@
 		Username : <span th:text="${userProfile.user.username}"></span>
 	</p>
 
-	<p th:if="${userProfile.privacySettings.canSeeEmail == 'true'}">
+	<p th:if="${userProfile.privacySettings.canSeeEmail}">
 		Email : <span th:text="${userProfile.user.email}"></span>
 	</p>
 
@@ -66,17 +66,17 @@
 		User ID : <span th:text="${userProfile.profile.user.id}"></span>
 	</p>
 
-	<p>
+	<p th:if="${userProfile.privacySettings.canSeeLocation}">
 		Location : <span th:text="${userProfile.profile.location}"></span>
 	</p>
-	<p th:if="${userProfile.privacySettings.canSeeLocation == 'true'}">
+	<p>
 		Website : <span th:text="${userProfile.profile.website}"></span>
 	</p>
-	<p th:if="${userProfile.privacySettings.canSeePhone == 'true'}">
+	<p th:if="${userProfile.privacySettings.canSeePhone}">
 		Phone Number : <span th:text="${userProfile.profile.phoneNumber}"></span>
 	</p>
 
-	<p th:if="${userProfile.privacySettings.canSeeBirthdate == 'true'}">
+	<p th:if="${userProfile.privacySettings.canSeeBirthdate}">
 		Birthdate : <span th:text="${userProfile.profile.birthdate}" ></span>
 	</p>
 
