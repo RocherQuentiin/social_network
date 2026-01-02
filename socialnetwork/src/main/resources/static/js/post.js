@@ -26,4 +26,18 @@ document.addEventListener('DOMContentLoaded', function(){
     } else {
         console.warn('post.js: openBtn or modal not found; modal will not open');
     }
+    
+    const postVideo = document.getElementById('postVideo');
+	const postVideoLink = document.getElementById('postVideoUrl');
+	const postImage = document.getElementById('postImage');
+	const postImageLink = document.getElementById('postImageUrl');
+	
+	postVideo.onclick = function () {
+                    postVideoLink.click()
+                }
+                
+	postImage.onclick = function () {
+                    postImageLink.click()
+                }
+    
 });

@@ -95,5 +95,18 @@ document.addEventListener('DOMContentLoaded', function(){
             else { r.text().then(function(t){ console.error(t); alert('Erreur lors de la sauvegarde'); }); }
         }).catch(function(err){ console.error(err); alert('Erreur réseau'); });
     });
+    
+    const postVideo = document.getElementById('postVideo');
+	const postVideoLink = document.getElementById('postVideoUrl');
+	const postImage = document.getElementById('postImage');
+	const postImageLink = document.getElementById('postImageUrl');
+	
+	postVideo.onclick = function () {
+                    postVideoLink.click()
+                }
+                
+	postImage.onclick = function () {
+                    postImageLink.click()
+                }
 
 });

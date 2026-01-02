@@ -71,6 +71,13 @@ public class UserController {
     public String showHomePage(HttpServletRequest request, Model model) {
     	HttpSession session = request.getSession(true);
 		model.addAttribute("isConnect", session.getAttribute("userId"));
+		
+		if (session != null && session.getAttribute("userId") != null) {
+			ResponseEntity<User> user = userService.getUserById(UUID.fromString(session.getAttribute("userId").toString()));
+			
+			model.addAttribute("userAvatar", user.getBody().getProfilePictureUrl());
+		}
+		
         return "accueil";
     }
 
@@ -87,7 +94,13 @@ public class UserController {
 		if (session != null && session.getAttribute("userId") != null) {
 			model.addAttribute("loggedUserId", session.getAttribute("userId"));
 			model.addAttribute("name", this.userService.getName(UUID.fromString(session.getAttribute("userId").toString())));
+			
+			ResponseEntity<User> user = userService.getUserById(UUID.fromString(session.getAttribute("userId").toString()));
+			
+			model.addAttribute("userAvatar", user.getBody().getProfilePictureUrl());
 		}
+		
+		
 
 		return "feed";
 	}
@@ -207,44 +220,6 @@ public class UserController {
 			model.addAttribute("user", user);
 			return "register";
 		}
-	}
-
-	@PostMapping("/post")
-	public String handleCreatePost(HttpServletRequest request, @RequestParam("content") String content, @RequestParam(value = "visibilityType", required = false) String visibilityTypeStr, @RequestParam(value = "allowComments", required = false) String[] allowCommentsValues) {
-		HttpSession session = request.getSession(false);
-		if (session == null || session.getAttribute("userId") == null) {
-			return "redirect:/login";
-		}
-		try {
-			UUID userId = UUID.fromString(session.getAttribute("userId").toString());
-			ResponseEntity<User> author = userService.getUserById(userId);
-			
-			if(author.getStatusCode() != HttpStatusCode.valueOf(200)) {
-				throw new IllegalArgumentException("User not found");
-			}
-			
-			Post post = new Post();
-			post.setAuthor(author.getBody());
-			post.setContent(content);
-			if (visibilityTypeStr != null) {
-				try {
-					post.setVisibilityType(VisibilityType.valueOf(visibilityTypeStr));
-				} catch (Exception e) {
-					post.setVisibilityType(VisibilityType.PUBLIC);
-				}
-			} else {
-				post.setVisibilityType(VisibilityType.PUBLIC);
-			}
-			boolean allowComments = false;
-			if (allowCommentsValues != null) {
-				allowComments = Arrays.stream(allowCommentsValues).anyMatch(v -> "true".equalsIgnoreCase(v));
-			}
-			post.setAllowComments(allowComments);
-			postRepository.save(post);
-		} catch (Exception e) {
-			return "redirect:/accueil";
-		}
-		return "redirect:/accueil";
 	}
 	
 	
