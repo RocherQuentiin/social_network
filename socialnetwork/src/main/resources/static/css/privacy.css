@@ -1,0 +1,73 @@
+.privacy-settings-page {
+    background-color: var(--bg-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    background: radial-gradient(circle at center, #1e2530 0%, #15181c 100%);
+}
+
+.privacy-settings-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 20px;
+}
+
+
+input, textarea, select, option {
+    width: 100%;
+    background: #00000033;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 12px 12px 42px;
+    color: white;
+    font-size: 1rem;
+    transition: var(--transition);
+    margin: 10px;
+}
+
+.btn-privacy-settings-submit {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: var(--transition);
+    margin-top: 10px;
+}
+
+/* BOUTON ET ERREUR */
+.alert-error {
+    background: rgba(255, 68, 68, 0.1);
+    color: #ff4444;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.alert-information {
+    background: rgba(135,206,250, 0.1);
+    color: #87cefa;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+

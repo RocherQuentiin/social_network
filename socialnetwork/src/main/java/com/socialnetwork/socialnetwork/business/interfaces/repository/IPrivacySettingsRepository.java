@@ -14,4 +14,6 @@ public interface IPrivacySettingsRepository extends JpaRepository<PrivacySetting
 
 	Optional<PrivacySettings> findByUser(User user);
 
+	Optional<PrivacySettings> findByUser_Id(UUID userID);
+
 }
