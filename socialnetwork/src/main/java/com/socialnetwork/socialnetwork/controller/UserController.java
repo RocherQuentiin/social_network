@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IPostRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IUserRepository;
+import com.socialnetwork.socialnetwork.business.interfaces.service.IFollowService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IMailService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IPrivacySettingsService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IProfileService;
@@ -29,11 +30,12 @@ import com.socialnetwork.socialnetwork.business.interfaces.service.ITokenService
 import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
 import com.socialnetwork.socialnetwork.business.utils.FileUpload;
 import com.socialnetwork.socialnetwork.business.utils.Utils;
-
+import com.socialnetwork.socialnetwork.dto.UserOtherProfileDto;
 import com.socialnetwork.socialnetwork.dto.UserProfileDto;
 import com.socialnetwork.socialnetwork.dto.UserRequestDto;
 import com.socialnetwork.socialnetwork.entity.PrivacySettings;
 import com.socialnetwork.socialnetwork.entity.Profile;
+import com.socialnetwork.socialnetwork.entity.Follow;
 import com.socialnetwork.socialnetwork.entity.Post;
 
 import com.socialnetwork.socialnetwork.entity.Token;
@@ -54,13 +56,15 @@ public class UserController {
 	private final IProfileService profileService;
 	private final IPrivacySettingsService privacySettingsService;
 	private final IPostRepository postRepository;
-	public UserController(IUserService userService, IMailService mailService, IPostRepository postRepository, ITokenService tokenService, IProfileService profileService, IPrivacySettingsService privacySettingsService) {
+	private final IFollowService followService;
+	public UserController(IUserService userService, IMailService mailService, IFollowService followService, IPostRepository postRepository, ITokenService tokenService, IProfileService profileService, IPrivacySettingsService privacySettingsService) {
 		this.userService = userService;
 		this.mailService = mailService;
 		this.tokenService = tokenService;
 		this.profileService = profileService;
 		this.privacySettingsService = privacySettingsService;
 		this.postRepository = postRepository;
+		this.followService = followService;
 	}
 
     @GetMapping({"/", "/accueil"})
@@ -91,8 +95,8 @@ public class UserController {
 	@GetMapping("/register")
 	public String showRegisterForm(HttpServletRequest request, Model model) {
 		Object userIsConnect = Utils.validPage(request, false);
+		model.addAttribute("isConnect", userIsConnect);
 		if(userIsConnect != null) {
-			model.addAttribute("isConnect", userIsConnect);
 			return "accueil";
 		}
 		
@@ -103,8 +107,8 @@ public class UserController {
 	@GetMapping("/login")
 	public String showLoginForm(HttpServletRequest request, Model model) {
 		Object userIsConnect = Utils.validPage(request, false);
+		model.addAttribute("isConnect", userIsConnect);
 		if(userIsConnect != null) {
-			model.addAttribute("isConnect", userIsConnect);
 			return "accueil";
 		}
 		
@@ -279,7 +283,9 @@ public class UserController {
 	}
 
 	@GetMapping("/users")
-	public String listUsers(Model model) {
+	public String listUsers(HttpServletRequest request, Model model) {
+		Object userIsConnect = Utils.validPage(request, false);
+		model.addAttribute("isConnect", userIsConnect);
 		model.addAttribute("users", userService.findAllUsers());
 		return "users";
 	}
@@ -403,8 +409,8 @@ public class UserController {
 	@GetMapping("/changePassword")
 	public String showChangePasswordForm(HttpServletRequest request, Model model) {
 		Object userIsConnect = Utils.validPage(request, true);
+		model.addAttribute("isConnect", userIsConnect);
 		if(userIsConnect == null) {
-			model.addAttribute("isConnect", userIsConnect);
 			return "accueil";
 		}
 		
@@ -463,8 +469,8 @@ public class UserController {
 	@GetMapping("/profil")
 	public String showUserProfil(HttpServletRequest request, Model model) {
 		Object userIsConnect = Utils.validPage(request, true);
+		model.addAttribute("isConnect", userIsConnect);
 		if(userIsConnect == null) {
-			model.addAttribute("isConnect", userIsConnect);
 			return "accueil";
 		}
 		
@@ -482,8 +488,8 @@ public class UserController {
 	@GetMapping("/editProfil")
 	public String showEditUserProfil(HttpServletRequest request, Model model) {
 		Object userIsConnect = Utils.validPage(request, true);
+		model.addAttribute("isConnect", userIsConnect);
 		if(userIsConnect == null) {
-			model.addAttribute("isConnect", userIsConnect);
 			return "accueil";
 		}
 		
@@ -495,7 +501,6 @@ public class UserController {
 		userProfileDto.setProfile(userProfile.getBody());
 
 		model.addAttribute("userProfile", userProfileDto);
-		model.addAttribute("isConnect", userIsConnect);
 		return "editProfile";
 	}
 	
@@ -534,5 +539,30 @@ public class UserController {
 		userProfileDto.setProfile(profile.getBody());
 		model.addAttribute("information", "Vos informations ont bien été mise a jour");
 		return "editProfile";
+	}
+	
+	@GetMapping("/profil/{id}")
+	public String showOtherUserProfil(HttpServletRequest request, Model model,  @PathVariable("id") String id) {
+		Object userIsConnect = Utils.validPage(request, true);
+		model.addAttribute("isConnect", userIsConnect);
+		if(userIsConnect == null) {
+			return "accueil";
+		}
+		
+		
+		ResponseEntity<User> user = this.userService.getUserById(UUID.fromString(id));
+		ResponseEntity<Profile> userProfile = this.profileService.getUserProfileByUserID(user.getBody());
+		ResponseEntity<PrivacySettings> privacySettings = this.privacySettingsService.getPrivacySettingsByUser(user.getBody());
+		
+		UserOtherProfileDto userOtherProfileDto = new UserOtherProfileDto();
+		userOtherProfileDto.setUser(user.getBody());
+		userOtherProfileDto.setProfile(userProfile.getBody());
+		userOtherProfileDto.setPrivacySettings(privacySettings.getBody());
+		
+		ResponseEntity<Follow> follow = this.followService.getFollow(UUID.fromString(userIsConnect.toString()), UUID.fromString(id));
+
+		model.addAttribute("isFollow", follow.getStatusCode() == HttpStatusCode.valueOf(200));
+		model.addAttribute("userProfile", userOtherProfileDto);
+		return "userViewProfile";
 	}
 }

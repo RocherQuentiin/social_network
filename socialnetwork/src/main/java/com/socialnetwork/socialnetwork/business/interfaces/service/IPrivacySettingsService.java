@@ -9,4 +9,6 @@ public interface IPrivacySettingsService {
 
 	ResponseEntity<PrivacySettings> create(User user);
 
+	ResponseEntity<PrivacySettings> getPrivacySettingsByUser(User user);
+
 }
