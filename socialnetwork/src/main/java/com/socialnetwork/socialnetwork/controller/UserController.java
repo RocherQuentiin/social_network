@@ -24,6 +24,7 @@ import com.socialnetwork.socialnetwork.business.interfaces.repository.IPostRepos
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IUserRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IFollowService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IMailService;
+import com.socialnetwork.socialnetwork.business.interfaces.service.IPostService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IPrivacySettingsService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IProfileService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.ITokenService;
@@ -55,15 +56,15 @@ public class UserController {
 	private final ITokenService tokenService;
 	private final IProfileService profileService;
 	private final IPrivacySettingsService privacySettingsService;
-	private final IPostRepository postRepository;
+	 private final IPostService postService;
 	private final IFollowService followService;
-	public UserController(IUserService userService, IMailService mailService, IFollowService followService, IPostRepository postRepository, ITokenService tokenService, IProfileService profileService, IPrivacySettingsService privacySettingsService) {
+	public UserController(IUserService userService, IMailService mailService, IFollowService followService, IPostService postService, ITokenService tokenService, IProfileService profileService, IPrivacySettingsService privacySettingsService) {
 		this.userService = userService;
 		this.mailService = mailService;
 		this.tokenService = tokenService;
 		this.profileService = profileService;
 		this.privacySettingsService = privacySettingsService;
-		this.postRepository = postRepository;
+		this.postService = postService;
 		this.followService = followService;
 	}
 
@@ -84,22 +85,27 @@ public class UserController {
 	@GetMapping("/feed")
 	public String showFeed(Model model, HttpServletRequest request) {
 		model.addAttribute("name", "");
-		// load posts ordered by createdAt desc
-		List<Post> posts = postRepository.findAll();
-		posts.sort(Comparator.comparing(Post::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed());
-		model.addAttribute("posts", posts);
-
-		// pass session existence to template (optional)
 		HttpSession session = request.getSession(false);
 		if (session != null && session.getAttribute("userId") != null) {
-			model.addAttribute("loggedUserId", session.getAttribute("userId"));
-			model.addAttribute("name", this.userService.getName(UUID.fromString(session.getAttribute("userId").toString())));
+			UUID userID = UUID.fromString(session.getAttribute("userId").toString());
+			model.addAttribute("isConnect", session.getAttribute("userId"));
+			model.addAttribute("name", this.userService.getName(userID));
 			
-			ResponseEntity<User> user = userService.getUserById(UUID.fromString(session.getAttribute("userId").toString()));
+			ResponseEntity<User> user = userService.getUserById(userID);
 			
 			model.addAttribute("userAvatar", user.getBody().getProfilePictureUrl());
+			
+			List<Post> posts = this.postService.getAllPostForConnectedUser(userID).getBody();
+			posts.sort(Comparator.comparing(Post::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed());
+			model.addAttribute("posts", posts);
 		}
-		
+		else {
+			// load posts ordered by createdAt desc
+			// pass session existence to template (optional)
+			List<Post> posts = this.postService.getAllPostVisibilityPublic().getBody();
+			posts.sort(Comparator.comparing(Post::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed());
+			model.addAttribute("posts", posts);
+		}
 		
 
 		return "feed";

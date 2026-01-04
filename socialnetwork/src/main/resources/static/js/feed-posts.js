@@ -108,5 +108,66 @@ document.addEventListener('DOMContentLoaded', function(){
 	postImage.onclick = function () {
                     postImageLink.click()
                 }
+                
+    const publicCheckbox = document.getElementById('publicCheckbox');
+	const privateCheckbox = document.getElementById('privateCheckbox');
+	const friendsCheckbox = document.getElementById('friendsCheckbox');
+	
+	const publicElements = document.querySelectorAll("[data-post-visibility='PUBLIC']")
+	const privateElements = document.querySelectorAll("[data-post-visibility='PRIVATE']")
+	const friendsElements = document.querySelectorAll("[data-post-visibility='FRIENDS']")
+	
+	publicCheckbox.addEventListener("change", changeVisibility);
+	privateCheckbox.addEventListener("change", changeVisibility);
+	friendsCheckbox.addEventListener("change", changeVisibility);
+	
+	function changeVisibility(){
+		let publicChecked = publicCheckbox.checked;
+		let privateChecked = privateCheckbox.checked;
+		let friendsChecked = friendsCheckbox.checked;
+		
+		publicVisibility(publicChecked);
+		privateVisibility(privateChecked);
+		friendsVisibility(friendsChecked);
+	}
+	
+	function publicVisibility(publicChecked){
+		if(publicChecked){
+			publicElements.forEach(el => {
+				el.style.display = "";
+			})
+		}
+		else{
+			publicElements.forEach(el => {
+				el.style.display = "none";
+			})
+		}
+	}
+	
+	function privateVisibility(privateChecked){
+		if(privateChecked){
+			privateElements.forEach(el => {
+				el.style.display = "";
+			})
+		}
+		else{
+			privateElements.forEach(el => {
+				el.style.display = "none";
+			})
+		}
+	}
+	
+	function friendsVisibility(friendsChecked){
+		if(friendsChecked){
+			friendsElements.forEach(el => {
+				el.style.display = "";
+			})
+		}
+		else{
+			friendsElements.forEach(el => {
+				el.style.display = "none";
+			})
+		}
+	}
 
 });

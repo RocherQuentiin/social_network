@@ -26,6 +26,14 @@
 				<h4 th:text="${name}">Utilisateur</h4>
 				<p>Bienvenue sur votre fil</p>
 			</div>
+			<div class="publish-card" style="margin-bottom: 18px;">
+				<p>Visibilité</p>
+				<div style="display: flex; flex-direction: column; gap: 1em; margin-top: 0.5em">
+					<label><input id="publicCheckbox" type="checkbox" checked> PUBLIC</label>
+        			<label><input id="privateCheckbox" type="checkbox" checked> PRIVATE</label>
+        			<label><input id="friendsCheckbox" type="checkbox" checked> FRIENDS</label>
+				</div>
+			</div>
 		</aside>
 
 		<!-- main feed -->
@@ -78,7 +86,7 @@
 			<!-- posts list -->
 			<div>
 				<div th:each="post : ${posts}" class="card"
-					th:attr="data-post-card-id=${post.id}"
+					th:attr="data-post-card-id=${post.id}" th:data-post-visibility=${post.visibilityType}
 					style="margin-bottom: 12px; padding: 16px; background: var(- -bg-card); border: 1px solid var(- -border); border-radius: 12px;">
 					<div style="display: flex; gap: 12px; align-items: flex-start;">
 						<div style="width: 48px;">
