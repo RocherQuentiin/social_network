@@ -5,6 +5,41 @@
     padding: 0 20px;
 }
 
+/* --- VUE EN LIGNE (LISTE) --- */
+.user-grid.list-view {
+    grid-template-columns: 1fr;
+}
+
+.user-grid.list-view .user-card {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding: 15px 30px;
+    text-align: left;
+}
+
+.user-grid.list-view .user-card-top {
+    flex-shrink: 0;
+}
+
+.user-grid.list-view .user-card-body {
+    flex-grow: 1;
+    margin: 0;
+}
+
+.user-grid.list-view .user-card-footer {
+    margin: 0;
+    min-width: 280px;
+    justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+    .user-grid.list-view .user-card {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
 /* HERO SECTION */
 .directory-hero {
     background: linear-gradient(rgba(28, 32, 40, 0.9), rgba(28, 32, 40, 0.9)),
