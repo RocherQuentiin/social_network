@@ -6,117 +6,217 @@
     <title>Fil d'actualité - ISEP Connect</title>
     <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
-    <link rel="stylesheet" th:href="@{/css/accueil.css}">
+    <link rel="stylesheet" th:href="@{/css/feed.css}">
     <script src="https://unpkg.com/lucide@latest"></script>
     <meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}" />
     <meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/fr.min.js"></script>
 </head>
 <body>
 
-    <div th:replace="~{fragments/header :: header-fragment}"></div>
+<div th:replace="~{fragments/header :: header-fragment}"></div>
 
-    <div class="container container-narrow" style="display:grid; grid-template-columns: 260px 1fr 300px; gap:20px; margin-top:20px;">
+<div class="container blog-layout">
 
-        <!-- left sidebar (simple) -->
-        <aside>
-            <div class="card" style="padding:16px; background:var(--bg-card); border:1px solid var(--border); border-radius:12px;">
-                <h4 th:text="${name}">Utilisateur</h4>
-                <p>Bienvenue sur votre fil</p>
-            </div>
-        </aside>
-
-        <!-- main feed -->
-        <main>
-            <!-- publication form (only if connected) -->
-            <div th:if="${session.userId != null}">
-                <div class="publish-card" style="margin-bottom:18px;">
-                    <div class="publish-inner" style="display:flex; gap:12px; align-items:flex-start;">
-                        <div class="avatar-box">
-                            <img th:src="@{/images/default-avatar.png}" alt="avatar" style="width:48px; height:48px; border-radius:50%; object-fit:cover;"/>
-                        </div>
-                        <form th:action="@{/post}" method="post" class="publish-form" style="flex:1;">
-                            <input type="hidden" name="allowComments" value="false" />
-                            <textarea name="content" placeholder="Quoi de neuf ?" rows="2"></textarea>
-                            <div style="display:flex; gap:12px; align-items:center; margin-top:10px;">
-                                <select id="visibilityType" name="visibilityType" class="publish-visibility">
-                                    <option value="PUBLIC">Public</option>
-                                    <option value="FRIENDS">Amis</option>
-                                    <option value="PRIVATE">Privé</option>
-                                </select>
-                                <label style="display:flex; align-items:center; gap:6px;"><input type="checkbox" name="allowComments" value="true" checked /> Autoriser les commentaires</label>
-                                <button type="submit" class="btn-primary">Publier</button>
-                            </div>
-                        </form>
-                    </div>
+    <aside class="sidebar-left">
+        <div class="user-profile-card card">
+            <div class="profile-header">
+                <img th:src="@{/images/default-avatar.png}" alt="Avatar" class="avatar-large">
+                <div class="profile-info">
+                    <h4 th:text="${name}">Utilisateur</h4>
+                    <span>Cycle Ingénieur • ISEP</span>
                 </div>
             </div>
-
-            <!-- posts list -->
-                <div>
-                <div th:each="post : ${posts}" class="card" th:attr="data-post-card-id=${post.id}" style="margin-bottom:12px; padding:16px; background:var(--bg-card); border:1px solid var(--border); border-radius:12px;">
-                    <div style="display:flex; gap:12px; align-items:flex-start;">
-                        <div style="width:48px;">
-                            <img th:src="@{/images/default-avatar.png}" alt="avatar" style="width:48px; height:48px; border-radius:50%; object-fit:cover;"/>
-                        </div>
-                        <div style="flex:1;">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <div>
-                                    <strong th:text="${post.author.username}">Auteur</strong>
-                                    <div style="font-size:0.85rem; color:var(--text-dim);" th:text="${post.createdAt}">date</div>
-                                </div>
-                                <div style="display:flex; gap:8px; align-items:center;">
-                                    <div style="font-size:0.85rem; color:var(--text-dim);" th:text="${post.visibilityType}">VIS</div>
-                                    <button type="button" class="btn-icon" th:if="${loggedUserId != null and loggedUserId.toString() == post.author.id.toString()}" th:attr="data-post-id=${post.id}" title="Modifier" style="border:none; background:transparent; cursor:pointer;">
-                                        <i data-lucide="edit-2"></i>
-                                    </button>
-                                    <button type="button" class="btn-icon btn-delete" th:if="${loggedUserId != null and loggedUserId.toString() == post.author.id.toString()}" th:attr="data-post-id=${post.id}" title="Supprimer" style="border:none; background:transparent; cursor:pointer; color:var(--danger);">
-                                        <i data-lucide="trash-2"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <p style="margin-top:8px;" th:text="${post.content}">Contenu du post</p>
-                        </div>
-                    </div>
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Vues profil</span>
+                    <span class="stat-value">142</span>
                 </div>
             </div>
-        </main>
+        </div>
 
-        <!-- right sidebar (simple) -->
-        <aside>
-            <div class="card" style="padding:16px; background:var(--bg-card); border:1px solid var(--border); border-radius:12px;">
-                <h4>Annonces</h4>
-                <p>Événements récents et topics</p>
+        <nav class="side-nav card">
+            <a href="#" class="nav-item active"><i data-lucide="home"></i> Fil d'actualité</a>
+            <a href="#" class="nav-item"><i data-lucide="users"></i> Mes Groupes</a>
+            <a href="#" class="nav-item"><i data-lucide="message-square"></i> Messages</a>
+            <a href="#" class="nav-item"><i data-lucide="calendar"></i> Calendrier</a>
+            <hr>
+            <a href="#" class="nav-item"><i data-lucide="settings"></i> Paramètres</a>
+        </nav>
+    </aside>
+
+    <main class="feed-main">
+        <div th:if="${session.userId != null}" class="publish-card card">
+            <form th:action="@{/post}" method="post">
+                <div class="publish-top">
+                    <img th:src="@{/images/default-avatar.png}" class="avatar-small">
+                    <div class="publish-input-area">
+                        <textarea name="content" placeholder="Quoi de neuf ?" required></textarea>
+                    </div>
+                </div>
+
+                <div class="publish-bottom">
+                    <div class="media-inputs">
+                        <button type="button" class="btn-icon-upload" title="Image"><i data-lucide="image"></i></button>
+                        <button type="button" class="btn-icon-upload" title="Fichier"><i data-lucide="paperclip"></i></button>
+                        <div class="vertical-divider"></div>
+                        <div class="publish-options">
+                            <select name="visibilityType" class="custom-select">
+                                <option value="PUBLIC">Public</option>
+                                <option value="FRIENDS">Amis</option>
+                                <option value="PRIVATE">Privé</option>
+                            </select>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="allowComments" value="true" checked />
+                                <span>Commentaires</span>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-publish">Publier</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="posts-list">
+            <article th:each="post : ${posts}" class="post-card card" th:attr="data-post-card-id=${post.id}">
+                <div class="post-header">
+                    <img th:src="@{/images/default-avatar.png}" class="avatar-small">
+                    <div class="post-meta">
+                        <strong th:text="${post.author.username}">Auteur</strong>
+                        <span class="post-date" th:attr="data-timestamp=${post.createdAt}"></span>
+                    </div>
+
+                    <div class="post-actions" th:if="${loggedUserId != null and loggedUserId.toString() == post.author.id.toString()}">
+                        <button type="button" class="btn-icon" th:attr="data-post-id=${post.id}" onclick="openEditModalFromButton(this)">
+                            <i data-lucide="edit-2"></i>
+                        </button>
+                        <button type="button" class="btn-icon btn-delete" th:attr="data-post-id=${post.id}">
+                            <i data-lucide="trash-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="post-content">
+                    <p th:text="${post.content}">Contenu...</p>
+                </div>
+
+                <div class="post-footer">
+                    <button><i data-lucide="thumbs-up"></i> 0</button>
+                    <button th:if="${post.allowComments}"><i data-lucide="message-circle"></i> 0</button>
+                    <button class="btn-share"><i data-lucide="share-2"></i></button>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <aside class="sidebar-right">
+        <div class="announcement-part card">
+            <div class="announcement-title">
+                <h5><i data-lucide="megaphone" style="color:var(--primary)"></i> Annonces</h5>
             </div>
-        </aside>
-
-    </div>
-
-    <div th:replace="~{fragments/footer :: footer-fragment}"></div>
-    <script th:src="@{/js/header.js}"></script>
-    <script th:src="@{/js/feed-posts.js}"></script>
-    <script>lucide.createIcons();</script>
-    <!-- Edit modal -->
-    <div id="editModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); align-items:center; justify-content:center;">
-        <div style="background:white; padding:16px; width:640px; max-width:94%; border-radius:8px;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h3>Modifier la publication</h3>
-                <button id="closeEditModal" aria-label="Fermer" style="border:none; background:transparent; font-size:1.2rem; cursor:pointer;">✕</button>
+            <div class="announcement-item">
+                <h6>Inscriptions S2</h6>
+                <p>Date limite : Demain 23h59...</p>
             </div>
-            <div style="margin-top:8px;">
-                <textarea id="editContent" rows="4" style="width:100%;"></textarea>
-                <div style="display:flex; gap:8px; align-items:center; margin-top:8px;">
-                    <select id="editVisibility" style="padding:4px;">
+        </div>
+
+        <div class="card trending">
+            <div class="flex-between">
+                <h5>À venir</h5>
+                <a href="#" class="view-all">Voir tout</a>
+            </div>
+            <div class="event-item">
+                <div class="event-date"><span>24</span><span>NOV</span></div>
+                <div class="event-info"><strong>Gala ISEP 2023</strong><span>Pavillon Cambon</span></div>
+            </div>
+            <div class="event-item">
+                <div class="event-date"><span>12</span><span>DÉC</span></div>
+                <div class="event-info"><strong>Forum Entreprises</strong><span>Campus NDC</span></div>
+            </div>
+        </div>
+
+        <div class="card tags-section">
+            <h5>Sujets du moment</h5>
+            <div class="tags-cloud">
+                <span class="tag">#Examens</span>
+                <span class="tag">#Alternance</span>
+                <span class="tag">#ISEP</span>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<div id="editModal">
+    <div class="card">
+        <div class="modal-header">
+            <h3>Modifier la publication</h3>
+            <button id="closeEditModal" aria-label="Fermer">&times;</button>
+        </div>
+        <div class="modal-body">
+            <textarea id="editContent" rows="5" placeholder="Modifier votre message..."></textarea>
+            <div class="modal-footer">
+                <div class="publish-options">
+                    <select id="editVisibility" class="custom-select">
                         <option value="PUBLIC">Public</option>
                         <option value="FRIENDS">Amis</option>
                         <option value="PRIVATE">Privé</option>
                     </select>
-                    <label style="display:flex; align-items:center; gap:6px;"><input id="editAllowComments" type="checkbox"/> Autoriser les commentaires</label>
+                    <label class="checkbox-label">
+                        <input id="editAllowComments" type="checkbox"/>
+                        <span>Commentaires</span>
+                    </label>
                 </div>
-                <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:12px;">
-                    <button id="saveEditBtn" class="btn-primary">Enregistrer</button>
-                </div>
+                <button id="saveEditBtn" class="btn-publish">Enregistrer</button>
             </div>
         </div>
     </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer-fragment}"></div>
+
+<script th:src="@{/js/header.js}"></script>
+<script th:src="@{/js/feed-posts.js}"></script>
+<script>
+    // Initialisation Icônes
+    lucide.createIcons();
+
+    // Gestion de la Date (Moment.js)
+    document.addEventListener("DOMContentLoaded", function() {
+        moment.locale('fr');
+        document.querySelectorAll('.post-date').forEach(function(el) {
+            const rawDate = el.getAttribute('data-timestamp');
+            if (rawDate) {
+                // Si la date a moins de 24h, affiche "il y a..."
+                // sinon affiche "14 Janvier 2026"
+                const dateMoment = moment(rawDate);
+                if (moment().diff(dateMoment, 'hours') < 24) {
+                    el.innerText = dateMoment.fromNow();
+                } else {
+                    el.innerText = dateMoment.format('D MMMM YYYY');
+                }
+            }
+        });
+    });
+
+    // Gestion Modal
+    const modal = document.getElementById('editModal');
+    const closeBtn = document.getElementById('closeEditModal');
+
+    if(closeBtn) {
+        closeBtn.onclick = () => modal.style.display = "none";
+    }
+
+    // Fermer si clic en dehors de la carte modal
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    function openEditModalFromButton(btn) {
+        modal.style.display = "flex";
+    }
+</script>
 </body>
 </html>
