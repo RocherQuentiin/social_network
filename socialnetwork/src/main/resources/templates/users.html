@@ -1,28 +1,104 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Users</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annuaire - ISEP Connect</title>
+    <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/directory.css}">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body>
-<h1>All users</h1>
-<table>
-    <thead>
-    <tr>
-        <th>Username</th>
-        <th>Email</th>
-        <th>Name</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="u : ${users}">
-        <td th:text="${u.username}"></td>
-        <td th:text="${u.email}"></td>
-        <td th:text="${u.firstName} + ' ' + ${u.lastName}"></td>
-    </tr>
-    </tbody>
-</table>
-<p><a th:href="@{/register}">Register new user</a></p>
-<p><a th:href="@{/}">Home</a></p>
+<body class="bg-dark">
+
+<div th:replace="~{fragments/header :: header-fragment}"></div>
+
+<main class="directory-container">
+    <section class="directory-hero card">
+        <div class="hero-inner">
+            <h1>Retrouvez vos camarades</h1>
+            <p>Recherchez des étudiants par nom, filière ou promotion et élargissez votre réseau professionnel et amical.</p>
+
+            <form th:action="@{/users/search}" method="get" class="search-bar-wrapper">
+                <div class="search-input-group">
+                    <i data-lucide="search"></i>
+                    <input type="text" name="query" placeholder="Rechercher par nom...">
+                </div>
+                <button type="submit" class="btn-publish">Rechercher</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="filters-area">
+        <div class="filter-row">
+            <span class="filter-label">Filières:</span>
+            <div class="filter-chips">
+                <button class="chip active">Toutes</button>
+                <button class="chip">Ingénieur Logiciel</button>
+                <button class="chip">Data Science</button>
+                <button class="chip">Cybersécurité</button>
+                <button class="chip">Systèmes Embarqués</button>
+            </div>
+        </div>
+        <div class="filter-row">
+            <span class="filter-label">Promo:</span>
+            <div class="filter-chips">
+                <button class="chip active">Toutes</button>
+                <button class="chip">2024</button>
+                <button class="chip">2025</button>
+                <button class="chip">2026</button>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-header">
+        <h2>Étudiants Suggérés</h2>
+        <div class="view-switcher">
+            <span>Affichage:</span>
+            <button class="active"><i data-lucide="layout-grid"></i></button>
+            <button><i data-lucide="list"></i></button>
+        </div>
+    </div>
+
+    <div class="user-grid">
+        <article th:each="u : ${users}" class="user-card card">
+            <div class="user-card-top">
+                <div class="avatar-container">
+                    <img th:src="@{/images/default-avatar.png}" class="avatar-directory" alt="Avatar">
+                    <span class="online-badge"></span>
+                </div>
+                <button class="btn-more-small"><i data-lucide="more-vertical"></i></button>
+            </div>
+
+            <div class="user-card-body">
+                <h3 th:text="${u.firstName} + ' ' + ${u.lastName}">Thomas Durant</h3>
+                <span class="user-promo-label" th:text="'Promo ' + ${u.username}">Promo 2025</span> <p class="user-major-label">Ingénieur Logiciel</p>
+            </div>
+
+            <div class="user-card-footer">
+                <button class="btn-connect">
+                    <i data-lucide="user-plus"></i> Connecter
+                </button>
+                <button class="btn-msg-small">
+                    <i data-lucide="message-square"></i>
+                </button>
+            </div>
+        </article>
+    </div>
+
+    <nav class="pagination-wrapper">
+        <button class="btn-page"><i data-lucide="chevron-left"></i></button>
+        <button class="btn-page active">1</button>
+        <button class="btn-page">2</button>
+        <button class="btn-page">3</button>
+        <span class="page-dots">...</span>
+        <button class="btn-page"><i data-lucide="chevron-right"></i></button>
+    </nav>
+</main>
+
+<div th:replace="~{fragments/footer :: footer-fragment}"></div>
+
+<script>lucide.createIcons();</script>
+
 </body>
 </html>
