@@ -7,8 +7,8 @@
 
 /* HERO SECTION */
 .directory-hero {
-    background: linear-gradient(rgba(28, 32, 40, 0.9), rgba(28, 32, 40, 0.9));
-   /* url('/images/network-bg.jpg');*/
+    background: linear-gradient(rgba(28, 32, 40, 0.9), rgba(28, 32, 40, 0.9)),
+    url('/img/fond.png');
     background-size: cover;
     text-align: center;
     padding: 60px 20px;
