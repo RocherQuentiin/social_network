@@ -13,18 +13,29 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IPostRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IUserRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IMailService;
+import com.socialnetwork.socialnetwork.business.interfaces.service.IPrivacySettingsService;
+import com.socialnetwork.socialnetwork.business.interfaces.service.IProfileService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.ITokenService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
+import com.socialnetwork.socialnetwork.business.utils.FileUpload;
 import com.socialnetwork.socialnetwork.business.utils.Utils;
+
+import com.socialnetwork.socialnetwork.dto.UserProfileDto;
+import com.socialnetwork.socialnetwork.dto.UserRequestDto;
+import com.socialnetwork.socialnetwork.entity.PrivacySettings;
+import com.socialnetwork.socialnetwork.entity.Profile;
 import com.socialnetwork.socialnetwork.entity.Post;
+
 import com.socialnetwork.socialnetwork.entity.Token;
 import com.socialnetwork.socialnetwork.entity.User;
 import com.socialnetwork.socialnetwork.enums.UserRole;
@@ -40,14 +51,15 @@ public class UserController {
 	private final IUserService userService;
 	private final IMailService mailService;
 	private final ITokenService tokenService;
-	private final IUserRepository userRepository;
+	private final IProfileService profileService;
+	private final IPrivacySettingsService privacySettingsService;
 	private final IPostRepository postRepository;
-
-	public UserController(IUserService userService, IMailService mailService, ITokenService tokenService, IUserRepository userRepository, IPostRepository postRepository) {
+	public UserController(IUserService userService, IMailService mailService, IPostRepository postRepository, ITokenService tokenService, IProfileService profileService, IPrivacySettingsService privacySettingsService) {
 		this.userService = userService;
 		this.mailService = mailService;
 		this.tokenService = tokenService;
-		this.userRepository = userRepository;
+		this.profileService = profileService;
+		this.privacySettingsService = privacySettingsService;
 		this.postRepository = postRepository;
 	}
 
@@ -164,6 +176,8 @@ public class UserController {
 
 		try {
 			ResponseEntity<User> userSave = userService.create(user);
+			ResponseEntity<Profile> profileSave = this.profileService.create(userSave.getBody());
+			ResponseEntity<PrivacySettings> privacySettingsSave = this.privacySettingsService.create(userSave.getBody());
 			
 			if(userSave.getStatusCode() != HttpStatusCode.valueOf(200)) {
 				model.addAttribute("error", "Utilisateur déja existant");
@@ -199,9 +213,14 @@ public class UserController {
 		}
 		try {
 			UUID userId = UUID.fromString(session.getAttribute("userId").toString());
-			User author = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("User not found"));
+			ResponseEntity<User> author = userService.getUserById(userId);
+			
+			if(author.getStatusCode() != HttpStatusCode.valueOf(200)) {
+				throw new IllegalArgumentException("User not found");
+			}
+			
 			Post post = new Post();
-			post.setAuthor(author);
+			post.setAuthor(author.getBody());
 			post.setContent(content);
 			if (visibilityTypeStr != null) {
 				try {
@@ -439,5 +458,81 @@ public class UserController {
         }
 		
 		return "accueil";
+	}
+	
+	@GetMapping("/profil")
+	public String showUserProfil(HttpServletRequest request, Model model) {
+		Object userIsConnect = Utils.validPage(request, true);
+		if(userIsConnect == null) {
+			model.addAttribute("isConnect", userIsConnect);
+			return "accueil";
+		}
+		
+		ResponseEntity<User> user = this.userService.getUserById(UUID.fromString(userIsConnect.toString()));
+		ResponseEntity<Profile> userProfile = this.profileService.getUserProfileByUserID(user.getBody());
+		
+		UserProfileDto userProfileDto = new UserProfileDto();
+		userProfileDto.setUser(user.getBody());
+		userProfileDto.setProfile(userProfile.getBody());
+
+		model.addAttribute("userProfile", userProfileDto);
+		return "userProfile";
+	}
+	
+	@GetMapping("/editProfil")
+	public String showEditUserProfil(HttpServletRequest request, Model model) {
+		Object userIsConnect = Utils.validPage(request, true);
+		if(userIsConnect == null) {
+			model.addAttribute("isConnect", userIsConnect);
+			return "accueil";
+		}
+		
+		ResponseEntity<User> user = this.userService.getUserById(UUID.fromString(userIsConnect.toString()));
+		ResponseEntity<Profile> userProfile = this.profileService.getUserProfileByUserID(user.getBody());
+		
+		UserProfileDto userProfileDto = new UserProfileDto();
+		userProfileDto.setUser(user.getBody());
+		userProfileDto.setProfile(userProfile.getBody());
+
+		model.addAttribute("userProfile", userProfileDto);
+		model.addAttribute("isConnect", userIsConnect);
+		return "editProfile";
+	}
+	
+	@PostMapping("/editProfil")
+	public String EditProfil(HttpServletRequest request, Model model, @ModelAttribute("userProfile") UserProfileDto userProfile,
+            @RequestParam("profilePictureUrl") MultipartFile profilePicture,
+            @RequestParam("coverPictureUrl") MultipartFile coverPicture) {
+		
+		Object userIsConnect = Utils.validPage(request, true);
+		model.addAttribute("isConnect", userIsConnect);
+		if(userIsConnect == null) {
+			return "accueil";
+		}
+		if(userProfile.getUser().getFirstName().trim().length() == 0 || userProfile.getUser().getLastName().trim().length() == 0) {
+			model.addAttribute("error", "Les champs marqué avec une etoile (*) sont obligatoire");
+			return "editProfile";
+		}
+		String uploadProfilePictureUrl =  "";
+		String uploadCoverPictureUrl = "";
+		
+		if(profilePicture != null && !profilePicture.isEmpty()) {
+			System.out.println("profile picture : " + profilePicture);
+			uploadProfilePictureUrl = FileUpload.UploadFile(profilePicture);
+		}
+		
+		if(coverPicture != null && !coverPicture.isEmpty()) {
+			System.out.println("profile picture : " + profilePicture);
+			uploadCoverPictureUrl = FileUpload.UploadFile(coverPicture);
+		}
+		
+		ResponseEntity<User> user = this.userService.updateUser(UUID.fromString(userIsConnect.toString()), userProfile.getUser(), uploadProfilePictureUrl, uploadCoverPictureUrl);
+		ResponseEntity<Profile> profile = this.profileService.updateProfile(user.getBody(), userProfile.getProfile());
+		
+		UserProfileDto  userProfileDto = new UserProfileDto();
+		userProfileDto.setUser(user.getBody());
+		userProfileDto.setProfile(profile.getBody());
+		model.addAttribute("information", "Vos informations ont bien été mise a jour");
+		return "editProfile";
 	}
 }

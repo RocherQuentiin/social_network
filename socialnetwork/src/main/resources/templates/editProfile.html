@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profil utilisateur</title>
+<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/editProfil.css}">
+<script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+	<div th:replace="~{fragments/header :: header-fragment}"></div>
+	<div class="edit-profile-page">
+		<main class="edit-profile-container">
+			<div class="alert-error" th:if="${error}">
+				<i data-lucide="alert-circle"></i> <span th:text="${error}"></span>
+			</div>
+			<div class="alert-information" th:if="${information}">
+				<i data-lucide="alert-circle"></i> <span th:text="${information}"></span>
+			</div>
+			<form action="/editProfil" method="post"
+				enctype="multipart/form-data">
+				<img id="profilePictureImg" type="image" th:src="@{${userProfile.user.profilePictureUrl}}"
+					width="100" height="100"></img> <input type="file"
+					id="profilePictureUrl" name="profilePictureUrl" accept="image/*"
+					style="visibility: hidden"> <img id="coverPictureImg"
+					type="image" th:src="@{${userProfile.user.coverPictureUrl}}" width="100" height="100"></img>
+				<input id="coverPictureUrl" type="file" name="coverPictureUrl"
+					accept="image/*" style="visibility: hidden">
+
+				<div class="input-group">
+					<label for="userGender">Genre</label>
+					<div class="input-wrapper">
+						<select th:field="*{userProfile.profile.userGender}"
+							name="userGender" id="userGender">
+							<option value="">-- Sélectionner --</option>
+							<option value="MALE">Homme</option>
+							<option value="FEMALE">Femme</option>
+							<option value="OTHER">Autre</option>
+							<option value="PREFER_NOT_TO_SAY">Préfére ne pas dire</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="input-group">
+					<label for="lastName">Nom *</label>
+					<div class="input-wrapper">
+						<input th:field="*{userProfile.user.lastName}" type="text"
+							id="lastName" name="lastName" placeholder="Entrer votre nom"
+							required>
+					</div>
+				</div>
+
+				<div class="input-group">
+					<label for="firstName">Prénom *</label>
+					<div class="input-wrapper">
+						<input th:field="*{userProfile.user.firstName}" type="text"
+							id="firstName" name="firstName" placeholder="Entrer votre prénom"
+							required>
+					</div>
+				</div>
+
+				<div class="input-group">
+					<label for="location">Ville</label>
+					<div class="input-wrapper">
+						<input th:field="*{userProfile.profile.location}" type="text"
+							id="location" name="location" placeholder="Entrer votre ville">
+					</div>
+				</div>
+
+				<div class="input-group">
+					<label for="phoneNumber">Numéro de téléphone</label>
+					<div class="input-wrapper">
+						<input th:field="*{userProfile.profile.phoneNumber}" type="text"
+							id="phoneNumber" name="phoneNumber"
+							placeholder="Entrer votre numéro de téléphone">
+					</div>
+				</div>
+
+				<div class="input-group">
+					<label for="birthdate">Date de naissance</label>
+					<div class="input-wrapper">
+						<input  th:value="${#temporals.format(userProfile.profile.birthdate, 'dd-MM-yyyy')}" th:field="*{userProfile.profile.birthdate}" type="date"
+							id="birthdate" name="birthdate"
+							placeholder="Entrer votre date de naissance">
+					</div>
+				</div>
+
+				<div class="input-group">
+					<label for="company">Entreprise</label>
+					<div class="input-wrapper">
+						<input th:field="*{userProfile.profile.company}" type="text"
+							id="company" name="company" placeholder="Entrer votre entreprise">
+					</div>
+				</div>
+				
+				<div class="input-group">
+					<label for="profession">Profession</label>
+					<div class="input-wrapper">
+						<input th:field="*{userProfile.profile.profession}" type="text"
+							id="profession" name="profession" placeholder="Entrer votre profession">
+					</div>
+				</div>
+
+				<div class="input-group">
+					<label for="education">Niveau d'étude</label>
+					<div class="input-wrapper">
+						<input th:field="*{userProfile.profile.education}" type="text"
+							id="education" name="education"
+							placeholder="Entrer votre niveau d'étude">
+					</div>
+				</div>
+
+				<div class="input-group">
+					<label for="isepSpecialization">Spécialisation</label>
+					<div class="input-wrapper">
+						<select th:field="*{userProfile.profile.isepSpecialization}"
+							id="isepSpecialization" name="isepSpecialization">
+							<option value="">-- Sélectionner --</option>
+							<option value="SOFTWARE_ENGINEERING">Génie logiciel</option>
+							<option value="DATA_SCIENCE">Data Science</option>
+							<option value="CYBERSECURITY">Cybersécurité</option>
+							<option value="EMBEDDED_SYSTEMS">Systèmes embarqués</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="input-group">
+					<label for="promoYear">Année de promotion</label>
+					<div class="input-wrapper">
+						<input th:field="*{userProfile.profile.promoYear}" type="number"
+							id="promoYear" name="promoYear" placeholder="Année de promotion"
+							min="1950" max="2100">
+					</div>
+				</div>
+
+				<div class="input-group">
+					<label for="website">Site web / Portfolio</label>
+					<div class="input-wrapper">
+						<input th:field="*{userProfile.profile.website}" type="url"
+							id="website" name="website" placeholder="Entrer votre site web">
+					</div>
+				</div>
+
+				<!--  <div class="input-group">
+					<label for="interests">Centres d'intérêt</label>
+					<div class="input-wrapper">
+						<input th:field="*{userProfile.profile.interests}" type="text" id="interests" name="interests">
+					</div>
+				</div>-->
+
+				<div class="input-group">
+					<label for="bio">Bio</label>
+					<div class="input-wrapper">
+						<textarea th:field="*{userProfile.user.bio}" id="bio" name="bio"
+							rows="4" placeholder="Parlez un peu de vous..."></textarea>
+					</div>
+				</div>
+
+				<button type="submit" class="btn-edit-profile-submit">
+					<span>Sauvegarder</span>
+				</button>
+
+			</form>
+		</main>
+	</div>
+
+
+
+	<div th:replace="~{fragments/footer :: footer-fragment}"></div>
+	<script th:src="@{/js/editProfile.js}"></script>
+	<script th:src="@{/js/header.js}"></script>
+	<script>lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profil utilisateur</title>
+<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+	<div th:replace="~{fragments/header :: header-fragment}"></div>
+	
+	 <a th:href="@{/editProfil}">Edition du profile</a>
+
+	<img id="profilePictureImg" type="image"
+		th:src="@{${userProfile.user.profilePictureUrl}}" width="100"
+		height="100"></img>
+
+	<img id="coverPictureImg" type="image"
+		th:src="@{${userProfile.user.coverPictureUrl}}" width="100"
+		height="100"></img>
+
+	<p>
+		USER ID : <span th:text="${userProfile.user.id}"></span>
+	</p>
+
+	<p>
+		Username : <span th:text="${userProfile.user.username}"></span>
+	</p>
+
+	<p>
+		Email : <span th:text="${userProfile.user.email}"></span>
+	</p>
+
+	<p>
+		FirstName : <span th:text="${userProfile.user.firstName}"></span>
+	</p>
+
+	<p>
+		LastName : <span th:text="${userProfile.user.lastName}"></span>
+	</p>
+
+	<p>
+		Bio : <span th:text="${userProfile.user.bio}"></span>
+	</p>
+
+	<p>
+		Is Verified : <span th:text="${userProfile.user.isVerified}"></span>
+	</p>
+
+	<p>
+		Is Active : <span th:text="${userProfile.user.isActive}"></span>
+	</p>
+
+	<p>
+		Role : <span th:text="${userProfile.user.role}"></span>
+	</p>
+
+
+	<p>
+		Profile ID : <span th:text="${userProfile.profile.id}"></span>
+	</p>
+
+	<p>
+		User ID : <span th:text="${userProfile.profile.user.id}"></span>
+	</p>
+
+	<p>
+		Location : <span th:text="${userProfile.profile.location}"></span>
+	</p>
+	<p>
+		Website : <span th:text="${userProfile.profile.website}"></span>
+	</p>
+	<p>
+		Phone Number : <span th:text="${userProfile.profile.phoneNumber}"></span>
+	</p>
+
+	<p>
+		Birthdate : <span th:text="${userProfile.profile.birthdate}" ></span>
+	</p>
+
+	<p>
+		Gender : <span th:text="${userProfile.profile.userGender}"></span>
+	</p>
+	<p>
+		Profession : <span th:text="${userProfile.profile.profession}"></span>
+	</p>
+	<p>
+		Company : <span th:text="${userProfile.profile.company}"></span>
+	</p>
+	<p>
+		Education : <span th:text="${userProfile.profile.education}"></span>
+	</p>
+	<p>
+		ISEP Specialization : <span
+			th:text="${userProfile.profile.isepSpecialization}"></span>
+	</p>
+
+	<p>
+		Promo Year : <span th:text="${userProfile.profile.promoYear}"></span>
+	</p>
+
+	<div th:replace="~{fragments/footer :: footer-fragment}"></div>
+
+	<script th:src="@{/js/header.js}"></script>
+	<script>lucide.createIcons();</script>
+</body>
+</html>
