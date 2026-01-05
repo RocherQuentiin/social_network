@@ -1,0 +1,24 @@
+.cover-container {
+    height: 200px;
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+}
+.cover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.avatar-wrapper {
+    width: 120px;
+    height: 120px;
+    margin-top: -60px;
+    border: 4px solid var(--bg-card);
+    border-radius: 50%;
+    background: var(--bg-card);
+}
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
