@@ -2,16 +2,23 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users</title>
+    <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+	<link rel="stylesheet" th:href="@{/css/header.css}">
+	<link rel="stylesheet" th:href="@{/css/users.css}">
+	<script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-<h1>All users</h1>
+<div th:replace="~{fragments/header :: header-fragment}"></div>
+<div class="table-container">
 <table>
     <thead>
     <tr>
         <th>Username</th>
         <th>Email</th>
         <th>Name</th>
+        <th>Voir</th>
     </tr>
     </thead>
     <tbody>
@@ -19,10 +26,14 @@
         <td th:text="${u.username}"></td>
         <td th:text="${u.email}"></td>
         <td th:text="${u.firstName} + ' ' + ${u.lastName}"></td>
+        <td><button class="user-view" th:data-id="${u.id}">Voir</button></td>
     </tr>
     </tbody>
 </table>
-<p><a th:href="@{/register}">Register new user</a></p>
-<p><a th:href="@{/}">Home</a></p>
+</div>
+<div th:replace="~{fragments/footer :: footer-fragment}"></div>
+<script th:src="@{/js/header.js}"></script>
+<script th:src="@{/js/users.js}"></script>
+<script>lucide.createIcons();</script>
 </body>
 </html>
