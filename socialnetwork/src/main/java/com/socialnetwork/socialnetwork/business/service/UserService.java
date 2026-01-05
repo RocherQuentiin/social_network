@@ -163,7 +163,7 @@ public class UserService implements IUserService{
 		System.out.println(existingUser.isPresent());
 		if(existingUser.isPresent()) {
 			existingUser.get().setFirstName(user.getFirstName());
-			existingUser.get().setFirstName(user.getLastName());
+			existingUser.get().setLastName(user.getLastName());
 			existingUser.get().setBio(user.getBio());
 			if(!uploadProfilePictureUrl.equals("")) {
 				existingUser.get().setProfilePictureUrl(uploadProfilePictureUrl);
