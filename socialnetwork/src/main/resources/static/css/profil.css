@@ -1,0 +1,433 @@
+/* =========================================
+   1. VARIABLES & LAYOUT GLOBAL
+   ========================================= */
+
+.profil-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+}
+
+/* =========================================
+   2. COLONNE GAUCHE (SIDEBAR)
+   ========================================= */
+
+.sidebar-left {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Box 1: Carte d'identité */
+.profile-card {
+    text-align: center;
+    padding: 30px 20px;
+}
+
+.avatar-wrapper {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 20px;
+}
+
+.avatar-wrapper img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary);
+}
+
+.edit-avatar-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-fullname {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 5px;
+}
+
+.user-studies {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+}
+
+.location-tag {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-bottom: 25px;
+}
+
+.stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    margin-bottom: 25px;
+}
+
+.stat-box {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.stat-box .label {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    font-weight: bold;
+}
+
+.stat-box .value {
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.btn-primary-full {
+    display: block;
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Box 2: Réseaux */
+.network-links {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.network-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-main);
+    padding: 5px 0;
+}
+
+.item-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.item-left i {
+    color: var(--primary);
+}
+
+.arrow-right {
+    color: var(--text-dim);
+    width: 16px;
+    opacity: 0.5;
+}
+
+/* Box 3: CV */
+.cv-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.cv-icon {
+    color: var(--primary);
+}
+
+.cv-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.cv-details span {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+}
+
+/* =========================================
+   3. COLONNE DROITE (CONTENU)
+   ========================================= */
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+
+/* Titres de section au-dessus des boîtes */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.section-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.icon-blue {
+    color: var(--primary);
+    width: 37px;
+    height: 37px;
+    padding: 8px;
+}
+
+.modifier-btn {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+/* Contenu des boîtes de droite */
+.box-content {
+    padding: 25px;
+}
+
+/* Compétences / Tags */
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.tag i {
+    width: 14px;
+    color: var(--text-dim);
+    cursor: pointer;
+}
+
+.add-tag-btn {
+    background: none;
+    border: 1px dashed var(--border);
+    color: var(--text-dim);
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.add-btn-square {
+    background: rgba(29, 155, 240, 0.15);
+    color: var(--primary);
+    border: none;
+    border-radius: 8px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Projets Grid */
+.projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.project-item img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+}
+
+.project-info {
+    padding: 15px;
+}
+
+.type-tag {
+    font-size: 0.7rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    float: right;
+}
+
+/* Box Ajouter un projet */
+.add-project-placeholder {
+    border: 2px dashed var(--border);
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    gap: 10px;
+    text-align: center;
+}
+
+.plus-circle {
+    background: rgba(29, 155, 240, 0.15);
+    color: var(--primary);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+/* --- CENTRES D'INTÉRÊT --- */
+
+.interests-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.interest-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    padding: 10px 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: var(--transition);
+}
+
+.interest-item:hover {
+    border-color: var(--primary);
+    background: rgba(29, 155, 240, 0.05);
+}
+
+/* Style de l'icône dans l'intérêt (Bleu sur fond transparent) */
+.interest-item i {
+    color: var(--primary);
+    background: rgba(29, 155, 240, 0.15);
+    padding: 6px;
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+}
+
+.interest-item span {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+/* =========================================
+   4. RESPONSIVE
+   ========================================= */
+
+@media (max-width: 768px) {
+
+    .profil-layout {
+        grid-template-columns: 1fr;
+        margin: 10px auto;
+        gap: 20px;
+        padding: 0 15px;
+    }
+
+
+    .sidebar-left {
+        max-width: 100%;
+        margin: 0;
+    }
+
+    .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+
+    .section-header h3 {
+        font-size: 1rem;
+    }
+
+    .icon-blue {
+        width: 32px;
+        height: 32px;
+        padding: 6px;
+    }
+
+
+    .box-content {
+        padding: 15px;
+    }
+
+
+    .tag, .interest-item {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+
+    .interest-item {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+
+    .project-item img {
+        height: 180px;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-fullname {
+        font-size: 1.2rem;
+    }
+
+    .stats-row {
+        gap: 10px;
+    }
+
+    .stat-box .value {
+        font-size: 0.9rem;
+    }
+}
