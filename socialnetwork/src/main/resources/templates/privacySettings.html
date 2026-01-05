@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Données privée</title>
+<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/privacy.css}">
+<script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+	<div th:replace="~{fragments/header :: header-fragment}"></div>
+	<div class="privacy-settings-page">
+		<main class="privacy-settings-container">
+			<div class="alert-error" th:if="${error}">
+				<i data-lucide="alert-circle"></i> <span th:text="${error}"></span>
+			</div>
+			<div class="alert-information" th:if="${information}">
+				<i data-lucide="alert-circle"></i> <span th:text="${information}"></span>
+			</div>
+			<form action="/privacy" method="post">
+				<div class="input-group">
+					<label for="visibleMail">Email visible</label>
+					<div class="input-wrapper">
+						<select th:field="*{privacy.canSeeEmail}">
+        					<option value="true">Oui</option>
+        					<option value="false">Non</option>
+   						 </select>
+					</div>
+				</div>
+
+				<div class="input-group">
+					<label for="visiblePhone">Numéro de téléphone visible</label>
+					<div class="input-wrapper">
+						<select th:field="*{privacy.canSeePhone}">
+        					<option value="true">Oui</option>
+        					<option value="false">Non</option>
+   						 </select>
+					</div>
+				</div>
+
+				<div class="input-group">
+					<label for="visibleBhirthdate">Visible Date de naissance</label>
+					<div class="input-wrapper">
+						<select th:field="*{privacy.canSeeBirthdate}">
+        					<option value="true">Oui</option>
+        					<option value="false">Non</option>
+   						 </select>
+					</div>
+				</div>
+
+				<div class="input-group">
+					<label for="visibleLocalisation">Visible localisation</label>
+					<div class="input-wrapper">
+						<select th:field="*{privacy.canSeeLocation}">
+        					<option value="true">Oui</option>
+        					<option value="false">Non</option>
+   						 </select>
+					</div>
+				</div>
+
+				<div class="input-group">
+					<label for="directMessageAuthorize">Autorisation message direct</label>
+					<div class="input-wrapper">
+						<select th:field="*{privacy.allowDirectMessages}">
+        					<option value="true">Oui</option>
+        					<option value="false">Non</option>
+   						 </select>
+					</div>
+				</div>
+
+				<div class="input-group">
+					<label for="connexionAuthorize">Autorisation connection</label>
+					<div class="input-wrapper">
+						<select th:field="*{privacy.allowFriendRequests}">
+        					<option value="true">Oui</option>
+        					<option value="false">Non</option>
+   						 </select>
+					</div>
+				</div>
+
+				<div class="input-group">
+					<label for="commentsAuthorize">Autorisation commentaire</label>
+					<div class="input-wrapper">
+						<select th:field="*{privacy.allowCommentsOnPosts}">
+        					<option value="true">Oui</option>
+        					<option value="false">Non</option>
+   						 </select>
+					</div>
+				</div>
+				
+				<button type="submit" class="btn-privacy-settings-submit">
+					<span>Sauvegarder</span>
+				</button>
+
+			</form>
+		</main>
+	</div>
+
+
+
+	<div th:replace="~{fragments/footer :: footer-fragment}"></div>
+	<script th:src="@{/js/header.js}"></script>
+	<script>lucide.createIcons();</script>
+</body>
+</html>

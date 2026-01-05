@@ -47,6 +47,9 @@ public class PrivacySettings {
 
     @Column(name = "allow_friend_requests")
     private Boolean allowFriendRequests = true;
+    
+    @Column(name = "allow_comments_on_posts")
+    private Boolean allowCommentsOnPosts = true;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "block_list", columnDefinition = "json")
@@ -149,4 +152,14 @@ public class PrivacySettings {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+	public Boolean getAllowCommentsOnPosts() {
+		return allowCommentsOnPosts;
+	}
+
+	public void setAllowCommentsOnPosts(Boolean allowCommentsOnPosts) {
+		this.allowCommentsOnPosts = allowCommentsOnPosts;
+	}
+    
+    
 }

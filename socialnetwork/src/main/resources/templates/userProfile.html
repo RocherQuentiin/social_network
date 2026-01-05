@@ -12,7 +12,8 @@
 <body>
 	<div th:replace="~{fragments/header :: header-fragment}"></div>
 	
-	 <a th:href="@{/editProfil}">Edition du profile</a>
+	 <a th:href="@{/editProfil}" class="btn-primary-header">Edition du profile</a>
+	 <a th:href="@{/privacy}" class="btn-primary-header">Données privée</a>
 
 	<img id="profilePictureImg" type="image"
 		th:src="@{${userProfile.user.profilePictureUrl}}" width="100"

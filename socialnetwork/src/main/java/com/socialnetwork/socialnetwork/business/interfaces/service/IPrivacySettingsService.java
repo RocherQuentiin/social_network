@@ -1,5 +1,7 @@
 package com.socialnetwork.socialnetwork.business.interfaces.service;
 
+import java.util.UUID;
+
 import org.springframework.http.ResponseEntity;
 
 import com.socialnetwork.socialnetwork.entity.PrivacySettings;
@@ -11,4 +13,7 @@ public interface IPrivacySettingsService {
 
 	ResponseEntity<PrivacySettings> getPrivacySettingsByUser(User user);
 
+	ResponseEntity<PrivacySettings> getPrivacySettingsByUserID(UUID userID);
+
+	ResponseEntity<PrivacySettings> savePrivacy(PrivacySettings privacySettings);
 }
