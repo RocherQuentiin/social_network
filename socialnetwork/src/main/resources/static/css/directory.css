@@ -197,6 +197,30 @@
     border-radius: 8px;
     cursor: pointer;
 }
+.btn-msg-small:hover {
+    background-color: var(--gold);
+    color: var(--bg-card);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    padding: 7px 15px;
+}
+
+.user-view{
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: white;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.user-view:hover {
+    background-color: var(--gold);
+    color: var(--bg-card);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    padding: 7px 15px;
+}
 
 /* PAGINATION */
 .pagination-wrapper {

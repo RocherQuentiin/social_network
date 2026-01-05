@@ -92,12 +92,32 @@
     transition: var(--transition);
 }
 
-.btn-primary-header:hover {
-    filter: brightness(1.1);
-    transform: translateY(-1px);
-    background: var(--gold);
+/* 1. On ne touche pas aux liens normaux (ils restent blancs/gris) */
+.mobile-menu a {
+    color: var(--text-main); /* Ou white selon ta charte */
+    text-decoration: none;
+    display: block;
+    padding: 15px 20px;
 }
 
+/* 2. On cible UNIQUEMENT les boutons de connexion/déconnexion par leur classe */
+.mobile-menu .btn-primary-header-mini {
+    color: var(--primary) !important; /* Ton bleu */
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    /* Optionnel : ajouter une bordure pour faire "bouton" */
+    border: 1px solid var(--primary);
+    margin: 10px 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+/* 3. Effet au survol pour le bouton */
+.mobile-menu .btn-primary-header-mini:hover {
+    background: var(--primary);
+    color: white !important;
+}
 /* Menu Burger (Caché par défaut sur grand écran) */
 .menu-burger {
     display: none;
@@ -186,6 +206,24 @@
     padding: 12px 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     transition: var(--transition);
+}
+
+.mobile-menu .btn-primary-header-mini {
+    color: var(--primary) !important; /* Ton bleu */
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    /* Optionnel : ajouter une bordure pour faire "bouton" */
+    border: 1px solid var(--primary);
+    margin: 10px 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+/* 3. Effet au survol pour le bouton */
+.mobile-menu .btn-primary-header-mini:hover {
+    background: var(--primary);
+    color: white !important;
 }
 
 @media (max-width: 800px) {
