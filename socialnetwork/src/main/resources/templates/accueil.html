@@ -20,19 +20,21 @@
                 <div class="publish-card" style="background:var(--bg-card); border:1px solid var(--border); padding:16px; border-radius:12px;">
                     <div class="publish-inner" style="display:flex; gap:12px; align-items:flex-start;">
                         <div class="avatar-box">
-                            <img th:src="@{/images/default-avatar.png}" alt="avatar" style="width:48px; height:48px; border-radius:50%; object-fit:cover;"/>
+                            <img th:src="@{${userAvatar}}" alt="avatar" style="width:48px; height:48px; border-radius:50%; object-fit:cover;"/>
                         </div>
-                        <form th:action="@{/post}" method="post" class="publish-form" style="flex:1;">
+                        <form th:action="@{/post}" method="post" class="publish-form" style="flex:1;" enctype="multipart/form-data">
                             <!-- CSRF token removed to avoid rendering error when security context is absent -->
                             <textarea name="content" placeholder="Quoi de neuf ? Partagez avec les étudiants..." rows="2" style="width:100%; padding:12px; border-radius:8px; background:transparent; border:1px solid var(--border); color:var(--text); resize:vertical;"></textarea>
                             <div style="display:flex; align-items:center; justify-content:space-between; margin-top:10px;">
                                 <div style="display:flex; gap:12px; align-items:center;">
                                     <div class="publish-icons" style="display:flex; gap:8px;">
-                                        <button type="button" class="icon-btn" style="background:transparent; border:none; color:var(--text-dim);"><i data-lucide="image"></i></button>
-                                        <button type="button" class="icon-btn" style="background:transparent; border:none; color:var(--text-dim);"><i data-lucide="link"></i></button>
-                                        <button type="button" class="icon-btn" style="background:transparent; border:none; color:var(--text-dim);"><i data-lucide="paperclip"></i></button>
+                                        <button type="button" id="postImage" class="icon-btn" style="background:transparent; border:none; color:var(--text-dim);"><i data-lucide="image"></i></button>
+                                        <button type="button" id="postVideo" class="icon-btn" style="background:transparent; border:none; color:var(--text-dim);"><i data-lucide="link"></i></button>
                                     </div>
-
+                                    
+                                    <input type="file" id="postVideoUrl" name="postVideoUrl" accept=".mp4, .avi" style="display: none;">
+                                    <input type="file" id="postImageUrl" name="postImageUrl" accept="image/*" style="display: none;">
+                                  
                                     <div class="visibility-select" style="display:flex; align-items:center; gap:8px;">
                                         <label for="visibilityType" style="color:var(--text-dim); font-size:0.9rem;">Visibilité</label>
                                         <select id="visibilityType" name="visibilityType" class="publish-visibility" style="background:transparent; border:1px solid var(--border); color:var(--text); padding:6px 8px; border-radius:6px;">
@@ -134,6 +136,7 @@
         <div th:replace="~{fragments/footer :: footer-fragment}"></div>
 
         <script th:src="@{/js/header.js}"></script>
+        <script th:src="@{/js/post.js}"></script>
         <script>lucide.createIcons();</script>
     </body>
 </html>
