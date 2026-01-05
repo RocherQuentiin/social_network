@@ -64,7 +64,9 @@
         <article th:each="u : ${users}" class="user-card card">
             <div class="user-card-top">
                 <div class="avatar-container">
-                    <img th:src="@{/images/default-avatar.png}" class="avatar-directory" alt="Avatar">
+                    <img th:src="${u.profilePictureUrl != null ? u.profilePictureUrl : '/images/default-avatar.png'}"
+                         class="avatar-directory"
+                         alt="Avatar">
                     <span class="online-badge"></span>
                 </div>
                 <button class="btn-more-small"><i data-lucide="more-vertical"></i></button>
@@ -82,8 +84,10 @@
                 <button class="btn-msg-small">
                     <i data-lucide="message-square"></i>
                 </button>
+                <button class="user-view" th:data-id="${u.id}">
+                    <i data-lucide="eye"></i>
+                </button>
             </div>
-            <td><button class="user-view" th:data-id="${u.id}">Voir</button></td>
         </article>
     </div>
 
