@@ -108,13 +108,14 @@
 }
 
 .stat-box .value {
-    font-weight: 800;
+    font-size: 12px;
+    font-weight: normal;
     color: var(--primary);
 }
 
 .btn-primary-full {
     display: block;
-    width: 100%;
+    width: 50%;
     background: var(--primary);
     color: white;
     padding: 12px;
@@ -122,6 +123,22 @@
     text-decoration: none;
     font-weight: bold;
     text-align: center;
+    border: #1c2028 2px solid;
+}
+
+.btn-primary-full:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    padding: 12px 27px;
+}
+
+.btn-infos{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
 }
 
 /* Box 2: Réseaux */
@@ -149,6 +166,12 @@
 
 .item-left i {
     color: var(--primary);
+}
+
+.item-left span {
+    font-size: 12px;
+    font-weight: normal;
+    color: white;
 }
 
 .arrow-right {

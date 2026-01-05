@@ -40,9 +40,10 @@
 					<span class="value text-primary" th:text="${userProfile.profile.isepSpecialization}">Logiciel</span>
 				</div>
 			</div>
-
-			<a th:href="@{/editProfil}" class="btn-primary-full">Éditer le profil</a>
-            <a th:href="@{/privacy}" class="btn-primary-header">Données privée</a>
+			<div class="btn-infos">
+				<a th:href="@{/editProfil}" class="btn-primary-header">Éditer le profil</a>
+				<a th:href="@{/privacy}" class="btn-primary-header">Données privée</a>
+			</div>
 		</div>
 
 		<div class="card networks-card">
