@@ -5,6 +5,7 @@ WORKDIR /workspace
 # copy maven files and source
 COPY pom.xml ./
 COPY src ./src
+COPY upload ./upload
 
 # build the application (skip tests for faster image builds)
 RUN mvn -B -DskipTests package
