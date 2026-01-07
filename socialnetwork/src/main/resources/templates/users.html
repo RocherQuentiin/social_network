@@ -7,6 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/directory.css}">
+    <link rel="stylesheet" th:href="@{/css/friendRequest.css}">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-dark">
@@ -78,8 +79,8 @@
             </div>
 
             <div class="user-card-footer">
-                <button class="btn-connect">
-                    <i data-lucide="user-plus"></i> Connecter
+                <button class="btn-friend-request" th:data-id="${u.id}" th:data-action="send">
+                    <i data-lucide="user-plus"></i> Ajouter
                 </button>
                 <button class="btn-msg-small">
                     <i data-lucide="message-square"></i>
@@ -104,6 +105,7 @@
 <div th:replace="~{fragments/footer :: footer-fragment}"></div>
 
 <script>lucide.createIcons();</script>
+<script th:src="@{/js/friendRequest.js}"></script>
 <script th:src="@{/js/directory.js}"></script>
 
 </body>
