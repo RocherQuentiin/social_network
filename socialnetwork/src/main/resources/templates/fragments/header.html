@@ -26,7 +26,8 @@
         <a th:href="@{/users}">Annuaire</a>
         <a th:href="@{/login}">Messages</a>
         <a th:href="@{/profil}">Mon Profil</a>
-        <a th:href="@{/login}" class="btn-primary-header">Connexion</a>
+        <div th:if="${isConnect == null}"><a th:href="@{/login}" class="btn-primary-header-mini">Connexion</a></div>
+        <div th:if="${isConnect != null}"><a th:href="@{/logout}" class="btn-primary-header-mini">Déconnexion</a></div>
     </div>
 </header>
 
