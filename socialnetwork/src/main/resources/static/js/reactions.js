@@ -33,7 +33,7 @@
         });
 
         var totalEl = container.querySelector('.reaction-total');
-        if(totalEl){ totalEl.textContent = total + (total > 1 ? ' réactions' : ' réaction'); }
+        if(totalEl){ totalEl.textContent = total + (total === 1 ? ' réaction' : ' réactions'); }
     }
 
     function refresh(container){
