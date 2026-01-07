@@ -242,6 +242,13 @@
     font-weight: bold;
 }
 
+.view-all-events-btn {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
 /* Contenu des boîtes de droite */
 .box-content {
     padding: 25px;
@@ -293,21 +300,21 @@
     cursor: pointer;
 }
 
-/* Projets Grid */
-.projects-grid {
+/* Projets Grid et Evenements Grid */
+.projects-grid, .events-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
 }
 
-.project-item img {
+.project-item img , .event-item img {
     width: 100%;
     height: 150px;
     object-fit: cover;
     border-radius: 8px 8px 0 0;
 }
 
-.project-info {
+.project-info, .event-info {
     padding: 15px;
 }
 
@@ -319,8 +326,8 @@
     float: right;
 }
 
-/* Box Ajouter un projet */
-.add-project-placeholder {
+/* Box Ajouter un projet et Ajouter un evenement */
+.add-project-placeholder, .add-event-placeholder {
     border: 2px dashed var(--border);
     background: transparent;
     display: flex;
@@ -403,7 +410,7 @@
         margin: 0;
     }
 
-    .projects-grid {
+    .projects-grid, .events-grid {
         grid-template-columns: 1fr;
         gap: 15px;
     }
@@ -452,5 +459,166 @@
 
     .stat-box .value {
         font-size: 0.9rem;
+    }
+}
+
+#editEventModal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+#editEventModal .card {
+    width: 100%;
+    max-width: 550px;
+    background: #1c2028;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Header de la modal */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--text-main);
+}
+
+#closeEventEditModal {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+#closeEventEditModal:hover {
+    color: white;
+}
+
+
+/* Footer de la modal (options et bouton) */
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.modal-footer .publish-options {
+    gap: 15px;
+}
+
+#saveEventEditBtn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#saveEventEditBtn:hover {
+    filter: brightness(1.1);
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.full-width { grid-column: 1 / -1; }
+
+.input-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-dim);
+}
+
+input, select, textarea {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    padding: 12px;
+    border-radius: 8px;
+    color: white;
+    font-family: inherit;
+    outline: none;
+    transition: 0.3s;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--primary);
+    background: rgba(29, 155, 240, 0.05);
+}
+
+.alert-error {
+    background: rgba(255, 68, 68, 0.1);
+    color: #ff4444;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.alert-information {
+    background: rgba(135,206,250, 0.1);
+    color: #87cefa;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.btn-event-submit {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: var(--transition);
+    margin-top: 10px;
+}
+
+.btn-event-submit:hover {
+    background: var(--gold);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+    .event-form > div {
+        grid-template-columns: 1fr !important;
     }
 }
