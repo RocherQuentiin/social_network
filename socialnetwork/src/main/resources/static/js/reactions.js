@@ -60,7 +60,7 @@
                     if(resp.ok || resp.status === 409){
                         refresh(container);
                     } else if(resp.status === 403){
-                        alert('Session expiree, veuillez vous reconnecter.');
+                        alert('Session expirée, veuillez vous reconnecter.');
                     } else {
                         console.error('reaction error', resp.status);
                         alert('Impossible de mettre a jour la reaction');
