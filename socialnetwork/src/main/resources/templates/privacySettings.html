@@ -1,108 +1,132 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Données privée</title>
-<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
-<link rel="stylesheet" th:href="@{/css/header.css}">
-<link rel="stylesheet" th:href="@{/css/privacy.css}">
-<script src="https://unpkg.com/lucide@latest"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Confidentialité - ISEP Connect</title>
+	<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+	<link rel="stylesheet" th:href="@{/css/header.css}">
+	<link rel="stylesheet" th:href="@{/css/privacy.css}">
+	<script src="https://unpkg.com/lucide@latest"></script>
 </head>
+<body class="bg-dark">
 
-<body>
-	<div th:replace="~{fragments/header :: header-fragment}"></div>
-	<div class="privacy-settings-page">
-		<main class="privacy-settings-container">
-			<div class="alert-error" th:if="${error}">
-				<i data-lucide="alert-circle"></i> <span th:text="${error}"></span>
+<div th:replace="~{fragments/header :: header-fragment}"></div>
+
+<main class="privacy-layout">
+	<div class="container-narrow">
+
+		<header class="page-header">
+			<h1><i data-lucide="shield-lock" class="icon-blue"></i> Données privées</h1>
+			<p>Contrôlez qui peut voir vos informations et interagir avec vous.</p>
+		</header>
+
+		<div class="alert-error" th:if="${error}">
+			<i data-lucide="alert-circle"></i> <span th:text="${error}"></span>
+		</div>
+		<div class="alert-information" th:if="${information}">
+			<i data-lucide="check-circle"></i> <span th:text="${information}"></span>
+		</div>
+
+		<form th:action="@{/privacy}" method="post" class="privacy-form">
+
+			<section class="form-section card">
+				<h3><i data-lucide="eye"></i> Visibilité des informations</h3>
+
+				<div class="settings-list">
+					<div class="setting-item">
+						<div class="setting-info">
+							<label for="canSeeEmail">Adresse Email</label>
+							<span>Afficher votre email sur votre profil</span>
+						</div>
+						<select th:field="*{privacy.canSeeEmail}" id="canSeeEmail" class="custom-select-privacy">
+							<option value="true">Oui</option>
+							<option value="false">Non</option>
+						</select>
+					</div>
+
+					<div class="setting-item">
+						<div class="setting-info">
+							<label for="canSeePhone">Numéro de téléphone</label>
+							<span>Afficher votre numéro de téléphone</span>
+						</div>
+						<select th:field="*{privacy.canSeePhone}" id="canSeePhone" class="custom-select-privacy">
+							<option value="true">Oui</option>
+							<option value="false">Non</option>
+						</select>
+					</div>
+
+					<div class="setting-item">
+						<div class="setting-info">
+							<label for="canSeeBirthdate">Date de naissance</label>
+							<span>Rendre votre date de naissance visible</span>
+						</div>
+						<select th:field="*{privacy.canSeeBirthdate}" id="canSeeBirthdate" class="custom-select-privacy">
+							<option value="true">Oui</option>
+							<option value="false">Non</option>
+						</select>
+					</div>
+
+					<div class="setting-item">
+						<div class="setting-info">
+							<label for="canSeeLocation">Localisation</label>
+							<span>Afficher votre ville (Paris, etc.)</span>
+						</div>
+						<select th:field="*{privacy.canSeeLocation}" id="canSeeLocation" class="custom-select-privacy">
+							<option value="true">Oui</option>
+							<option value="false">Non</option>
+						</select>
+					</div>
+				</div>
+			</section>
+
+			<section class="form-section card">
+				<h3><i data-lucide="message-circle"></i> Interactions</h3>
+
+				<div class="settings-list">
+					<div class="setting-item">
+						<div class="setting-info">
+							<label for="allowDirectMessages">Messages privés</label>
+							<span>Autoriser l'envoi de messages directs</span>
+						</div>
+						<select th:field="*{privacy.allowDirectMessages}" id="allowDirectMessages" class="custom-select-privacy">
+							<option value="true">Oui</option>
+							<option value="false">Non</option>
+						</select>
+					</div>
+
+					<div class="setting-item">
+						<div class="setting-info">
+							<label for="allowFriendRequests">Demandes de connexion</label>
+							<span>Autoriser les autres à vous ajouter</span>
+						</div>
+						<select th:field="*{privacy.allowFriendRequests}" id="allowFriendRequests" class="custom-select-privacy">
+							<option value="true">Oui</option>
+							<option value="false">Non</option>
+						</select>
+					</div>
+
+					<div class="setting-item">
+						<div class="setting-info">
+							<label for="allowCommentsOnPosts">Commentaires</label>
+							<span>Autoriser les commentaires sur vos posts</span>
+						</div>
+						<select th:field="*{privacy.allowCommentsOnPosts}" id="allowCommentsOnPosts" class="custom-select-privacy">
+							<option value="true">Oui</option>
+							<option value="false">Non</option>
+						</select>
+					</div>
+				</div>
+			</section>
+
+			<div class="form-actions">
+				<button type="submit" class="btn-primary-large">Sauvegarder</button>
 			</div>
-			<div class="alert-information" th:if="${information}">
-				<i data-lucide="alert-circle"></i> <span th:text="${information}"></span>
-			</div>
-			<form action="/privacy" method="post">
-				<div class="input-group">
-					<label for="visibleMail">Email visible</label>
-					<div class="input-wrapper">
-						<select th:field="*{privacy.canSeeEmail}">
-        					<option value="true">Oui</option>
-        					<option value="false">Non</option>
-   						 </select>
-					</div>
-				</div>
-
-				<div class="input-group">
-					<label for="visiblePhone">Numéro de téléphone visible</label>
-					<div class="input-wrapper">
-						<select th:field="*{privacy.canSeePhone}">
-        					<option value="true">Oui</option>
-        					<option value="false">Non</option>
-   						 </select>
-					</div>
-				</div>
-
-				<div class="input-group">
-					<label for="visibleBhirthdate">Visible Date de naissance</label>
-					<div class="input-wrapper">
-						<select th:field="*{privacy.canSeeBirthdate}">
-        					<option value="true">Oui</option>
-        					<option value="false">Non</option>
-   						 </select>
-					</div>
-				</div>
-
-				<div class="input-group">
-					<label for="visibleLocalisation">Visible localisation</label>
-					<div class="input-wrapper">
-						<select th:field="*{privacy.canSeeLocation}">
-        					<option value="true">Oui</option>
-        					<option value="false">Non</option>
-   						 </select>
-					</div>
-				</div>
-
-				<div class="input-group">
-					<label for="directMessageAuthorize">Autorisation message direct</label>
-					<div class="input-wrapper">
-						<select th:field="*{privacy.allowDirectMessages}">
-        					<option value="true">Oui</option>
-        					<option value="false">Non</option>
-   						 </select>
-					</div>
-				</div>
-
-				<div class="input-group">
-					<label for="connexionAuthorize">Autorisation connection</label>
-					<div class="input-wrapper">
-						<select th:field="*{privacy.allowFriendRequests}">
-        					<option value="true">Oui</option>
-        					<option value="false">Non</option>
-   						 </select>
-					</div>
-				</div>
-
-				<div class="input-group">
-					<label for="commentsAuthorize">Autorisation commentaire</label>
-					<div class="input-wrapper">
-						<select th:field="*{privacy.allowCommentsOnPosts}">
-        					<option value="true">Oui</option>
-        					<option value="false">Non</option>
-   						 </select>
-					</div>
-				</div>
-				
-				<button type="submit" class="btn-privacy-settings-submit">
-					<span>Sauvegarder</span>
-				</button>
-
-			</form>
-		</main>
+		</form>
 	</div>
+</main>
 
-
-
-	<div th:replace="~{fragments/footer :: footer-fragment}"></div>
-	<script th:src="@{/js/header.js}"></script>
-	<script>lucide.createIcons();</script>
+<div th:replace="~{fragments/footer :: footer-fragment}"></div>
+<script>lucide.createIcons();</script>
 </body>
 </html>

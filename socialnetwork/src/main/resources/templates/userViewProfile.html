@@ -1,113 +1,132 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Profil utilisateur</title>
-<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
-<link rel="stylesheet" th:href="@{/css/header.css}">
-<script src="https://unpkg.com/lucide@latest"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title th:text="${userProfile.user.firstName + ' ' + userProfile.user.lastName + ' - ISEP Connect'}">Profil</title>
+	<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+	<link rel="stylesheet" th:href="@{/css/header.css}">
+	<link rel="stylesheet" th:href="@{/css/profil.css}">
+	<script src="https://unpkg.com/lucide@latest"></script>
 </head>
+<body class="bg-dark">
 
-<body>
-	<div th:replace="~{fragments/header :: header-fragment}"></div>
+<div th:replace="~{fragments/header :: header-fragment}"></div>
 
-	<a th:if="${userProfile.privacySettings.allowDirectMessages == 'true'}" th:href="@{/login}" class="btn-primary-header">Message directe</a>
-	<a class="btn-primary-header" th:classappend="${isFollow ? 'unfollow' : 'follow'}" th:data-id="${userProfile.user.id}" th:text="${isFollow == true ? 'Ne plus suivre' : 'Suivre'}"></a>
-	<button class="btn-friend-request" th:data-id="${userProfile.user.id}" th:data-action="send">Ajouter comme ami</button>
-	<br>
-	<br>
-	
-	<img id="profilePictureImg" type="image"
-		th:src="@{${userProfile.user.profilePictureUrl}}" width="100"
-		height="100"></img>
+<main class="profil-layout">
+	<aside class="sidebar-left">
+		<div class="card profile-card">
+			<div class="avatar-section">
+				<div class="avatar-wrapper">
+					<img th:src="@{${userProfile.user.profilePictureUrl != null ? userProfile.user.profilePictureUrl : '/images/default-avatar.png'}}" alt="Avatar">
+				</div>
+			</div>
 
-	<img id="coverPictureImg" type="image"
-		th:src="@{${userProfile.user.coverPictureUrl}}" width="100"
-		height="100"></img>
+			<h2 class="user-fullname" th:text="${userProfile.user.firstName + ' ' + userProfile.user.lastName}">Alexandre Dupont</h2>
+			<p class="user-studies" th:text="${userProfile.profile.profession}">Étudiant Ingénieur - ISEP</p>
 
-	<p>
-		Username : <span th:text="${userProfile.user.username}"></span>
-	</p>
+			<div class="location-tag" th:if="${userProfile.privacySettings.canSeeLocation}">
+				<i data-lucide="map-pin"></i>
+				<span th:text="${userProfile.profile.location}">Paris, France</span>
+			</div>
 
-	<p th:if="${userProfile.privacySettings.canSeeEmail}">
-		Email : <span th:text="${userProfile.user.email}"></span>
-	</p>
+			<div class="stats-row">
+				<div class="stat-box">
+					<span class="label">PROMO</span>
+					<span class="value text-primary" th:text="${userProfile.profile.promoYear}">2024</span>
+				</div>
+				<div class="stat-box">
+					<span class="label">FILIÈRE</span>
+					<span class="value text-primary" th:text="${userProfile.profile.isepSpecialization}">Logiciel</span>
+				</div>
+			</div>
 
-	<p>
-		FirstName : <span th:text="${userProfile.user.firstName}"></span>
-	</p>
+			<div style="display: flex; flex-direction: column; gap: 10px;">
+				<button id="followBtn"
+						class="btn-primary-full"
+						th:classappend="${isFollow ? 'unfollow' : 'follow'}"
+						th:data-id="${userProfile.user.id}"
+						th:text="${isFollow ? 'Ne plus suivre' : 'Suivre'}">
+					Suivre
+				</button>
 
-	<p>
-		LastName : <span th:text="${userProfile.user.lastName}"></span>
-	</p>
+				<a th:if="${userProfile.privacySettings.allowDirectMessages == 'true'}"
+				   th:href="@{/messages(target=${userProfile.user.id})}"
+				   class="btn-primary-full"
+				   style="background: rgba(255,255,255,0.1); border: 1px solid var(--border);">
+					Envoyer un message
+				</a>
+			</div>
+		</div>
 
-	<p>
-		Bio : <span th:text="${userProfile.user.bio}"></span>
-	</p>
+		<div class="card networks-card">
+			<h3 class="sidebar-title">Réseaux</h3>
+			<div class="network-links">
+				<a th:if="${userProfile.profile.website}" th:href="${userProfile.profile.website}" target="_blank" class="network-item">
+					<div class="item-left"><i data-lucide="globe"></i> <span>Portfolio</span></div>
+					<i data-lucide="external-link" class="arrow-right"></i>
+				</a>
+				<div class="network-item" th:if="${userProfile.privacySettings.canSeeEmail}">
+					<div class="item-left"><i data-lucide="mail"></i> <span th:text="${userProfile.user.email}">Email</span></div>
+				</div>
+			</div>
+		</div>
+	</aside>
 
-	<p>
-		Is Verified : <span th:text="${userProfile.user.isVerified}"></span>
-	</p>
+	<section class="main-content">
+		<div class="section-container">
+			<div class="section-header">
+				<h3><i data-lucide="user" class="icon-blue"></i> À propos</h3>
+			</div>
+			<div class="card box-content">
+				<p th:text="${userProfile.user.bio != null ? userProfile.user.bio : 'Cet utilisateur n a pas encore rédigé de bio.'}">Bio...</p>
+			</div>
+		</div>
 
-	<p>
-		Is Active : <span th:text="${userProfile.user.isActive}"></span>
-	</p>
+		<div class="section-container">
+			<div class="section-header">
+				<h3><i data-lucide="graduation-cap" class="icon-blue"></i> Formation</h3>
+			</div>
+			<div class="card box-content">
+				<div class="tags-container">
+					<span class="tag" th:text="${userProfile.profile.education}">Niveau d'étude</span>
+					<span class="tag" th:text="${userProfile.profile.isepSpecialization}">Spécialisation</span>
+					<span class="tag" th:text="'Promo ' + ${userProfile.profile.promoYear}">Promo</span>
+				</div>
+			</div>
+		</div>
 
-	<p>
-		Role : <span th:text="${userProfile.user.role}"></span>
-	</p>
+		<div class="section-container">
+			<div class="section-header">
+				<h3><i data-lucide="briefcase" class="icon-blue"></i> Expérience Professionnelle</h3>
+			</div>
+			<div class="projects-grid">
+				<div class="card project-item" style="display: flex; align-items: center; padding: 20px; gap: 20px;">
+					<div class="plus-circle"><i data-lucide="briefcase"></i></div>
+					<div class="project-info" style="padding: 0;">
+						<h4 th:text="${userProfile.profile.profession != null ? userProfile.profile.profession : 'En recherche d opportunités'}">Poste</h4>
+						<p th:text="${userProfile.profile.company != null ? userProfile.profile.company : 'ISEP'}">Entreprise</p>
+					</div>
+				</div>
+			</div>
+		</div>
 
+		<div class="section-container" th:if="${userProfile.privacySettings.canSeeBirthdate}">
+			<div class="section-header">
+				<h3><i data-lucide="calendar" class="icon-blue"></i> Informations</h3>
+			</div>
+			<div class="card box-content">
+				<p><strong>Date de naissance :</strong> <span th:text="${userProfile.profile.birthdate}">01/01/2000</span></p>
+				<p th:if="${userProfile.privacySettings.canSeePhone}"><strong>Téléphone :</strong> <span th:text="${userProfile.profile.phoneNumber}">Non renseigné</span></p>
+			</div>
+		</div>
+	</section>
+</main>
 
-	<p>
-		Profile ID : <span th:text="${userProfile.profile.id}"></span>
-	</p>
+<div th:replace="~{fragments/footer :: footer-fragment}"></div>
 
-	<p>
-		User ID : <span th:text="${userProfile.profile.user.id}"></span>
-	</p>
-
-	<p th:if="${userProfile.privacySettings.canSeeLocation}">
-		Location : <span th:text="${userProfile.profile.location}"></span>
-	</p>
-	<p>
-		Website : <span th:text="${userProfile.profile.website}"></span>
-	</p>
-	<p th:if="${userProfile.privacySettings.canSeePhone}">
-		Phone Number : <span th:text="${userProfile.profile.phoneNumber}"></span>
-	</p>
-
-	<p th:if="${userProfile.privacySettings.canSeeBirthdate}">
-		Birthdate : <span th:text="${userProfile.profile.birthdate}" ></span>
-	</p>
-
-	<p>
-		Gender : <span th:text="${userProfile.profile.userGender}"></span>
-	</p>
-	<p>
-		Profession : <span th:text="${userProfile.profile.profession}"></span>
-	</p>
-	<p>
-		Company : <span th:text="${userProfile.profile.company}"></span>
-	</p>
-	<p>
-		Education : <span th:text="${userProfile.profile.education}"></span>
-	</p>
-	<p>
-		ISEP Specialization : <span
-			th:text="${userProfile.profile.isepSpecialization}"></span>
-	</p>
-
-	<p>
-		Promo Year : <span th:text="${userProfile.profile.promoYear}"></span>
-	</p>
-
-	<div th:replace="~{fragments/footer :: footer-fragment}"></div>
-
-	<script th:src="@{/js/header.js}"></script>
-	<script th:src="@{/js/userViewProfile.js}"></script>
-	<script th:src="@{/js/friendRequest.js}"></script>
-	<link rel="stylesheet" th:href="@{/css/friendRequest.css}">
-	<script>lucide.createIcons();</script>
+<script th:src="@{/js/header.js}"></script>
+<script th:src="@{/js/userViewProfile.js}"></script>
+<script>lucide.createIcons();</script>
 </body>
 </html>

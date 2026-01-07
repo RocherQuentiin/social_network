@@ -1,0 +1,722 @@
+
+.blog-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr 320px;
+    gap: 25px;
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+    align-items: start;
+}
+
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.user-profile-card {
+    text-align: center;
+    padding: 20px;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.profile-info h4 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.profile-info span {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    text-align: left;
+}
+
+.avatar-large {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-stats {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+}
+
+.stat-value {
+    color: var(--primary);
+    font-weight: bold;
+}
+
+.side-nav {
+    padding: 7px;
+}
+
+.side-nav .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    text-decoration: none;
+    color: var(--text-main);
+    transition: 0.3s;
+}
+
+.side-nav .nav-item i, .side-nav .nav-item svg {
+    width: 20px;
+    height: 20px;
+}
+
+.side-nav .nav-item.active {
+    background: var(--primary);
+    color: #ffffff;
+    font-weight: bolder;
+    border-radius: 8px;
+}
+
+.publish-card {
+    padding: 15px;
+}
+
+.publish-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.publish-input-area {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.publish-input-area textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 0.95rem;
+    resize: none;
+    outline: none;
+    min-height: 90px;
+}
+
+.btn-primary{
+    padding: 7px 17px;
+    border-radius: 8px;
+    border: 1px solid var(--primary);
+}
+
+.publish-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.media-inputs {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.img-fluid, .video-fluid {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.post-media-container {
+    width: 100%;
+    overflow: hidden;
+}
+
+.btn-icon-upload {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    color: var(--primary);
+    opacity: 0.8;
+}
+
+.btn-icon-upload svg {
+    width: 18px;
+    height: 18px;
+}
+
+.vertical-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
+}
+
+.publish-options {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.custom-select {
+    background: #1c2028;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    outline: none;
+    cursor: pointer;
+}
+
+.custom-select option {
+    background: #1c2028;
+    color: white;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    cursor: pointer;
+}
+
+.btn-publish {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.post-card {
+    padding: 20px;
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.post-meta {
+    flex: 1;
+}
+
+.post-meta strong { display: block; }
+.post-meta span { font-size: 0.8rem; color: var(--text-dim); }
+
+/* Boutons Modifier et Supprimer (Header du Post) */
+.post-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.btn-icon {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+/* Taille des icônes Modifier/Supprimer */
+.btn-icon svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2px;
+}
+
+/* Effet au survol spécifique */
+.btn-icon:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-main);
+}
+
+.btn-delete:hover {
+    background: rgba(255, 77, 77, 0.1);
+    color: var(--danger);
+}
+
+
+.post-content p {
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+/* Post Footer - Boutons plus petits */
+.post-footer {
+    display: flex;
+    gap: 7px;
+    margin-top: 12px;
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+}
+
+.post-footer button {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: 0.2s;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.post-footer button:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--primary);
+}
+
+/* Taille spécifique des icônes Lucide dans le footer */
+.post-footer button svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2px;
+}
+
+/* Bouton partage spécifique pour être encore plus discret */
+.btn-share {
+    margin-left: auto;
+}
+
+.announcement-title { padding: 15px; }
+.announcement-item {
+    margin-bottom: 15px;
+    border-left: 3px solid var(--primary);
+    padding-left: 10px;
+}
+
+.event-item { display: flex; gap: 12px; margin-top: 15px; }
+.event-date {
+    background: var(--border);
+    padding: 5px;
+    border-radius: 6px;
+    text-align: center;
+    min-width: 45px;
+    font-size: 0.75rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.tag {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    display: inline-block;
+    margin: 2px;
+}
+
+.avatar-small {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Sidebar Right - Annonces */
+.announcement-part {
+    display: flex;
+    flex-direction: column;
+}
+
+.announcement-title {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+}
+
+.announcement-title h5 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.announcement-stats {
+    padding: 0 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.announcement-item {
+    border-left: 3px solid var(--primary);
+    padding-left: 12px;
+}
+
+.announcement-item h6 {
+    margin: 0 0 4px 0;
+    color: var(--text-main);
+    font-size: 0.9rem;
+}
+
+.announcement-item p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    line-height: 1.4;
+}
+
+/* À Venir & Sujets du moment */
+.trending, .tags-section {
+    padding: 20px;
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.flex-between h5 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.view-all {
+    text-decoration: none;
+    color: var(--primary);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.view-all:hover {
+    text-decoration: underline;
+}
+
+/* Items Événements */
+.event-item {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.event-date {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    min-width: 50px;
+    height: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.event-date span:first-child {
+    font-size: 1.1rem;
+    color: var(--text-main);
+}
+
+.event-date span:last-child {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+}
+
+.event-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.event-info strong {
+    font-size: 0.9rem;
+    color: var(--text-main);
+}
+
+.event-info span {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+}
+
+/* Tags Cloud */
+.tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.tag {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+.tag:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* Footer de la modal (options et bouton) */
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.modal-footer .publish-options {
+    gap: 15px;
+}
+
+
+
+/* Modal de modification */
+#editModal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+#editModal .card {
+    width: 100%;
+    max-width: 550px;
+    background: #1c2028;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Header de la modal */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--text-main);
+}
+
+#closeEditModal {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+#closeEditModal:hover {
+    color: white;
+}
+
+/* Contenu de la modal */
+#editContent {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: white;
+    padding: 12px;
+    font-size: 0.95rem;
+    resize: vertical;
+    outline: none;
+    margin-bottom: 15px;
+}
+
+#editContent:focus {
+    border-color: var(--primary);
+}
+
+/* Footer de la modal (options et bouton) */
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.modal-footer .publish-options {
+    gap: 15px;
+}
+
+#saveEditBtn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#saveEditBtn:hover {
+    filter: brightness(1.1);
+}
+
+/* --- SECTION FILTRES DE VISIBILITÉ --- */
+
+.visibility-filters {
+    padding: 15px 20px;
+    border-top: 1px solid var(--border); /* Sépare des stats du dessus */
+    text-align: left;
+    background: rgba(255, 255, 255, 0.02); /* Très léger fond pour distinguer */
+}
+
+.section-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.filter-group label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text-main);
+    transition: color 0.2s ease;
+    padding: 4px 0;
+}
+
+.filter-group label:hover {
+    color: var(--primary);
+}
+
+/* Style des checkboxes */
+.filter-group input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #1c2028;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter-group input[type="checkbox"]:checked {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+/* Le petit "check" blanc quand c'est coché */
+.filter-group input[type="checkbox"]:checked::after {
+    content: "✔";
+    color: white;
+    font-size: 10px;
+}
+
+/* Style des points de couleur (Dots) */
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dot.public {
+    background: #22c55e; /* Vert */
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.3);
+}
+
+.dot.friends {
+    background: #3b82f6; /* Bleu */
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+}
+
+.dot.private {
+    background: #ef4444; /* Rouge */
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+}
+
+@media (max-width: 1100px) {
+    .blog-layout { grid-template-columns: 250px 1fr; }
+    .sidebar-right { display: none; }
+}
+
+@media (max-width: 800px) {
+    .blog-layout { grid-template-columns: 1fr; }
+    .sidebar-left { display: none; }
+}
+
+@media (max-width: 600px) {
+    .publish-bottom { flex-direction: column; align-items: stretch; }
+    .media-inputs { justify-content: space-between; }
+    .btn-publish { width: 100%; }
+    .post-footer { justify-content: space-between; }
+}
