@@ -530,6 +530,10 @@ public class UserController {
 			return "accueil";
 		}
 		
+		if(userIsConnect.toString().equals(id)) {
+			return showUserProfil(request, model);
+		}
+		
 		
 		ResponseEntity<User> user = this.userService.getUserById(UUID.fromString(id));
 		ResponseEntity<Profile> userProfile = this.profileService.getUserProfileByUserID(user.getBody());
