@@ -66,7 +66,7 @@
                         alert('Impossible de mettre a jour la reaction');
                     }
                 })
-                .catch(function(err){ console.error('reaction network error', err); alert('Erreur reseau'); })
+                .catch(function(err){ console.error('reaction network error', err); alert('Erreur réseau'); })
                 .finally(function(){ btn.disabled = false; });
         });
     }
