@@ -14,6 +14,7 @@
 
 	<a th:if="${userProfile.privacySettings.allowDirectMessages == 'true'}" th:href="@{/login}" class="btn-primary-header">Message directe</a>
 	<a class="btn-primary-header" th:classappend="${isFollow ? 'unfollow' : 'follow'}" th:data-id="${userProfile.user.id}" th:text="${isFollow == true ? 'Ne plus suivre' : 'Suivre'}"></a>
+	<button class="btn-friend-request" th:data-id="${userProfile.user.id}" th:data-action="send">Ajouter comme ami</button>
 	<br>
 	<br>
 	
@@ -105,6 +106,8 @@
 
 	<script th:src="@{/js/header.js}"></script>
 	<script th:src="@{/js/userViewProfile.js}"></script>
+	<script th:src="@{/js/friendRequest.js}"></script>
+	<link rel="stylesheet" th:href="@{/css/friendRequest.css}">
 	<script>lucide.createIcons();</script>
 </body>
 </html>

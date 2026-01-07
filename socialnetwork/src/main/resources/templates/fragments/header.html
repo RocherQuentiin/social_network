@@ -10,6 +10,10 @@
             <a th:href="@{/users}">Annuaire</a>
             <a th:href="@{/messages}">Messages</a>
             <a th:href="@{/profil}">Mon Profil</a>
+            <a th:href="@{/profil/pending-requests}" class="notification-icon-wrapper">
+                <span>Demandes</span>
+                <span id="notification-badge" style="display: none;"></span>
+            </a>
         </nav>
 
         <div class="navbar-actions">
@@ -24,8 +28,9 @@
     <div class="mobile-menu" id="mobileMenu">
         <a th:href="@{/accueil}">Accueil</a>
         <a th:href="@{/users}">Annuaire</a>
-        <a th:href="@{/login}">Messages</a>
+        <a th:href="@{/messages}">Messages</a>
         <a th:href="@{/profil}">Mon Profil</a>
+        <a th:href="@{/profil/pending-requests}">Demandes</a>
         <a th:href="@{/login}" class="btn-primary-header">Connexion</a>
     </div>
 </header>
