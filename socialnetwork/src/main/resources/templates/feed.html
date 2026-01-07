@@ -60,10 +60,10 @@
 
                 <div class="publish-bottom">
                     <div class="media-inputs">
-                        <button type="button" class="btn-icon-upload" onclick="document.getElementById('postImageUrl').click()" title="Image">
+                        <button id="postVideo" type="button" class="btn-icon-upload" title="Image">
                             <i data-lucide="image"></i>
                         </button>
-                        <button type="button" class="btn-icon-upload" onclick="document.getElementById('postVideoUrl').click()" title="Vidéo">
+                        <button id="postImage" type="button" class="btn-icon-upload" onclick="document.getElementById('postVideoUrl').click()" title="Vidéo">
                             <i data-lucide="video"></i>
                         </button>
 
@@ -104,7 +104,7 @@
                         </div>
                     </div>
 
-                    <div class="post-actions" th:if="${loggedUserId != null and loggedUserId.toString() == post.author.id.toString()}">
+                    <div class="post-actions" th:if="${isConnect != null and isConnect.toString() == post.author.id.toString()}">
                         <button type="button" class="btn-icon" th:attr="data-post-id=${post.id}" onclick="openEditModalFromButton(this)">
                             <i data-lucide="edit-2"></i>
                         </button>
