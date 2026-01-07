@@ -10,7 +10,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 public class FileUpload {
-	private static final Path UPLOAD_DIR = Paths.get("workspace/src/main/resources/static/upload");
+	private static final Path UPLOAD_DIR = Paths.get("/app/upload").toAbsolutePath().normalize();
 	
 	public static String UploadFile(MultipartFile file) {
 		try {
