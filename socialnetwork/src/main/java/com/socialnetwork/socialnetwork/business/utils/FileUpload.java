@@ -19,10 +19,13 @@ public class FileUpload {
             System.out.println("File upload originalFilename : " + originalFilename);
             Path targetLocation = UPLOAD_DIR.resolve(originalFilename);
             System.out.println("File upload Path : " + targetLocation);
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            long info = Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("File upload Success : " + info);
             return "/upload/" + originalFilename;
 
-        } catch (IOException ex) {
+        } catch (IOException e) {
+        	System.out.println("File upload Error Message : " + e.getLocalizedMessage());
+        	System.out.println("File upload Error Message : " + e.getMessage());
             return "error";
         }
 	}
