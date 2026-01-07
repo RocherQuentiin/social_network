@@ -63,7 +63,7 @@
                         alert('Session expiree, veuillez vous reconnecter.');
                     } else {
                         console.error('reaction error', resp.status);
-                        alert('Impossible de mettre a jour la reaction');
+                        alert('Impossible de mettre à jour la reaction');
                     }
                 })
                 .catch(function(err){ console.error('reaction network error', err); alert('Erreur reseau'); })
