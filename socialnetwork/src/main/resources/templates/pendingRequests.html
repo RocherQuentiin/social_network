@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demandes de connexion</title>
+    <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/friendRequest.css}">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header-fragment}"></div>
+
+    <main style="max-width: 800px; margin: 40px auto; padding: 0 20px;">
+        <h1>Demandes de connexion</h1>
+        
+        <div id="received-requests-container">
+            <p>Chargement des demandes reçues...</p>
+        </div>
+
+        <br>
+        <hr>
+        <br>
+
+        <div id="sent-requests-container">
+            <p>Chargement des demandes envoyées...</p>
+        </div>
+    </main>
+
+    <div th:replace="~{fragments/footer :: footer-fragment}"></div>
+
+    <script th:src="@{/js/header.js}"></script>
+    <script th:src="@{/js/friendRequest.js}"></script>
+    <script>
+        lucide.createIcons();
+        // Load pending requests when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPendingRequests();
+        });
+    </script>
+</body>
+</html>

@@ -550,4 +550,14 @@ public class UserController {
 		model.addAttribute("userProfile", userOtherProfileDto);
 		return "userViewProfile";
 	}
+
+	@GetMapping("/profil/pending-requests")
+	public String showPendingRequests(HttpServletRequest request, Model model) {
+		Object userIsConnect = Utils.validPage(request, true);
+		model.addAttribute("isConnect", userIsConnect);
+		if(userIsConnect == null) {
+			return "accueil";
+		}
+		return "pendingRequests";
+	}
 }

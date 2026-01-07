@@ -12,6 +12,10 @@ RUN mvn -B -DskipTests package
 FROM eclipse-temurin:17-jre
 WORKDIR /app
 
+RUN mkdir -p /app/upload
+
+COPY upload/ /app/upload/
+
 # copy built jar from the build stage (wildcard handles snapshot or versioned jar)
 COPY --from=build /workspace/target/*.jar app.jar
 

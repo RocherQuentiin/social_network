@@ -7,6 +7,7 @@
 	<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
 	<link rel="stylesheet" th:href="@{/css/header.css}">
 	<link rel="stylesheet" th:href="@{/css/profil.css}">
+	<link rel="stylesheet" th:href="@{/css/friendRequest.css}">
 	<script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-dark">
@@ -42,6 +43,12 @@
 			</div>
 
 			<div style="display: flex; flex-direction: column; gap: 10px;">
+				<button class="btn-friend-request"
+				        th:data-id="${userProfile.user.id}"
+				        th:data-action="send">
+					Ajouter comme ami
+				</button>
+
 				<button id="followBtn"
 						class="btn-primary-full"
 						th:classappend="${isFollow ? 'unfollow' : 'follow'}"
@@ -127,6 +134,7 @@
 
 <script th:src="@{/js/header.js}"></script>
 <script th:src="@{/js/userViewProfile.js}"></script>
+<script th:src="@{/js/friendRequest.js}"></script>
 <script>lucide.createIcons();</script>
 </body>
 </html>
