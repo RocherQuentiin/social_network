@@ -14,8 +14,11 @@ public class FileUpload {
 	
 	public static String UploadFile(MultipartFile file) {
 		try {
+			System.out.println("File upload directory : " + UPLOAD_DIR);
             String originalFilename = Utils.generateRandomString(10) + "_" + StringUtils.cleanPath(file.getOriginalFilename());
+            System.out.println("File upload originalFilename : " + originalFilename);
             Path targetLocation = UPLOAD_DIR.resolve(originalFilename);
+            System.out.println("File upload Path : " + targetLocation);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             return "/upload/" + originalFilename;
 
