@@ -31,7 +31,7 @@
         <a th:href="@{/messages}">Messages</a>
         <a th:href="@{/profil}">Mon Profil</a>
         <div th:if="${isConnect == null}"><a th:href="@{/login}" class="btn-primary-header-mini">Connexion</a></div>
-        <a th:href="@{/profil/pending-requests}">Demandes</a>
+        <a th:if="${isConnect != null}" th:href="@{/profil/pending-requests}">Demandes</a>
     </div>
 </header>
 
