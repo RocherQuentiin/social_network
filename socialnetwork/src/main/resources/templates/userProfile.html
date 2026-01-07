@@ -84,6 +84,14 @@
 		</aside>
 
 		<section class="main-content">
+			<div class="alert-error" th:if="${errorEvent}">
+				<i data-lucide="alert-circle"></i> <span th:text="${errorEvent}"></span>
+			</div>
+
+			<div class="alert-information" th:if="${informationEvent}">
+				<i data-lucide="alert-circle"></i> <span
+					th:text="${informationEvent}"></span>
+			</div>
 			<div class="section-container">
 				<div class="section-header">
 					<h3>
@@ -210,14 +218,6 @@
 
 				<form th:action="@{/event}" th:object="${event}" method="post"
 					class="event-form">
-					<div class="alert-error" th:if="${errorEvent}">
-						<i data-lucide="alert-circle"></i> <span th:text="${errorEvent}"></span>
-					</div>
-
-					<div class="alert-information" th:if="${informationEvent}">
-						<i data-lucide="alert-circle"></i> <span
-							th:text="${informationEvent}"></span>
-					</div>
 					<div class="input-group">
 						<label for="eventName">Nom événement</label>
 						<div class="input-wrapper">
@@ -228,8 +228,9 @@
 					<div class="input-group">
 						<label for="eventDate">Date de l'événement</label>
 						<div class="input-wrapper">
-							<input id="eventDate" type="datetime-local" th:field="*{eventDate}"
-								placeholder="Date de l'événement" required />
+							<input id="eventDate" type="datetime-local"
+								th:field="*{eventDate}" placeholder="Date de l'événement"
+								required />
 						</div>
 					</div>
 					<div class="input-group">

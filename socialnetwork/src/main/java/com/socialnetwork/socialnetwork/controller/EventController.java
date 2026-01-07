@@ -38,7 +38,7 @@ public EventController(IEventService eventService, IUserService userService) {
 }
 
 @PostMapping("")
-public String sendFriendRequest(HttpServletRequest request, Model model, Event event) {
+public String createEvent(HttpServletRequest request, Model model, Event event) {
     Object userIsConnect = Utils.validPage(request, true);
     model.addAttribute("isConnect", userIsConnect);
     if (userIsConnect == null) {
@@ -46,7 +46,7 @@ public String sendFriendRequest(HttpServletRequest request, Model model, Event e
     }
     
     if(event.getName().trim().equals("") || event.getEventDate() == null || event.getLocation().trim().equals("") || event.getVisibilityType().equals("")) {
-    	model.addAttribute("error", "Veuillez remplir l'ensemble des champs");
+    	model.addAttribute("errorEvent", "Veuillez remplir l'ensemble des champs");
 		model.addAttribute("event", event);
 		return this.UserController.showUserProfil(request, model);
     }
@@ -54,7 +54,7 @@ public String sendFriendRequest(HttpServletRequest request, Model model, Event e
     ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Paris"));
     
     if(event.getEventDate().isBefore(now.toLocalDateTime()) || event.getEventDate().isEqual(now.toLocalDateTime())) {
-    	model.addAttribute("error", "La date doit être spérieur a celle d'aujourd'hui");
+    	model.addAttribute("errorEvent", "La date doit être spérieur a celle d'aujourd'hui pour la création de l'événement");
 		model.addAttribute("event", event);
 		return this.UserController.showUserProfil(request, model);
     }
@@ -65,7 +65,7 @@ public String sendFriendRequest(HttpServletRequest request, Model model, Event e
     
     ResponseEntity<Event> saveEvent = this.eventService.save(event);
     
-    model.addAttribute("information", "L'événement a bien été crée");
+    model.addAttribute("informationEvent", "L'événement a bien été crée");
 	model.addAttribute("event", saveEvent);
 	
 	
