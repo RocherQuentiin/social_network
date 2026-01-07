@@ -107,9 +107,31 @@ function loadSentRequests() {
         })
         .then(requests => {
             console.log('Sent requests loaded:', requests);
+            markSentButtons(requests);
             displaySentRequests(requests);
         })
         .catch(error => console.error('Error loading sent requests:', error));
+}
+
+function markSentButtons(requests) {
+    if (!requests || requests.length === 0) return;
+    const btns = document.querySelectorAll('.btn-friend-request');
+    if (!btns || btns.length === 0) return;
+
+    const sentIds = new Set(requests
+        .map(r => r?.receiver?.id || r?.receiverId)
+        .filter(Boolean)
+    );
+
+    btns.forEach(btn => {
+        const uid = btn.getAttribute('data-id');
+        const action = btn.getAttribute('data-action') || 'send';
+        if (action === 'send' && sentIds.has(uid)) {
+            btn.classList.add('pending');
+            btn.textContent = 'En attente';
+            btn.disabled = true;
+        }
+    });
 }
 
 function displayReceivedRequests(requests) {
