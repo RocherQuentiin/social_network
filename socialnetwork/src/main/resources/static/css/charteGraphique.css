@@ -1,6 +1,7 @@
 /* VARIABLES GLOBALES */
 :root {
     --primary: #1d9bf0;
+    --primary-rgb: 29, 155, 240;
     --isep: #0066CC;
     --gold: #FFD700;
     --success: #10b981;

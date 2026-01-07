@@ -319,6 +319,63 @@
     margin-left: auto;
 }
 
+/* Reactions bar styling */
+.reactions-bar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.reaction-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid transparent;
+    border-radius: 16px;
+    padding: 4px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+}
+
+.reaction-btn .emoji {
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.reaction-btn .count {
+    font-size: 0.75rem;
+    min-width: 12px;
+    text-align: center;
+}
+
+.reaction-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+}
+
+.reaction-btn.active {
+    background: rgba(var(--primary-rgb), 0.15);
+    border-color: var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.reaction-btn.active .emoji {
+    transform: scale(1.2);
+}
+
+.reaction-total {
+    margin-left: 8px;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    padding: 4px 8px;
+}
+
 .announcement-title { padding: 15px; }
 .announcement-item {
     margin-bottom: 15px;

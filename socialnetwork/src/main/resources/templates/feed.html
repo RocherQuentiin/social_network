@@ -130,7 +130,15 @@
                 </div>
 
                 <div class="post-footer">
-                    <button class="action-btn"><i data-lucide="thumbs-up"></i> <span>0</span></button>
+                    <div class="reactions-bar" th:attr="data-post-id=${post.id}">
+                        <button class="reaction-btn" data-type="LIKE"><span class="emoji">👍</span><span class="count">0</span></button>
+                        <button class="reaction-btn" data-type="LOVE"><span class="emoji">❤️</span><span class="count">0</span></button>
+                        <button class="reaction-btn" data-type="HAHA"><span class="emoji">😂</span><span class="count">0</span></button>
+                        <button class="reaction-btn" data-type="WOW"><span class="emoji">😮</span><span class="count">0</span></button>
+                        <button class="reaction-btn" data-type="SAD"><span class="emoji">😢</span><span class="count">0</span></button>
+                        <button class="reaction-btn" data-type="ANGRY"><span class="emoji">😠</span><span class="count">0</span></button>
+                        <span class="reaction-total">0 réactions</span>
+                    </div>
                     <button class="action-btn" th:if="${post.allowComments}"><i data-lucide="message-circle"></i> <span>0</span></button>
                     <button class="action-btn btn-share"><i data-lucide="share-2"></i></button>
                 </div>
@@ -179,6 +187,7 @@
 
 <script th:src="@{/js/header.js}"></script>
 <script th:src="@{/js/feed-posts.js}"></script>
+<script th:src="@{/js/reactions.js}"></script>
 <script>
     lucide.createIcons();
 
