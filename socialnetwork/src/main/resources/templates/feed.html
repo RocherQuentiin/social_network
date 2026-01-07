@@ -10,6 +10,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}" />
     <meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}" />
+    <meta th:if="${session.userId != null}" name="userId" th:content="${session.userId}" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/fr.min.js"></script>
 </head>
@@ -139,8 +140,19 @@
                         <button class="reaction-btn" data-type="ANGRY"><span class="emoji">😠</span><span class="count">0</span></button>
                         <span class="reaction-total">0 réactions</span>
                     </div>
-                    <button class="action-btn" th:if="${post.allowComments}"><i data-lucide="message-circle"></i> <span>0</span></button>
+                    <button class="action-btn btn-toggle-comments" th:if="${post.allowComments}" th:attr="data-post-id=${post.id}"><i data-lucide="message-circle"></i> <span class="comment-count">0</span></button>
                     <button class="action-btn btn-share"><i data-lucide="share-2"></i></button>
+                </div>
+
+                <div class="comments-section" th:if="${post.allowComments}" th:attr="data-post-id=${post.id}" style="display:none;">
+                    <div class="comment-form">
+                        <img th:src="@{${session.userId != null ? userAvatar : '/img/default-avatar.png'}}" class="avatar-tiny">
+                        <div class="comment-input-wrapper">
+                            <textarea class="comment-input" placeholder="Ajouter un commentaire..." rows="1"></textarea>
+                            <button class="btn-send-comment"><i data-lucide="send"></i></button>
+                        </div>
+                    </div>
+                    <div class="comments-list"></div>
                 </div>
             </article>
         </div>
@@ -188,6 +200,7 @@
 <script th:src="@{/js/header.js}"></script>
 <script th:src="@{/js/feed-posts.js}"></script>
 <script th:src="@{/js/reactions.js}"></script>
+<script th:src="@{/js/comments.js}"></script>
 <script>
     lucide.createIcons();
 

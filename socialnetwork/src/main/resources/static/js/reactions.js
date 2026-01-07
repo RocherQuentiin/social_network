@@ -33,7 +33,7 @@
         });
 
         var totalEl = container.querySelector('.reaction-total');
-        if(totalEl){ totalEl.textContent = total + (total > 1 ? ' réactions' : ' réaction'); }
+        if(totalEl){ totalEl.textContent = total + (total === 1 ? ' réaction' : ' réactions'); }
     }
 
     function refresh(container){
@@ -66,7 +66,7 @@
                         alert('Impossible de mettre à jour la reaction');
                     }
                 })
-                .catch(function(err){ console.error('reaction network error', err); alert('Erreur reseau'); })
+                .catch(function(err){ console.error('reaction network error', err); alert('Erreur réseau'); })
                 .finally(function(){ btn.disabled = false; });
         });
     }

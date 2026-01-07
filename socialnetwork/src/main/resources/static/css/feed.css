@@ -376,6 +376,185 @@
     padding: 4px 8px;
 }
 
+/* Comments Section */
+.comments-section {
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    margin-top: 8px;
+}
+
+.comment-form {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.comment-input-wrapper {
+    flex: 1;
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 6px 12px;
+}
+
+.comment-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-size: 0.85rem;
+    resize: none;
+    outline: none;
+    line-height: 1.4;
+}
+
+.btn-send-comment,
+.btn-send-reply {
+    background: none;
+    border: none;
+    color: var(--primary);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    transition: 0.2s;
+}
+
+.btn-send-comment:hover,
+.btn-send-reply:hover {
+    color: var(--text-main);
+    transform: scale(1.1);
+}
+
+.btn-send-comment svg,
+.btn-send-reply svg {
+    width: 16px;
+    height: 16px;
+}
+
+.avatar-tiny {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.comment-item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.comment-body {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 8px 12px;
+}
+
+.comment-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.comment-header strong {
+    font-size: 0.85rem;
+    color: var(--text-main);
+}
+
+.comment-date {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+}
+
+.comment-content {
+    font-size: 0.85rem;
+    color: var(--text-main);
+    line-height: 1.4;
+    margin-bottom: 6px;
+}
+
+.comment-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.comment-actions button {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    cursor: pointer;
+    padding: 2px 0;
+    transition: 0.2s;
+}
+
+.comment-actions button:hover {
+    color: var(--primary);
+}
+
+.reply-form {
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+    margin: 8px 0 8px 40px;
+}
+
+.reply-form .comment-input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 6px 12px;
+    color: var(--text-main);
+    font-size: 0.85rem;
+    resize: none;
+    outline: none;
+}
+
+.btn-cancel-reply,
+.btn-cancel-edit {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: 0.2s;
+}
+
+.btn-cancel-reply:hover,
+.btn-cancel-edit:hover {
+    color: var(--text-main);
+}
+
+.btn-save-edit {
+    background: var(--primary);
+    border: none;
+    color: white;
+    font-size: 0.75rem;
+    cursor: pointer;
+    padding: 4px 12px;
+    border-radius: 12px;
+    transition: 0.2s;
+}
+
+.btn-save-edit:hover {
+    opacity: 0.9;
+}
+
 .announcement-title { padding: 15px; }
 .announcement-item {
     margin-bottom: 15px;
