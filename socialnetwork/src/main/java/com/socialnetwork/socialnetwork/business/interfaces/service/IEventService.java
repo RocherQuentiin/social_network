@@ -8,4 +8,6 @@ public interface IEventService {
 
 	ResponseEntity<Event> save(Event event);
 
+	ResponseEntity<Event> getFirstEventByDate();
+
 }

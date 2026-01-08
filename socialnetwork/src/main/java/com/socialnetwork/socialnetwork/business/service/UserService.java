@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IUserRepository;
+import com.socialnetwork.socialnetwork.business.interfaces.service.IEventService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
 import com.socialnetwork.socialnetwork.entity.User;
 
@@ -17,6 +18,7 @@ import com.socialnetwork.socialnetwork.entity.User;
 public class UserService implements IUserService{
 	private final IUserRepository repository;
 	private final PasswordEncoder passwordEncoder;
+	
     
 	public UserService(IUserRepository repository, PasswordEncoder passwordEncoder) {
 		this.repository = repository;

@@ -1,5 +1,8 @@
 package com.socialnetwork.socialnetwork.business.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,5 +28,18 @@ public ResponseEntity<Event> save(Event event) {
 		      HttpStatus.OK);
 }
 
-
+@Override
+public ResponseEntity<Event> getFirstEventByDate(){
+	Optional<List<Event>> event = this.repository.getEventByDate();
+	
+	if(event.get().size() == 0) {
+		return new ResponseEntity<>(
+			      HttpStatus.NOT_FOUND);
+	}
+	
+	return new ResponseEntity<>(
+			  event.get().get(0), 
+		      HttpStatus.OK);
+	
+}
 }

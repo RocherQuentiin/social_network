@@ -163,14 +163,10 @@
 						tout</a>
 				</div>
 				<div class="events-grid">
-					<div class="card event-item">
-						<img th:src="@{${userProfile.user.profilePictureUrl}}"
-							alt="Evenement">
+					<div class="card event-item" th:if='${eventFirst != null}'>
 						<div class="event-info">
-							<h4>
-								ISEP Dashboard <span class="type-tag">Web</span>
-							</h4>
-							<p>Application de tableau de bord...</p>
+							<h4 th:text='${eventFirst.name}'></h4>
+							<p th:text='${eventFirst.description}'></p>
 							<a href="#" class="details-link">Détails <i
 								data-lucide="arrow-right"></i></a>
 						</div>
