@@ -36,6 +36,7 @@ import com.socialnetwork.socialnetwork.dto.UserProfileDto;
 import com.socialnetwork.socialnetwork.dto.UserRequestDto;
 import com.socialnetwork.socialnetwork.entity.PrivacySettings;
 import com.socialnetwork.socialnetwork.entity.Profile;
+import com.socialnetwork.socialnetwork.entity.Event;
 import com.socialnetwork.socialnetwork.entity.Follow;
 import com.socialnetwork.socialnetwork.entity.Post;
 
@@ -463,6 +464,7 @@ public class UserController {
 		userProfileDto.setProfile(userProfile.getBody());
 
 		model.addAttribute("userProfile", userProfileDto);
+		model.addAttribute("event", new Event());
 		return "userProfile";
 	}
 	
@@ -528,6 +530,10 @@ public class UserController {
 		model.addAttribute("isConnect", userIsConnect);
 		if(userIsConnect == null) {
 			return "accueil";
+		}
+		
+		if(userIsConnect.toString().equals(id)) {
+			return showUserProfil(request, model);
 		}
 		
 		

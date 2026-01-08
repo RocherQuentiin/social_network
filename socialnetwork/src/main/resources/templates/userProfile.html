@@ -1,154 +1,283 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Profil - ISEP Connect</title>
-	<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
-	<link rel="stylesheet" th:href="@{/css/header.css}">
-	<link rel="stylesheet" th:href="@{/css/profil.css}">
-	<script src="https://unpkg.com/lucide@latest"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profil - ISEP Connect</title>
+<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/profil.css}">
+<script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-dark">
 
-<div th:replace="~{fragments/header :: header-fragment}"></div>
+	<div th:replace="~{fragments/header :: header-fragment}"></div>
 
-<main class="profil-layout">
-	<aside class="sidebar-left">
-		<div class="card profile-card">
-			<div class="avatar-section">
-				<div class="avatar-wrapper">
-					<img th:src="@{${userProfile.user.profilePictureUrl}}" alt="Avatar">
-				</div>
-			</div>
-
-			<h2 class="user-fullname" th:text="${userProfile.user.firstName + ' ' + userProfile.user.lastName}">Alexandre Dupont</h2>
-			<p class="user-studies" th:text="${userProfile.profile.profession}">Étudiant Ingénieur - ISEP</p>
-
-			<div class="location-tag">
-				<i data-lucide="map-pin"></i>
-				<span th:text="${userProfile.profile.location}">Paris, France</span>
-			</div>
-
-			<div class="stats-row">
-				<div class="stat-box">
-					<span class="label">PROMO</span>
-					<span class="value text-primary" th:text="${userProfile.profile.promoYear}">2024</span>
-				</div>
-				<div class="stat-box">
-					<span class="label">FILIÈRE</span>
-					<span class="value text-primary" th:text="${userProfile.profile.isepSpecialization}">Logiciel</span>
-				</div>
-			</div>
-			<div class="btn-infos">
-				<a th:href="@{/editProfil}" class="btn-primary-header">Éditer le profil</a>
-				<a th:href="@{/privacy}" class="btn-primary-header">Données privée</a>
-			</div>
-		</div>
-
-		<div class="card networks-card">
-			<h3 class="sidebar-title">Réseaux</h3>
-			<div class="network-links">
-				<a href="#" class="network-item">
-					<div class="item-left"><i data-lucide="linkedin"></i> <span>LinkedIn</span></div>
-					<i data-lucide="external-link" class="arrow-right"></i>
-				</a>
-				<a href="#" class="network-item">
-					<div class="item-left"><i data-lucide="github"></i> <span>GitHub</span></div>
-					<i data-lucide="external-link" class="arrow-right"></i>
-				</a>
-				<a th:if="${userProfile.profile.website}" th:href="${userProfile.profile.website}" class="network-item">
-					<div class="item-left"><i data-lucide="globe"></i> <span>Portfolio</span></div>
-					<i data-lucide="external-link" class="arrow-right"></i>
-				</a>
-			</div>
-		</div>
-
-		<div class="card cv-card">
-			<div class="cv-content">
-				<i data-lucide="file-text" class="cv-icon"></i>
-				<div class="cv-details">
-					<strong>Mon CV</strong>
-					<span>PDF, 2.4 MB</span>
-				</div>
-				<a href="#" class="download-link"><i data-lucide="download"></i></a>
-			</div>
-		</div>
-	</aside>
-
-	<section class="main-content">
-		<div class="section-container">
-			<div class="section-header">
-				<h3><i data-lucide="user" class="icon-blue"></i> À propos</h3>
-				<a th:href="@{/editProfil}" class="modifier-btn">Modifier</a>
-			</div>
-			<div class="card box-content">
-				<p th:text="${userProfile.user.bio}">Passionné par le développement web...</p>
-			</div>
-		</div>
-
-		<div class="section-container">
-			<div class="section-header">
-				<h3><i data-lucide="settings" class="icon-blue"></i> Compétences</h3>
-				<button class="add-btn-square"><i data-lucide="plus"></i></button>
-			</div>
-			<div class="card box-content">
-				<div class="tags-container">
-					<span class="tag">React.js <i data-lucide="x"></i></span>
-					<span class="tag">Node.js <i data-lucide="x"></i></span>
-					<span class="tag">Python <i data-lucide="x"></i></span>
-					<button class="add-tag-btn">+ Ajouter</button>
-				</div>
-			</div>
-		</div>
-
-		<div class="section-container">
-			<div class="section-header">
-				<h3><i data-lucide="rocket" class="icon-blue"></i> Projets</h3>
-				<a href="#" class="modifier-btn">Voir tout</a>
-			</div>
-			<div class="projects-grid">
-				<div class="card project-item">
-					<img th:src="@{${userProfile.user.profilePictureUrl}}" alt="Projet">
-					<div class="project-info">
-						<h4>ISEP Dashboard <span class="type-tag">Web</span></h4>
-						<p>Application de tableau de bord...</p>
-						<a href="#" class="details-link">Détails <i data-lucide="arrow-right"></i></a>
+	<main class="profil-layout">
+		<aside class="sidebar-left">
+			<div class="card profile-card">
+				<div class="avatar-section">
+					<div class="avatar-wrapper">
+						<img th:src="@{${userProfile.user.profilePictureUrl}}"
+							alt="Avatar">
 					</div>
 				</div>
-				<div class="card add-project-placeholder">
-					<div class="plus-circle"><i data-lucide="plus"></i></div>
-					<strong>Ajouter un projet</strong>
-					<span>Montrez vos réalisations académiques</span>
-				</div>
-			</div>
-		</div>
-		<div class="section-container">
-			<div class="section-header">
-				<h3><i data-lucide="heart" class="icon-blue"></i> Centres d'intérêt</h3>
-			</div>
-			<div class="card box-content">
-				<div class="interests-container">
-					<div class="interest-item">
-						<i data-lucide="camera"></i>
-						<span>Photographie</span>
-					</div>
-					<div class="interest-item">
-						<i data-lucide="basketball"></i>
-						<span>Basketball</span>
-					</div>
-					<div class="interest-item">
-						<i data-lucide="plane"></i>
-						<span>Voyages</span>
-					</div>
-					<button class="add-tag-btn">+ Ajouter</button>
-				</div>
-			</div>
-		</div>
-	</section>
-</main>
 
-<div th:replace="~{fragments/footer :: footer-fragment}"></div>
+				<h2 class="user-fullname"
+					th:text="${userProfile.user.firstName + ' ' + userProfile.user.lastName}">Alexandre
+					Dupont</h2>
+				<p class="user-studies" th:text="${userProfile.profile.profession}">Étudiant
+					Ingénieur - ISEP</p>
+
+				<div class="location-tag">
+					<i data-lucide="map-pin"></i> <span
+						th:text="${userProfile.profile.location}">Paris, France</span>
+				</div>
+
+				<div class="stats-row">
+					<div class="stat-box">
+						<span class="label">PROMO</span> <span class="value text-primary"
+							th:text="${userProfile.profile.promoYear}">2024</span>
+					</div>
+					<div class="stat-box">
+						<span class="label">FILIÈRE</span> <span
+							class="value text-primary"
+							th:text="${userProfile.profile.isepSpecialization}">Logiciel</span>
+					</div>
+				</div>
+				<div class="btn-infos">
+					<a th:href="@{/editProfil}" class="btn-primary-header">Éditer
+						le profil</a> <a th:href="@{/privacy}" class="btn-primary-header">Données
+						privée</a>
+				</div>
+			</div>
+
+			<div class="card networks-card">
+				<h3 class="sidebar-title">Réseaux</h3>
+				<div class="network-links">
+					<a href="#" class="network-item">
+						<div class="item-left">
+							<i data-lucide="linkedin"></i> <span>LinkedIn</span>
+						</div> <i data-lucide="external-link" class="arrow-right"></i>
+					</a> <a href="#" class="network-item">
+						<div class="item-left">
+							<i data-lucide="github"></i> <span>GitHub</span>
+						</div> <i data-lucide="external-link" class="arrow-right"></i>
+					</a> <a th:if="${userProfile.profile.website}"
+						th:href="${userProfile.profile.website}" class="network-item">
+						<div class="item-left">
+							<i data-lucide="globe"></i> <span>Portfolio</span>
+						</div> <i data-lucide="external-link" class="arrow-right"></i>
+					</a>
+				</div>
+			</div>
+
+			<div class="card cv-card">
+				<div class="cv-content">
+					<i data-lucide="file-text" class="cv-icon"></i>
+					<div class="cv-details">
+						<strong>Mon CV</strong> <span>PDF, 2.4 MB</span>
+					</div>
+					<a href="#" class="download-link"><i data-lucide="download"></i></a>
+				</div>
+			</div>
+		</aside>
+
+		<section class="main-content">
+			<div class="alert-error" th:if="${errorEvent}">
+				<i data-lucide="alert-circle"></i> <span th:text="${errorEvent}"></span>
+			</div>
+
+			<div class="alert-information" th:if="${informationEvent}">
+				<i data-lucide="alert-circle"></i> <span
+					th:text="${informationEvent}"></span>
+			</div>
+			<div class="section-container">
+				<div class="section-header">
+					<h3>
+						<i data-lucide="user" class="icon-blue"></i> À propos
+					</h3>
+					<a th:href="@{/editProfil}" class="modifier-btn">Modifier</a>
+				</div>
+				<div class="card box-content">
+					<p th:text="${userProfile.user.bio}">Passionné par le
+						développement web...</p>
+				</div>
+			</div>
+
+			<div class="section-container">
+				<div class="section-header">
+					<h3>
+						<i data-lucide="settings" class="icon-blue"></i> Compétences
+					</h3>
+					<button class="add-btn-square">
+						<i data-lucide="plus"></i>
+					</button>
+				</div>
+				<div class="card box-content">
+					<div class="tags-container">
+						<span class="tag">React.js <i data-lucide="x"></i></span> <span
+							class="tag">Node.js <i data-lucide="x"></i></span> <span
+							class="tag">Python <i data-lucide="x"></i></span>
+						<button class="add-tag-btn">+ Ajouter</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="section-container">
+				<div class="section-header">
+					<h3>
+						<i data-lucide="rocket" class="icon-blue"></i> Projets
+					</h3>
+					<a href="#" class="modifier-btn">Voir tout</a>
+				</div>
+				<div class="projects-grid">
+					<div class="card project-item">
+						<img th:src="@{${userProfile.user.profilePictureUrl}}"
+							alt="Projet">
+						<div class="project-info">
+							<h4>
+								ISEP Dashboard <span class="type-tag">Web</span>
+							</h4>
+							<p>Application de tableau de bord...</p>
+							<a href="#" class="details-link">Détails <i
+								data-lucide="arrow-right"></i></a>
+						</div>
+					</div>
+					<div class="card add-project-placeholder">
+						<div class="plus-circle">
+							<i data-lucide="plus"></i>
+						</div>
+						<strong>Ajouter un projet</strong> <span>Montrez vos
+							réalisations académiques</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="section-container">
+				<div class="section-header">
+					<h3>
+						<i data-lucide="rocket" class="icon-blue"></i> Événements
+					</h3>
+					<a th:href="@{/feed/event}" class="view-all-events-btn">Voir
+						tout</a>
+				</div>
+				<div class="events-grid">
+					<div class="card event-item">
+						<img th:src="@{${userProfile.user.profilePictureUrl}}"
+							alt="Evenement">
+						<div class="event-info">
+							<h4>
+								ISEP Dashboard <span class="type-tag">Web</span>
+							</h4>
+							<p>Application de tableau de bord...</p>
+							<a href="#" class="details-link">Détails <i
+								data-lucide="arrow-right"></i></a>
+						</div>
+					</div>
+					<div id="add-event-btn" class="card add-event-placeholder">
+						<div class="plus-circle">
+							<i data-lucide="plus"></i>
+						</div>
+						<strong>Ajouter un événement</strong> <span>Montrez vos
+							événement</span>
+					</div>
+				</div>
+			</div>
+			<div class="section-container">
+				<div class="section-header">
+					<h3>
+						<i data-lucide="heart" class="icon-blue"></i> Centres d'intérêt
+					</h3>
+				</div>
+				<div class="card box-content">
+					<div class="interests-container">
+						<div class="interest-item">
+							<i data-lucide="camera"></i> <span>Photographie</span>
+						</div>
+						<div class="interest-item">
+							<i data-lucide="basketball"></i> <span>Basketball</span>
+						</div>
+						<div class="interest-item">
+							<i data-lucide="plane"></i> <span>Voyages</span>
+						</div>
+						<button class="add-tag-btn">+ Ajouter</button>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<div id="editEventModal">
+		<div class="modal-card card">
+			<div class="modal-header">
+				<h3>Créer un événement</h3>
+				<button id=closeEventEditModal aria-label="Fermer">✕</button>
+			</div>
+			<div class="modal-body">
+
+				<form th:action="@{/event}" th:object="${event}" method="post"
+					class="event-form">
+					<div class="input-group">
+						<label for="eventName">Nom événement</label>
+						<div class="input-wrapper">
+							<input id="eventName" th:field="*{name}" type="text"
+								placeholder="Nom de l'événement" required />
+						</div>
+					</div>
+					<div class="input-group">
+						<label for="eventDate">Date de l'événement</label>
+						<div class="input-wrapper">
+							<input id="eventDate" type="datetime-local"
+								th:field="*{eventDate}" placeholder="Date de l'événement"
+								required />
+						</div>
+					</div>
+					<div class="input-group">
+						<label for="eventCapacity">Capacité de l'événement</label>
+						<div class="input-wrapper">
+							<input id="eventCapacity" type="number" th:field="*{capacity}"
+								placeholder="Capacité de l'événement" required />
+						</div>
+					</div>
+					<div class="input-group">
+						<label for="eventLocation">Emplacement de l'événement</label>
+						<div class="input-wrapper">
+							<input id="eventLocation" type="text" th:field="*{location}"
+								placeholder="Emplacement de l'événement" required />
+						</div>
+					</div>
+
+					<div class="input-group">
+						<label for="editVisibility">Visibilité</label> <select
+							id="editVisibility" class="custom-select"
+							th:field="*{visibilityType}">
+							<option value="PUBLIC">Public</option>
+							<option value="FRIENDS">Amis</option>
+							<option value="PRIVATE">Privé</option>
+						</select>
+					</div>
+
+					<div class="input-group">
+						<label for="eventDescription">Description de l'événement</label>
+						<div class="input-wrapper">
+							<input id="eventDescription" type="text"
+								placeholder="Description de l'événement"
+								th:field="*{description}" required />
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="submit" class="btn-event-submit">Créer</button>
+					</div>
+				</form>
+
+			</div>
+
+		</div>
+	</div>
+	<script th:src="@{/js/userProfile.js}"></script>
+	<div th:replace="~{fragments/footer :: footer-fragment}"></div>
 
 </body>
 </html>
