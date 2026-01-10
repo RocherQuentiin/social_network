@@ -105,22 +105,15 @@ public ResponseEntity<?> updatePost(@PathVariable("id") UUID id, @RequestBody Ev
     	return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authenticated");
     }
     
-	System.out.println("1. entré dans le put event");
-    
     ResponseEntity<Event> event = this.eventService.getEventByID(id);
     
     if (event.getStatusCode() == HttpStatusCode.valueOf(404)) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Event not found");
     }
     
-    System.out.println("2. entré dans le put event");
-
-    
     if(!userIsConnect.toString().equals(event.getBody().getCreator().getId().toString())) {
     	return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only author can edit");
     }
-    
-    System.out.println("3. entré dans le put event");
     
     if(body.getEventName().trim().equals("") || body.getEventDate() == null || body.getEventLocation().trim().equals("") || body.getEventVisibility().equals("")) {
     	return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Fill all the inputs");
@@ -128,13 +121,10 @@ public ResponseEntity<?> updatePost(@PathVariable("id") UUID id, @RequestBody Ev
 	
     ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Paris"));
     LocalDateTime eventDate = LocalDateTime.parse(body.getEventDate());
-	System.out.println("4. entré dans le put event");
     
     if(eventDate.isBefore(now.toLocalDateTime()) || eventDate.isEqual(now.toLocalDateTime())) {
     	return ResponseEntity.status(HttpStatus.FORBIDDEN).body("The date must be superior than the actual date");
     }
-    
-	System.out.println("5. entré dans le put event");
     
     event.getBody().setName(body.getEventName());
     event.getBody().setVisibilityType(body.getEventVisibility());
