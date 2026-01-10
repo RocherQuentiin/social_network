@@ -2,6 +2,7 @@ package com.socialnetwork.socialnetwork.business.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,5 +42,28 @@ public ResponseEntity<Event> getFirstEventByDate(){
 			  event.get().get(0), 
 		      HttpStatus.OK);
 	
+}
+
+@Override
+public ResponseEntity<Event> getEventByID(UUID id) {
+	Optional<Event> event = this.repository.findById(id);
+	
+	if(!event.isPresent()) {
+		return new ResponseEntity<>(
+			      HttpStatus.NOT_FOUND);
+	}
+	
+	return new ResponseEntity<>(
+			  event.get(), 
+		      HttpStatus.OK);
+}
+
+@Override
+public ResponseEntity<Event> update(Event event) {
+	Event saveEvent = this.repository.save(event);
+	
+	return new ResponseEntity<>(
+			saveEvent, 
+		      HttpStatus.OK);
 }
 }
