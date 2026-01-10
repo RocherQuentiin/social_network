@@ -12,7 +12,7 @@ public interface IEventService {
 
 	ResponseEntity<Event> getFirstEventByDate();
 
-	ResponseEntity<Event> getEventByID(UUID fromString);
+	ResponseEntity<Event> getEventByID(UUID id);
 
 	ResponseEntity<Event> update(Event body);
 

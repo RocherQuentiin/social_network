@@ -3,6 +3,7 @@ package com.socialnetwork.socialnetwork.controller;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import com.socialnetwork.socialnetwork.business.utils.Utils;
 import com.socialnetwork.socialnetwork.dto.EventDto;
 import com.socialnetwork.socialnetwork.dto.PostDto;
 import com.socialnetwork.socialnetwork.entity.Event;
+import com.socialnetwork.socialnetwork.entity.EventAttendee;
 import com.socialnetwork.socialnetwork.entity.User;
 import com.socialnetwork.socialnetwork.enums.VisibilityType;
 
@@ -92,9 +94,14 @@ public String GetEvent(HttpServletRequest request, Model model, @PathVariable("i
     if(event.getStatusCode() != HttpStatusCode.valueOf(200)) {
     	return "accueil";
     }
+    Optional<EventAttendee> attendeeExist = event.getBody().getEventAttendee().stream().filter(x -> x.getUser().getId().equals(UUID.fromString(userIsConnect.toString()))).findFirst();
 
 	model.addAttribute("eventinfo", event.getBody());
-
+	if(attendeeExist.isPresent()) {
+		model.addAttribute("attendee", attendeeExist.get());
+	}
+	
+	
 	return "event";
 }
 

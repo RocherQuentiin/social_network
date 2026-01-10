@@ -13,6 +13,8 @@
 <body>
 	<div th:replace="~{fragments/header :: header-fragment}"></div>
 	<a th:if="${eventinfo.creator.id == isConnect}" id="btn-edit" class="btn-primary-header">Editer l'évenement</a>
+	<a th:if="${eventinfo.creator.id != isConnect && attendee == null}" th:data-id="*{eventinfo.id}" id="btn-join-event" class="btn-primary-header">Rejoindre l'évenement</a>
+	<p th:if="${eventinfo.creator.id != isConnect && attendee != null}" th:text="${attendee.status}"></p>
 	<br>
 	<br>
 	<h4 th:text="${eventinfo.name}"></h4>
