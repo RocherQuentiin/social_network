@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -97,5 +99,25 @@ public class EventAttendeeController {
 		UUID requesterId = UUID.fromString(userIsConnect.toString());
 		return this.eventAttendeeservice.getSentRequestsFor(requesterId);
 	}
+	
+	@DeleteMapping("{id}")
+	public ResponseEntity<String> deleteEventAttendee(HttpServletRequest request, @PathVariable("id") UUID id) {
+		Object userIsConnect = Utils.validPage(request, true);
+		if (userIsConnect == null) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authenticated");
+		}
 
+		ResponseEntity<EventAttendee> eventAttendeeExist = this.eventAttendeeservice.getEventAttendeeByEventIDAndUserID(
+				id, UUID.fromString(userIsConnect.toString()));
+
+		if (eventAttendeeExist.getStatusCode() == HttpStatusCode.valueOf(404)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not exist in this event");
+		}
+		
+		this.eventAttendeeservice.deleteEventAttendeeByEventIdAndUserId(eventAttendeeExist.getBody());
+		return ResponseEntity.ok().build();
+	}
+	
 }
+
+
