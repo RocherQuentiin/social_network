@@ -22,10 +22,9 @@ import com.socialnetwork.socialnetwork.business.interfaces.service.IEventService
 import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
 import com.socialnetwork.socialnetwork.business.utils.Utils;
 import com.socialnetwork.socialnetwork.dto.EventDto;
-import com.socialnetwork.socialnetwork.dto.PostDto;
 import com.socialnetwork.socialnetwork.entity.Event;
 import com.socialnetwork.socialnetwork.entity.User;
-import com.socialnetwork.socialnetwork.enums.VisibilityType;
+
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -80,7 +79,7 @@ public String createEvent(HttpServletRequest request, Model model, Event event) 
 
 
 @GetMapping("{id}")
-public String GetEvent(HttpServletRequest request, Model model, @PathVariable("id") String id) {
+public String getEvent(HttpServletRequest request, Model model, @PathVariable("id") String id) {
     Object userIsConnect = Utils.validPage(request, true);
     model.addAttribute("isConnect", userIsConnect);
     if (userIsConnect == null) {
