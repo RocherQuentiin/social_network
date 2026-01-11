@@ -10,7 +10,7 @@ public interface IEventService {
 
 	ResponseEntity<Event> save(Event event);
 
-	ResponseEntity<Event> getFirstEventByDate();
+	ResponseEntity<Event> getFirstEventByDate(UUID id);
 
 	ResponseEntity<Event> getEventByID(UUID id);
 

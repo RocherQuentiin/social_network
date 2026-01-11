@@ -470,7 +470,7 @@ public class UserController {
 		model.addAttribute("userProfile", userProfileDto);
 		model.addAttribute("event", new Event());
 		
-		ResponseEntity<Event> event = this.eventService.getFirstEventByDate();
+		ResponseEntity<Event> event = this.eventService.getFirstEventByDate(UUID.fromString(userIsConnect.toString()));
 		
 		if(event.getStatusCode() == HttpStatusCode.valueOf(200)) {
 			model.addAttribute("eventFirst", event.getBody());

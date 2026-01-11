@@ -1,9 +1,5 @@
 package com.socialnetwork.socialnetwork.dto;
 
-import java.time.LocalDateTime;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
 import com.socialnetwork.socialnetwork.enums.VisibilityType;
 
 public class EventDto {
