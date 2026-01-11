@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IPostRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IUserRepository;
+import com.socialnetwork.socialnetwork.business.interfaces.service.IEventService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IFollowService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IMailService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IPostService;
@@ -57,9 +58,11 @@ public class UserController {
 	private final ITokenService tokenService;
 	private final IProfileService profileService;
 	private final IPrivacySettingsService privacySettingsService;
-	 private final IPostService postService;
+	private final IPostService postService;
 	private final IFollowService followService;
-	public UserController(IUserService userService, IMailService mailService, IFollowService followService, IPostService postService, ITokenService tokenService, IProfileService profileService, IPrivacySettingsService privacySettingsService) {
+	private final IEventService eventService;
+	
+	public UserController(IUserService userService, IEventService eventService, IMailService mailService, IFollowService followService, IPostService postService, ITokenService tokenService, IProfileService profileService, IPrivacySettingsService privacySettingsService) {
 		this.userService = userService;
 		this.mailService = mailService;
 		this.tokenService = tokenService;
@@ -67,6 +70,7 @@ public class UserController {
 		this.privacySettingsService = privacySettingsService;
 		this.postService = postService;
 		this.followService = followService;
+		this.eventService = eventService;
 	}
 
     @GetMapping({"/", "/accueil"})
@@ -465,6 +469,13 @@ public class UserController {
 
 		model.addAttribute("userProfile", userProfileDto);
 		model.addAttribute("event", new Event());
+		
+		ResponseEntity<Event> event = this.eventService.getFirstEventByDate(UUID.fromString(userIsConnect.toString()));
+		
+		if(event.getStatusCode() == HttpStatusCode.valueOf(200)) {
+			model.addAttribute("eventFirst", event.getBody());
+		}
+		
 		return "userProfile";
 	}
 	

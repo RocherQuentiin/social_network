@@ -159,20 +159,16 @@
 					<h3>
 						<i data-lucide="rocket" class="icon-blue"></i> Événements
 					</h3>
-					<a th:href="@{/feed/event}" class="view-all-events-btn">Voir
+					<a th:href="@{/feed}" class="view-all-events-btn">Voir
 						tout</a>
 				</div>
 				<div class="events-grid">
-					<div class="card event-item">
-						<img th:src="@{${userProfile.user.profilePictureUrl}}"
-							alt="Evenement">
+					<div class="card event-item" th:if='${eventFirst != null}'>
 						<div class="event-info">
-							<h4>
-								ISEP Dashboard <span class="type-tag">Web</span>
-							</h4>
-							<p>Application de tableau de bord...</p>
-							<a href="#" class="details-link">Détails <i
-								data-lucide="arrow-right"></i></a>
+							<h4 th:text='${eventFirst.name}'></h4>
+							<p th:text='${eventFirst.description}'></p>
+							<button id="edit-event" class="btn-primary-header"  th:data-id='${eventFirst.id}'>En savoir plus <i
+								data-lucide="arrow-right"></i></button>
 						</div>
 					</div>
 					<div id="add-event-btn" class="card add-event-placeholder">
