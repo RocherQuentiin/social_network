@@ -16,6 +16,8 @@
 	<a th:if="${eventinfo.creator.id != isConnect && attendee == null}" th:data-id="*{eventinfo.id}" id="btn-join-event" class="btn-primary-header">Rejoindre l'évenement</a>
 	<p th:if="${eventinfo.creator.id != isConnect && attendee != null}" th:text="${attendee.status}"></p>
 	<br>
+	<a th:if="${eventinfo.creator.id != isConnect && attendee != null && attendee.status != 'DECLINED'}" th:data-id="*{eventinfo.id}" id="btn-quit-event" class="btn-primary-header">Quitter l'évenement</a>
+	<br>
 	<br>
 	<h4 th:text="${eventinfo.name}"></h4>
 	<p>Crée par <span th:text="${eventinfo.creator.lastName}"></span>  <span th:text="${eventinfo.creator.firstName}"> </span> le <span th:text="${eventinfo.eventDate}"></span></p>

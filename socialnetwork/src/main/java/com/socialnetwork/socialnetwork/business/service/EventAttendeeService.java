@@ -1,5 +1,6 @@
 package com.socialnetwork.socialnetwork.business.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IEventAttendeeRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IEventAttendeeService;
+import com.socialnetwork.socialnetwork.entity.Connection;
 import com.socialnetwork.socialnetwork.entity.EventAttendee;
+import com.socialnetwork.socialnetwork.enums.EventAttendanceStatus;
 
 @Service
 public class EventAttendeeService implements IEventAttendeeService{
@@ -41,5 +44,19 @@ public class EventAttendeeService implements IEventAttendeeService{
 				saveEventAttendee, 
 			      HttpStatus.OK);
 	}
+
+	@Override
+	public ResponseEntity<List<EventAttendee>> getPendingFor(UUID userID) {
+		List<EventAttendee> listEventAttendee = this.repository.findBystatusAndEvent_creator_id(EventAttendanceStatus.PENDING, userID);
+		return new ResponseEntity<List<EventAttendee>>(listEventAttendee, HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<List<EventAttendee>> getSentRequestsFor(UUID requesterId) {
+		List<EventAttendee> listEventAttendee = this.repository.findBystatusAndUser_id(EventAttendanceStatus.PENDING, requesterId);
+		System.out.println(listEventAttendee.get(0).getUser().getFirstName());
+		return new ResponseEntity<List<EventAttendee>>(listEventAttendee, HttpStatus.OK);
+	}
+	
 
 }

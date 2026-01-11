@@ -58,6 +58,12 @@ public String createEvent(HttpServletRequest request, Model model, Event event) 
 		return this.UserController.showUserProfil(request, model);
     }
     
+    if(event.getCapacity() <= 0) {
+    	model.addAttribute("errorEvent", "Un événement doit avoir obligatoirement plus de 0 participants");
+		model.addAttribute("event", event);
+		return this.UserController.showUserProfil(request, model);
+    }
+    
     ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Paris"));
     
     if(event.getEventDate().isBefore(now.toLocalDateTime()) || event.getEventDate().isEqual(now.toLocalDateTime())) {

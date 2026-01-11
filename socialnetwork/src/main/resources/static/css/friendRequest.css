@@ -49,7 +49,18 @@
     color: #666;
 }
 
+.request-info strong {
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+}
+
 .request-info p.status-pending {
+    color: #ff9800;
+    font-weight: 500;
+}
+
+.request-info strong.status-pending {
     color: #ff9800;
     font-weight: 500;
 }
