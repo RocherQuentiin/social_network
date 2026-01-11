@@ -30,12 +30,17 @@
 	</p>
 
 	<p>
-		Capacité : <span th:text="${eventinfo.capacity}"></span>
+		Capacité : <span th:text="${particpantsCpt}"></span> / <span th:text="${eventinfo.capacity}"></span>
 	</p>
 
 	<p>
 		Description : <span th:text="${eventinfo.description}"></span>
 	</p>
+	<br>
+	<div>
+		<p>Participants : </p>
+		<p th:each="participant : ${participants}"><span th:text="${participant.user.lastName}"></span> <span th:text="${participant.user.firstName}"></span></p>
+	</div>
 	
 	<div id="editEventModal">
 		<div class="modal-card card">

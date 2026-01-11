@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.socialnetwork.socialnetwork.business.interfaces.service.IEventAttendeeService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IEventService;
@@ -24,6 +26,7 @@ import com.socialnetwork.socialnetwork.entity.Connection;
 import com.socialnetwork.socialnetwork.entity.Event;
 import com.socialnetwork.socialnetwork.entity.EventAttendee;
 import com.socialnetwork.socialnetwork.entity.User;
+import com.socialnetwork.socialnetwork.enums.EventAttendanceStatus;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -116,6 +119,64 @@ public class EventAttendeeController {
 		
 		this.eventAttendeeservice.deleteEventAttendeeByEventIdAndUserId(eventAttendeeExist.getBody());
 		return ResponseEntity.ok().build();
+	}
+	
+	@PutMapping("/accept")
+	public ResponseEntity<String> acceptEventRequest(HttpServletRequest request,
+			@RequestParam("requesterId") String requesterId ,
+			@RequestParam("eventId") String eventId) {
+		System.out.println("ok");
+		Object userIsConnect = Utils.validPage(request, true);
+		if (userIsConnect == null) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authenticated");
+		}
+
+		UUID reqId = UUID.fromString(requesterId);
+		UUID eventUUId = UUID.fromString(eventId);
+		
+		ResponseEntity<EventAttendee> eventAttendeeExist = this.eventAttendeeservice.getEventAttendeeByEventIDAndUserID(
+				eventUUId, reqId);
+		System.out.println("ok");
+		if (eventAttendeeExist.getStatusCode() == HttpStatusCode.valueOf(404)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not exist in this event");
+		}
+		
+		eventAttendeeExist.getBody().setStatus(EventAttendanceStatus.ACCEPTED);
+		
+		ResponseEntity<EventAttendee> resp = this.eventAttendeeservice.Update(eventAttendeeExist.getBody());
+		if (resp.getStatusCode().is2xxSuccessful()) {
+			return ResponseEntity.status(HttpStatus.OK).body("Event request accepted");
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to accept event request");
+	}
+
+	@PutMapping("/decline")
+	public ResponseEntity<String> declineFriendRequest(HttpServletRequest request,
+			@RequestParam("requesterId") String requesterId,
+			@RequestParam("eventId") String eventId) {
+		System.out.println("ok");
+		Object userIsConnect = Utils.validPage(request, true);
+		if (userIsConnect == null) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authenticated");
+		}
+
+		UUID reqId = UUID.fromString(requesterId);
+		UUID eventUUId = UUID.fromString(eventId);
+		
+		ResponseEntity<EventAttendee> eventAttendeeExist = this.eventAttendeeservice.getEventAttendeeByEventIDAndUserID(
+				eventUUId, reqId);
+
+		if (eventAttendeeExist.getStatusCode() == HttpStatusCode.valueOf(404)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not exist in this event");
+		}
+		
+		eventAttendeeExist.getBody().setStatus(EventAttendanceStatus.DECLINED);
+		
+		ResponseEntity<EventAttendee> resp = this.eventAttendeeservice.Update(eventAttendeeExist.getBody());
+		if (resp.getStatusCode().is2xxSuccessful()) {
+			return ResponseEntity.status(HttpStatus.OK).body("Event request accepted");
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to accept event request");
 	}
 	
 }

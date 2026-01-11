@@ -20,4 +20,6 @@ public interface IEventAttendeeService {
 
 	void deleteEventAttendeeByEventIdAndUserId(EventAttendee eventAttedee);
 
+	public ResponseEntity<EventAttendee> Update(EventAttendee eventAttendee);
+
 }

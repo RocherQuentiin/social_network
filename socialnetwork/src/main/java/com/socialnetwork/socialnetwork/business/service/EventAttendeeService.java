@@ -54,13 +54,18 @@ public class EventAttendeeService implements IEventAttendeeService{
 	@Override
 	public ResponseEntity<List<EventAttendee>> getSentRequestsFor(UUID requesterId) {
 		List<EventAttendee> listEventAttendee = this.repository.findBystatusAndUser_id(EventAttendanceStatus.PENDING, requesterId);
-		System.out.println(listEventAttendee.get(0).getUser().getFirstName());
 		return new ResponseEntity<List<EventAttendee>>(listEventAttendee, HttpStatus.OK);
 	}
 
 	@Override
 	public void deleteEventAttendeeByEventIdAndUserId(EventAttendee eventAttendee) {
 		this.repository.deleteById(eventAttendee.getId());
+	}
+
+	@Override
+	public ResponseEntity<EventAttendee> Update(EventAttendee eventAttendee) {
+		EventAttendee saveEventAttendee = this.repository.save(eventAttendee);
+		return new ResponseEntity<EventAttendee>(saveEventAttendee, HttpStatus.OK);
 	}
 	
 
