@@ -11,7 +11,7 @@ if (friendRequestButtons.length > 0) {
 }
 
 function handleFriendRequest(event) {
-    const button = event.target;
+    const button = event.currentTarget;
     const userId = button.getAttribute('data-id');
     const action = button.getAttribute('data-action') || 'send';
 
@@ -22,18 +22,14 @@ function handleFriendRequest(event) {
 
     const endpoint =
         action === 'accept' ? '/friend-request/accept' :
-            action === 'decline' ? '/friend-request/decline' :
-                '/friend-request/send';
+        action === 'decline' ? '/friend-request/decline' :
+            '/friend-request/send';
 
-    const params = action === 'send' ?
-        'userId=' + userId :
-        'requesterId=' + userId;
+    const params = action === 'send' ? 'userId=' + userId : 'requesterId=' + userId;
 
     fetch(endpoint, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: params
     })
         .then(response => {
@@ -41,22 +37,22 @@ function handleFriendRequest(event) {
             button.textContent = originalText;
 
             if (response.status === 200) {
-                alert('Opération réussie! Page en cours de rechargement...');
-                setTimeout(() => window.location.reload(), 500);
+                customAlert('Succès', 'Opération réussie! La page va se recharger...', 'success');
+                setTimeout(() => window.location.reload(), 1500);
             } else if (response.status === 409) {
-                alert('Cette demande existe déjà ou vous êtes déjà amis');
+                customAlert('Information', 'Cette demande existe déjà ou vous êtes déjà amis', 'info');
                 button.disabled = false;
             } else if (response.status === 403) {
-                alert('Cet utilisateur n\'a pas autorisé les demandes de connexion. Réessayez après qu\'il ait changé ses paramètres.');
+                customAlert('Accès refusé', 'Cet utilisateur n\'autorise pas les demandes pour le moment.', 'error');
                 button.disabled = false;
             } else {
-                alert('Une erreur s\'est produite. Veuillez réessayer.');
+                customAlert('Erreur', 'Une erreur s\'est produite. Veuillez réessayer.', 'error');
                 button.disabled = false;
             }
         })
         .catch(error => {
             console.error('Erreur:', error);
-            alert('Erreur de connexion. Veuillez réessayer.');
+            customAlert('Erreur', 'Erreur de connexion. Veuillez réessayer.', 'error');
             button.disabled = false;
             button.textContent = originalText;
         });
@@ -68,18 +64,9 @@ function handleFriendRequest(event) {
 function loadPendingRequests() {
     fetch('/friend-request/pending', {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
+        headers: { 'Content-Type': 'application/json' }
     })
-        .then(response => {
-            if (response.status === 200) {
-                return response.json();
-            } else {
-                console.error('Failed to load pending requests');
-                return [];
-            }
-        })
+        .then(response => response.status === 200 ? response.json() : [])
         .then(requests => {
             displayReceivedRequests(requests);
             loadSentRequests();
@@ -93,20 +80,10 @@ function loadPendingRequests() {
 function loadSentRequests() {
     fetch('/friend-request/sent', {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
+        headers: { 'Content-Type': 'application/json' }
     })
-        .then(response => {
-            if (response.status === 200) {
-                return response.json();
-            } else {
-                console.error('Failed to load sent requests, status:', response.status);
-                return [];
-            }
-        })
+        .then(response => response.status === 200 ? response.json() : [])
         .then(requests => {
-            console.log('Sent requests loaded:', requests);
             markSentButtons(requests);
             displaySentRequests(requests);
         })
@@ -116,12 +93,7 @@ function loadSentRequests() {
 function markSentButtons(requests) {
     if (!requests || requests.length === 0) return;
     const btns = document.querySelectorAll('.btn-friend-request');
-    if (!btns || btns.length === 0) return;
-
-    const sentIds = new Set(requests
-        .map(r => r?.receiver?.id || r?.receiverId)
-        .filter(Boolean)
-    );
+    const sentIds = new Set(requests.map(r => r?.receiver?.id || r?.receiverId).filter(Boolean));
 
     btns.forEach(btn => {
         const uid = btn.getAttribute('data-id');
@@ -137,18 +109,13 @@ function markSentButtons(requests) {
 function displayReceivedRequests(requests) {
     const container = document.getElementById('received-requests-container');
     if (!container) return;
-
     if (requests.length === 0) {
         container.innerHTML = '<p>Pas de demandes reçues.</p>';
         return;
     }
-
-    let html = '<div class="pending-requests-list">';
-    html += '<h3>Demandes reçues</h3>';
+    let html = '<div class="pending-requests-list"><h3>Demandes reçues</h3>';
     requests.forEach(req => {
         const requesterName = req.requester.firstName + ' ' + req.requester.lastName;
-        const requesterId = req.requester.id;
-
         html += `
             <div class="pending-request-item">
                 <div class="request-info">
@@ -156,75 +123,51 @@ function displayReceivedRequests(requests) {
                     <p>Envoyée le ${new Date(req.createdAt).toLocaleDateString()}</p>
                 </div>
                 <div class="request-actions">
-                    <button class="btn btn-success btn-accept" data-id="${requesterId}">Accepter</button>
-                    <button class="btn btn-danger btn-decline" data-id="${requesterId}">Refuser</button>
+                    <button class="btn btn-success btn-accept" data-id="${req.requester.id}">Accepter</button>
+                    <button class="btn btn-danger btn-decline" data-id="${req.requester.id}">Refuser</button>
                 </div>
-            </div>
-        `;
+            </div>`;
     });
     html += '</div>';
-
     container.innerHTML = html;
-
-    // Attach event listeners to accept/decline buttons
-    document.querySelectorAll('.btn-accept').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const requesterId = this.getAttribute('data-id');
-            acceptRequest(requesterId);
-        });
-    });
-
-    document.querySelectorAll('.btn-decline').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const requesterId = this.getAttribute('data-id');
-            declineRequest(requesterId);
-        });
-    });
+    document.querySelectorAll('.btn-accept').forEach(btn => btn.addEventListener('click', function() { acceptRequest(this.getAttribute('data-id')); }));
+    document.querySelectorAll('.btn-decline').forEach(btn => btn.addEventListener('click', function() { declineRequest(this.getAttribute('data-id')); }));
 }
 
 function displaySentRequests(requests) {
     const container = document.getElementById('sent-requests-container');
     if (!container) return;
-
     if (requests.length === 0) {
         container.innerHTML = '<p>Pas de demandes en attente.</p>';
         return;
     }
-
-    let html = '<div class="pending-requests-list sent-list">';
-    html += '<h3>Demandes envoyées (en attente)</h3>';
+    let html = '<div class="pending-requests-list sent-list"><h3>Demandes envoyées</h3>';
     requests.forEach(req => {
         const receiverName = req.receiver.firstName + ' ' + req.receiver.lastName;
-        const receiverId = req.receiver.id;
-
         html += `
             <div class="pending-request-item sent-item">
                 <div class="request-info">
                     <strong>${receiverName}</strong>
                     <p class="status-pending">En attente d'acceptation depuis le ${new Date(req.createdAt).toLocaleDateString()}</p>
                 </div>
-            </div>
-        `;
+            </div>`;
     });
     html += '</div>';
-
     container.innerHTML = html;
 }
 
 function acceptRequest(requesterId) {
     fetch('/friend-request/accept', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: 'requesterId=' + requesterId
     })
         .then(response => {
             if (response.status === 200) {
-                alert('Friend request accepted!');
+                customAlert('Succès', 'Demande acceptée !', 'success');
                 loadPendingRequests();
             } else {
-                alert('Failed to accept request');
+                customAlert('Erreur', 'Impossible d\'accepter la demande.', 'error');
             }
         })
         .catch(error => console.error('Error:', error));
@@ -233,17 +176,15 @@ function acceptRequest(requesterId) {
 function declineRequest(requesterId) {
     fetch('/friend-request/decline', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: 'requesterId=' + requesterId
     })
         .then(response => {
             if (response.status === 200) {
-                alert('Friend request declined!');
+                customAlert('Refusé', 'Demande déclinée.', 'info');
                 loadPendingRequests();
             } else {
-                alert('Failed to decline request');
+                customAlert('Erreur', 'Impossible de refuser la demande.', 'error');
             }
         })
         .catch(error => console.error('Error:', error));
@@ -255,33 +196,38 @@ function declineRequest(requesterId) {
 function loadNotificationBadge() {
     fetch('/friend-request/pending', {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
+        headers: { 'Content-Type': 'application/json' }
     })
-        .then(response => {
-            if (response.status === 200) {
-                return response.json();
-            }
-            return [];
-        })
+        .then(response => response.status === 200 ? response.json() : [])
         .then(requests => {
             const badge = document.getElementById('notification-badge');
             if (badge) {
-                const count = requests.length;
-                if (count > 0) {
-                    badge.textContent = count;
-                    badge.style.display = 'inline-block';
-                } else {
-                    badge.style.display = 'none';
-                }
+                badge.textContent = requests.length;
+                badge.style.display = requests.length > 0 ? 'inline-block' : 'none';
             }
         })
-        .catch(error => console.error('Error loading notification badge:', error));
+        .catch(error => console.error('Error loading badge:', error));
 }
 
-// Load pending requests on page load
+function markAcceptedFriends() {
+    fetch('/friend-request/accepted-ids')
+        .then(response => response.status === 200 ? response.json() : [])
+        .then(friendIds => {
+            const btns = document.querySelectorAll('.btn-friend-request');
+            const friendSet = new Set(friendIds);
+            btns.forEach(btn => {
+                const uid = btn.getAttribute('data-id');
+                if (friendSet.has(uid)) {
+                    btn.outerHTML = `<span class="badge-friends"><i data-lucide="check"></i> Amis</span>`;
+                }
+            });
+            if (window.lucide) lucide.createIcons();
+        })
+        .catch(err => console.error('Erreur lors du chargement des amis:', err));
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     loadPendingRequests();
     loadNotificationBadge();
+    markAcceptedFriends();
 });
