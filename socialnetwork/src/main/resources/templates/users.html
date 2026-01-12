@@ -20,12 +20,12 @@
                     <h1>Retrouvez vos camarades</h1>
                     <p>Recherchez des étudiants par nom, filière ou promotion et élargissez votre réseau professionnel et amical.</p>
 
-                    <form th:action="@{/users/search}" method="get" class="search-bar-wrapper">
+                    <form class="search-bar-wrapper" onsubmit="return false;">
                         <div class="search-input-group">
                             <i data-lucide="search"></i>
-                            <input type="text" name="query" placeholder="Rechercher par nom...">
+                            <input type="text" id="directorySearch" placeholder="Rechercher par nom...">
                         </div>
-                        <button type="submit" class="btn-publish">Rechercher</button>
+                        <button type="button" class="btn-publish">Rechercher</button>
                     </form>
                 </div>
             </section>
