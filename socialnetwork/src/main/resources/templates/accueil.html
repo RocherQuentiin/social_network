@@ -24,7 +24,7 @@
                         </div>
                         <form th:action="@{/post}" method="post" class="publish-form" style="flex:1;" enctype="multipart/form-data">
                             <!-- CSRF token removed to avoid rendering error when security context is absent -->
-                            <textarea name="content" placeholder="Quoi de neuf ? Partagez avec les étudiants..." rows="2" style="width:100%; padding:12px; border-radius:8px; background:transparent; border:1px solid var(--border); color:var(--text); resize:vertical;"></textarea>
+                            <textarea name="content" placeholder="Quoi de neuf ? Partagez avec les étudiants..." rows="2" style="width:100%; padding:12px; border-radius:8px; background:transparent; border:1px solid var(--border); resize:vertical;"></textarea>
                             <div style="display:flex; align-items:center; justify-content:space-between; margin-top:10px;">
                                 <div style="display:flex; gap:12px; align-items:center;">
                                     <div class="publish-icons" style="display:flex; gap:8px;">
@@ -37,7 +37,7 @@
                                   
                                     <div class="visibility-select" style="display:flex; align-items:center; gap:8px;">
                                         <label for="visibilityType" style="color:var(--text-dim); font-size:0.9rem;">Visibilité</label>
-                                        <select id="visibilityType" name="visibilityType" class="publish-visibility" style="background:transparent; border:1px solid var(--border); color:var(--text); padding:6px 8px; border-radius:6px;">
+                                        <select id="visibilityType" name="visibilityType" class="publish-visibility" style="background:transparent; border:1px solid var(--border);  padding:6px 8px; border-radius:6px;">
                                             <option value="PUBLIC">Public</option>
                                             <option value="FRIENDS">Amis</option>
                                             <option value="PRIVATE">Privé</option>
@@ -72,7 +72,7 @@
                         </p>
                         <div class="hero-cta">
                             <a th:href="@{/login}" class="btn-primary-large">Rejoindre l'aventure ISEP</a>
-                            <a href="#features" class="btn-outline-large">En savoir plus</a>
+                            <a th:href="@{/users}" class="btn-outline-large">En savoir plus</a>
                         </div>
                     </div>
                 </div>
