@@ -462,7 +462,7 @@
     }
 }
 
-#editEventModal {
+#editEventModal, #userRecommandationModal {
     display: none;
     position: fixed;
     inset: 0;
@@ -474,7 +474,7 @@
     padding: 20px;
 }
 
-#editEventModal .card {
+#editEventModal .card, #userRecommandationModal .card {
     width: 100%;
     max-width: 550px;
     background: #1c2028;
@@ -498,7 +498,7 @@
     color: var(--text-main);
 }
 
-#closeEventEditModal {
+#closeEventEditModal, #closeUserRecommandationModal {
     background: transparent;
     border: none;
     color: var(--text-dim);
@@ -507,7 +507,7 @@
     line-height: 1;
 }
 
-#closeEventEditModal:hover {
+#closeEventEditModal:hover, #closeUserRecommandationModal:hover{
     color: white;
 }
 
@@ -594,7 +594,7 @@ input:focus, select:focus, textarea:focus {
     font-size: 0.9rem;
 }
 
-.btn-event-submit {
+.btn-event-submit, .btn-submit {
     width: 100%;
     background: var(--primary);
     color: white;
@@ -612,7 +612,7 @@ input:focus, select:focus, textarea:focus {
     margin-top: 10px;
 }
 
-.btn-event-submit:hover {
+.btn-event-submit:hover, .btn-submit:hover {
     background: var(--gold);
     transform: translateY(-2px);
 }
@@ -621,4 +621,21 @@ input:focus, select:focus, textarea:focus {
     .event-form > div {
         grid-template-columns: 1fr !important;
     }
+}
+
+textarea {
+  width: 100%;
+  max-width: 100%;
+}
+
+.btn-recommandation {
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+    background-color: #2196f3;
+    color: white;
 }

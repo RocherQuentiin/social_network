@@ -26,6 +26,7 @@ import com.socialnetwork.socialnetwork.business.interfaces.service.IMailService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IPostService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IPrivacySettingsService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IProfileService;
+import com.socialnetwork.socialnetwork.business.interfaces.service.IRecommandationService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.ITokenService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
 import com.socialnetwork.socialnetwork.business.utils.FileUpload;
@@ -34,6 +35,7 @@ import com.socialnetwork.socialnetwork.dto.UserOtherProfileDto;
 import com.socialnetwork.socialnetwork.dto.UserProfileDto;
 import com.socialnetwork.socialnetwork.entity.PrivacySettings;
 import com.socialnetwork.socialnetwork.entity.Profile;
+import com.socialnetwork.socialnetwork.entity.Recommendation;
 import com.socialnetwork.socialnetwork.entity.Event;
 import com.socialnetwork.socialnetwork.entity.Follow;
 import com.socialnetwork.socialnetwork.entity.Post;
@@ -57,8 +59,9 @@ public class UserController {
 	private final IPostService postService;
 	private final IFollowService followService;
 	private final IEventService eventService;
+	private final IRecommandationService recommandationService;
 	
-	public UserController(IUserService userService, IEventService eventService, IMailService mailService, IFollowService followService, IPostService postService, ITokenService tokenService, IProfileService profileService, IPrivacySettingsService privacySettingsService) {
+	public UserController(IUserService userService, IRecommandationService recommandationService,  IEventService eventService, IMailService mailService, IFollowService followService, IPostService postService, ITokenService tokenService, IProfileService profileService, IPrivacySettingsService privacySettingsService) {
 		this.userService = userService;
 		this.mailService = mailService;
 		this.tokenService = tokenService;
@@ -67,6 +70,7 @@ public class UserController {
 		this.postService = postService;
 		this.followService = followService;
 		this.eventService = eventService;
+		this.recommandationService = recommandationService;
 	}
 
     @GetMapping({"/", "/accueil"})
@@ -479,6 +483,9 @@ public class UserController {
 			model.addAttribute("eventFirst", event.getBody());
 		}
 		
+		ResponseEntity<List<Recommendation>> listRecommandation = this.recommandationService.getAllRecommandationByRecommandedUser(UUID.fromString(userIsConnect.toString()));
+		model.addAttribute("listRecommandation", listRecommandation.getBody());
+		
 		return "userProfile";
 	}
 	
@@ -564,6 +571,12 @@ public class UserController {
 
 		model.addAttribute("isFollow", follow.getStatusCode() == HttpStatusCode.valueOf(200));
 		model.addAttribute("userProfile", userOtherProfileDto);
+		
+		ResponseEntity<List<Recommendation>> listRecommandation = this.recommandationService.getAllRecommandationByRecommandedUser(UUID.fromString(id));
+		
+		model.addAttribute("recommandation", new Recommendation());
+		model.addAttribute("listRecommandation", listRecommandation.getBody());
+		
 		return "userViewProfile";
 	}
 

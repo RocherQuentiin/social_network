@@ -56,6 +56,12 @@
 						th:text="${isFollow ? 'Ne plus suivre' : 'Suivre'}">
 					Suivre
 				</button>
+				
+				<button id="recommandationBtn"
+						class="btn-recommandation"
+						th:data-id="${userProfile.user.id}">
+					Recommandation
+				</button>
 
 				<a th:if="${userProfile.privacySettings.allowDirectMessages == 'true'}"
 				   th:href="@{/messages(target=${userProfile.user.id})}"
@@ -81,6 +87,12 @@
 	</aside>
 
 	<section class="main-content">
+		<div class="alert-error" th:if="${error}">
+			<i data-lucide="alert-circle"></i> <span th:text="${error}"></span>
+		</div>
+		<div class="alert-information" th:if="${information}">
+			<i data-lucide="check-circle"></i> <span th:text="${information}"></span>
+		</div>
 		<div class="section-container">
 			<div class="section-header">
 				<h3><i data-lucide="user" class="icon-blue"></i> À propos</h3>
@@ -117,6 +129,21 @@
 				</div>
 			</div>
 		</div>
+		
+		<div class="section-container">
+			<div class="section-header">
+				<h3><i data-lucide="star" class="icon-blue"></i> Recommandation</h3>
+			</div>
+			<div th:each="recommandations : ${listRecommandation}" class="recommandation-grid">
+				<div class="card recommandation-item" style="display: flex; align-items: center; padding: 20px; gap: 20px;">
+					<div class="plus-circle"><i data-lucide="star"></i></div>
+					<div class="project-info" style="padding: 0;">
+						<h4><span th:text="${recommandations.score}"></span> / 5.0 par <span th:text="${recommandations.user.firstName}"></span> <span th:text="${recommandations.user.lastName}"></span></h4>
+						<p th:text="${recommandations.reason}"></p>
+					</div>
+				</div>
+			</div>
+		</div>
 
 		<div class="section-container" th:if="${userProfile.privacySettings.canSeeBirthdate}">
 			<div class="section-header">
@@ -128,6 +155,46 @@
 			</div>
 		</div>
 	</section>
+	
+	<div id="userRecommandationModal">
+		<div class="modal-card card">
+			<div class="modal-header">
+				<h3>Récommandation de l'utilisateur</h3>
+				<button id=closeUserRecommandationModal aria-label="Fermer">✕</button>
+			</div>
+			<div class="modal-body">
+				<form th:action="@{/recommandation}" th:object="${recommandation}" method="post"
+					class="recommandation-form">
+					<input id="userId" name="userRecommandationID"
+       				th:value="${userProfile.user.id}" type="text" style="visibility: hidden;" />
+					<div class="input-group">
+						<label for="score">Visibilité</label> <select
+							id="score" class="custom-select"
+							th:field="*{score}">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+						</select>
+					</div>
+
+					<div class="input-group">
+						<label for="reason">Raison</label>
+						<div class="input-wrapper">
+							<textarea th:field="*{reason}" id="reason" rows="4" placeholder="Raison"></textarea>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button id="btn-submit" type="submit" class="btn-submit">Créer</button>
+					</div>
+				</form>
+
+			</div>
+
+		</div>
+	</div>
 </main>
 
 <div th:replace="~{fragments/footer :: footer-fragment}"></div>
