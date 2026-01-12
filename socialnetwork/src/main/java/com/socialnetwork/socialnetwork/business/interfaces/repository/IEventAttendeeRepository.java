@@ -17,4 +17,6 @@ public interface IEventAttendeeRepository extends JpaRepository<EventAttendee, U
 
 	List<EventAttendee> findBystatusAndUser_id(EventAttendanceStatus pending, UUID requesterId);
 
+	List<EventAttendee> findByEvent_idAndStatus(UUID eventID, EventAttendanceStatus status);
+
 }

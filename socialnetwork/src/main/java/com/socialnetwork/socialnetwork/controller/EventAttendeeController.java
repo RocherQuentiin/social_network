@@ -125,7 +125,7 @@ public class EventAttendeeController {
 	public ResponseEntity<String> acceptEventRequest(HttpServletRequest request,
 			@RequestParam("requesterId") String requesterId ,
 			@RequestParam("eventId") String eventId) {
-		System.out.println("ok");
+		
 		Object userIsConnect = Utils.validPage(request, true);
 		if (userIsConnect == null) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authenticated");
@@ -136,9 +136,15 @@ public class EventAttendeeController {
 		
 		ResponseEntity<EventAttendee> eventAttendeeExist = this.eventAttendeeservice.getEventAttendeeByEventIDAndUserID(
 				eventUUId, reqId);
-		System.out.println("ok");
+		
 		if (eventAttendeeExist.getStatusCode() == HttpStatusCode.valueOf(404)) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not exist in this event");
+		}
+		
+		ResponseEntity<List<EventAttendee>> listEventAttendee = this.eventAttendeeservice.getEventAttendeeByEventID(eventUUId);
+	
+		if(listEventAttendee.getBody().size() >= eventAttendeeExist.getBody().getEvent().getCapacity()) {
+			System.out.println(listEventAttendee.getBody().size());	return ResponseEntity.status(HttpStatus.FORBIDDEN).body("The capacity maximum");
 		}
 		
 		eventAttendeeExist.getBody().setStatus(EventAttendanceStatus.ACCEPTED);
@@ -154,7 +160,7 @@ public class EventAttendeeController {
 	public ResponseEntity<String> declineFriendRequest(HttpServletRequest request,
 			@RequestParam("requesterId") String requesterId,
 			@RequestParam("eventId") String eventId) {
-		System.out.println("ok");
+		
 		Object userIsConnect = Utils.validPage(request, true);
 		if (userIsConnect == null) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authenticated");

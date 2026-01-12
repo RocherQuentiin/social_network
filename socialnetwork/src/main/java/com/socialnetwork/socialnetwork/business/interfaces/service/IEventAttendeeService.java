@@ -22,4 +22,6 @@ public interface IEventAttendeeService {
 
 	public ResponseEntity<EventAttendee> Update(EventAttendee eventAttendee);
 
+	ResponseEntity<List<EventAttendee>> getEventAttendeeByEventID(UUID eventID);
+
 }
