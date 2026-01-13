@@ -3,6 +3,7 @@ package com.socialnetwork.socialnetwork.controller;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
 import com.socialnetwork.socialnetwork.business.utils.Utils;
 import com.socialnetwork.socialnetwork.dto.EventDto;
 import com.socialnetwork.socialnetwork.entity.Event;
+import com.socialnetwork.socialnetwork.entity.EventAttendee;
 import com.socialnetwork.socialnetwork.entity.User;
 
 
@@ -52,6 +54,12 @@ public String createEvent(HttpServletRequest request, Model model, Event event) 
     
     if(event.getName().trim().equals("") || event.getEventDate() == null || event.getLocation().trim().equals("") || event.getVisibilityType().equals("")) {
     	model.addAttribute("errorEvent", "Veuillez remplir l'ensemble des champs");
+		model.addAttribute("event", event);
+		return this.UserController.showUserProfil(request, model);
+    }
+    
+    if(event.getCapacity() <= 0) {
+    	model.addAttribute("errorEvent", "Un événement doit avoir obligatoirement plus de 0 participants");
 		model.addAttribute("event", event);
 		return this.UserController.showUserProfil(request, model);
     }
@@ -91,9 +99,14 @@ public String getEvent(HttpServletRequest request, Model model, @PathVariable("i
     if(event.getStatusCode() != HttpStatusCode.valueOf(200)) {
     	return "accueil";
     }
+    Optional<EventAttendee> attendeeExist = event.getBody().getEventAttendee().stream().filter(x -> x.getUser().getId().equals(UUID.fromString(userIsConnect.toString()))).findFirst();
 
 	model.addAttribute("eventinfo", event.getBody());
-
+	if(attendeeExist.isPresent()) {
+		model.addAttribute("attendee", attendeeExist.get());
+	}
+	
+	
 	return "event";
 }
 

@@ -1,11 +1,13 @@
 package com.socialnetwork.socialnetwork.business.service;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,8 @@ import org.springframework.stereotype.Service;
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IEventRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IEventService;
 import com.socialnetwork.socialnetwork.entity.Event;
+import com.socialnetwork.socialnetwork.entity.User;
+import com.socialnetwork.socialnetwork.enums.VisibilityType;
 
 @Service
 public class EventService implements IEventService{
@@ -74,6 +78,22 @@ public ResponseEntity<Event> update(Event event) {
 	
 	return new ResponseEntity<>(
 			saveEvent, 
+		      HttpStatus.OK);
+}
+
+@Override
+public ResponseEntity<List<Event>> getAllEventVisibilityPublic() {
+	Optional<List<Event>> listEvent = this.repository.findByVisibilityType(VisibilityType.PUBLIC);
+	return new ResponseEntity<>(
+			listEvent.get(), 
+		      HttpStatus.OK);
+}
+
+@Override
+public ResponseEntity<List<Event>> getAllEventForConnectedUser(UUID userID, LocalDateTime now) {
+	Optional<List<Event>> listEvent = this.repository.findAllEventOfUser(userID, now);
+	return new ResponseEntity<>(
+			listEvent.get(), 
 		      HttpStatus.OK);
 }
 }

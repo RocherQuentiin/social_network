@@ -16,22 +16,22 @@ public class EventAttendee {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    @ManyToOne
-    @JoinColumn(name = "event_id", nullable = false)
-    private Event event;
-
+    
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+    
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "event_id", nullable = false)
+    private Event event;
+    
     @Enumerated(EnumType.STRING)
     @Column(name = "event_attendance_status")
     private EventAttendanceStatus status = EventAttendanceStatus.PENDING;
-
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
 
     // Getters and setters
 
