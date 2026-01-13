@@ -20,46 +20,42 @@ function handleFriendRequest(event) {
 	const originalText = button.textContent;
 	button.textContent = 'En attente...';
 
-	const endpoint =
-		action === 'accept' ? '/friend-request/accept' :
-			action === 'decline' ? '/friend-request/decline' :
-				'/friend-request/send';
+    const endpoint =
+        action === 'accept' ? '/friend-request/accept' :
+        action === 'decline' ? '/friend-request/decline' :
+            '/friend-request/send';
 
-	const params = action === 'send' ?
-		'userId=' + userId :
-		'requesterId=' + userId;
+    const params = action === 'send' ? 'userId=' + userId : 'requesterId=' + userId;
 
-	fetch(endpoint, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		body: params
-	})
-		.then(response => {
-			button.disabled = false;
-			button.textContent = originalText;
+    fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params
+    })
+        .then(response => {
+            button.disabled = false;
+            button.textContent = originalText;
 
-			if (response.status === 200) {
-				alert('Opération réussie! Page en cours de rechargement...');
-				setTimeout(() => window.location.reload(), 500);
-			} else if (response.status === 409) {
-				alert('Cette demande existe déjà ou vous êtes déjà amis');
-				button.disabled = false;
-			} else if (response.status === 403) {
-				alert('Cet utilisateur n\'a pas autorisé les demandes de connexion. Réessayez après qu\'il ait changé ses paramètres.');
-				button.disabled = false;
-			} else {
-				alert('Une erreur s\'est produite. Veuillez réessayer.');
-				button.disabled = false;
-			}
-		})
-		.catch(error => {
-			console.error('Erreur:', error);
-			alert('Erreur de connexion. Veuillez réessayer.');
-			button.disabled = false;
-			button.textContent = originalText;
-		});
+            if (response.status === 200) {
+                customAlert('Succès', 'Opération réussie! La page va se recharger...', 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            } else if (response.status === 409) {
+                customAlert('Information', 'Cette demande existe déjà ou vous êtes déjà amis', 'info');
+                button.disabled = false;
+            } else if (response.status === 403) {
+                customAlert('Accès refusé', 'Cet utilisateur n\'autorise pas les demandes pour le moment.', 'error');
+                button.disabled = false;
+            } else {
+                customAlert('Erreur', 'Une erreur s\'est produite. Veuillez réessayer.', 'error');
+                button.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            customAlert('Erreur', 'Erreur de connexion. Veuillez réessayer.', 'error');
+            button.disabled = false;
+            button.textContent = originalText;
+        });
 }
 
 /**
@@ -189,8 +185,8 @@ function displayReceivedRequests(requests, requestsEvent) {
                     <p>Envoyée le ${new Date(req.createdAt).toLocaleDateString()}</p>
                 </div>
                 <div class="request-actions">
-                    <button class="btn btn-success btn-accept" data-id="${requesterId}">Accepter</button>
-                    <button class="btn btn-danger btn-decline" data-id="${requesterId}">Refuser</button>
+                    <button class="btn btn-success btn-accept" data-id="${req.requester.id}">Accepter</button>
+                    <button class="btn btn-danger btn-decline" data-id="${req.requester.id}">Refuser</button>
                 </div>
             </div>
         `;
@@ -381,35 +377,40 @@ function declineRequest(requesterId) {
  * Show notification badge count (count only received requests)
  */
 function loadNotificationBadge() {
-	fetch('/friend-request/pending', {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json'
-		}
-	})
-		.then(response => {
-			if (response.status === 200) {
-				return response.json();
-			}
-			return [];
-		})
-		.then(requests => {
-			const badge = document.getElementById('notification-badge');
-			if (badge) {
-				const count = requests.length;
-				if (count > 0) {
-					badge.textContent = count;
-					badge.style.display = 'inline-block';
-				} else {
-					badge.style.display = 'none';
-				}
-			}
-		})
-		.catch(error => console.error('Error loading notification badge:', error));
+    fetch('/friend-request/pending', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    })
+        .then(response => response.status === 200 ? response.json() : [])
+        .then(requests => {
+            const badge = document.getElementById('notification-badge');
+            if (badge) {
+                badge.textContent = requests.length;
+                badge.style.display = requests.length > 0 ? 'inline-block' : 'none';
+            }
+        })
+        .catch(error => console.error('Error loading badge:', error));
 }
 
-// Load pending requests on page load
-document.addEventListener('DOMContentLoaded', function() {
-	loadPendingRequests();
-	loadNotificationBadge();
+function markAcceptedFriends() {
+    fetch('/friend-request/accepted-ids')
+        .then(response => response.status === 200 ? response.json() : [])
+        .then(friendIds => {
+            const btns = document.querySelectorAll('.btn-friend-request');
+            const friendSet = new Set(friendIds);
+            btns.forEach(btn => {
+                const uid = btn.getAttribute('data-id');
+                if (friendSet.has(uid)) {
+                    btn.outerHTML = `<span class="badge-friends"><i data-lucide="check"></i> Amis</span>`;
+                }
+            });
+            if (window.lucide) lucide.createIcons();
+        })
+        .catch(err => console.error('Erreur lors du chargement des amis:', err));
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    loadPendingRequests();
+    loadNotificationBadge();
+    markAcceptedFriends();
 });
