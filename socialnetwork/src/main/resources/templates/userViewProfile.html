@@ -132,6 +132,16 @@
 		
 		<div class="section-container">
 			<div class="section-header">
+				<h3><i data-lucide="rocket" class="icon-blue"></i> Projets publics</h3>
+				<a th:href="@{/projects/user/{id}(id=${userProfile.user.id})}" class="modifier-btn">Voir tout</a>
+			</div>
+			<div id="user-projects-view" class="projects-grid">
+				<!-- Projects will be loaded dynamically -->
+			</div>
+		</div>
+		
+		<div class="section-container">
+			<div class="section-header">
 				<h3><i data-lucide="star" class="icon-blue"></i> Recommandation</h3>
 			</div>
 			<div th:each="recommandations : ${listRecommandation}" class="recommandation-grid">
@@ -202,6 +212,10 @@
 <script th:src="@{/js/header.js}"></script>
 <script th:src="@{/js/userViewProfile.js}"></script>
 <script th:src="@{/js/friendRequest.js}"></script>
-<script>lucide.createIcons();</script>
+<script>
+	lucide.createIcons();
+	// Pass viewed user ID to JavaScript
+	window.viewedUserId = '[[${userProfile.user.id}]]';
+</script>
 </body>
 </html>
