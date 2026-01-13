@@ -102,17 +102,26 @@
 					</div>
 				</form>
 			</div>
-			
+
+			<div class="publish-options">
+				<select id="preferences" name="preferences" class="custom-select">
+					<option value="Date">Date</option>
+					<option value="Popularité">Popularité</option>
+					<option value="Commentaires">Commentaires</option>
+				</select>
+
+			</div>
+
 			<div class="search-bar-wrapper">
-                <div class="search-input-group">
-                    <i data-lucide="search"></i>
-                    <input id="post-search" type="text" name="query" placeholder="Rechercher post">
-                </div>
-            </div>
+				<div class="search-input-group">
+					<i data-lucide="search"></i> <input id="post-search" type="text"
+						name="query" placeholder="Rechercher post">
+				</div>
+			</div>
 
 			<div class="posts-list">
 				<article th:each="post : ${posts}" class="post-card card"
-					th:attr="data-post-card-id=${post.id}, data-auhtor-lastname=${post.author.lastName}, data-author-firstName=${post.author.lastName}, data-post-content=${post.content},  data-post-visibility=${post.visibilityType}">
+					th:attr="data-post-card-id=${post.id}, data-post-createdAt=${post.createdAt}, data-auhtor-lastname=${post.author.lastName}, data-author-firstName=${post.author.lastName}, data-post-content=${post.content},  data-post-visibility=${post.visibilityType}">
 
 					<div class="post-header">
 						<img th:src="@{${post.author.profilePictureUrl}}"
@@ -210,14 +219,15 @@
 
 		<aside class="sidebar-right">
 			<div class="search-bar-wrapper">
-                <div class="search-input-group">
-                    <i data-lucide="search"></i>
-                    <input id="event-search"  type="text" name="query" placeholder="Rechercher evenements">
-                </div>
-            </div>
-			
+				<div class="search-input-group">
+					<i data-lucide="search"></i> <input id="event-search" type="text"
+						name="query" placeholder="Rechercher evenements">
+				</div>
+			</div>
+
 			<div class="announcement-part card" th:each="event : ${events}"
-				th:event-id="${event.id}" th:attr="data-creator-firstname=${event.creator.firstName}, data-creator-lastname=${event.creator.lastName}, data-event-name=${event.name}, data-event-location=${event.location}, data-event-visibility=${event.visibilityType}">
+				th:event-id="${event.id}"
+				th:attr="data-creator-firstname=${event.creator.firstName}, data-creator-lastname=${event.creator.lastName}, data-event-name=${event.name}, data-event-location=${event.location}, data-event-visibility=${event.visibilityType}">
 				<div class="announcement-title">
 					<h5>
 						<i data-lucide="megaphone" style="color: var(- -primary)"></i>
@@ -228,13 +238,20 @@
 					<h6 th:text="${event.name}">Inscriptions S2</h6>
 					<div class="event-actions"
 						th:if="${isConnect != null and isConnect.toString() == event.creator.id.toString()}">
-						<button type="button" class="btn-icon eventAction"  
+						<button type="button" class="btn-icon eventAction"
 							th:attr="event-id=${event.id}">
 							<i data-lucide="edit-2"></i>
 						</button>
 					</div>
-					<p><span class="event-date-period" th:attr="data-timestamp=${event.eventDate}"></span> <span th:text="${event.visibilityType}"></span></p>
-					<p>Situé à <span th:text="${event.location}"></span> avec une capacité de <span th:text="${event.capacity}"></span></p>
+					<p>
+						<span class="event-date-period"
+							th:attr="data-timestamp=${event.eventDate}"></span> <span
+							th:text="${event.visibilityType}"></span>
+					</p>
+					<p>
+						Situé à <span th:text="${event.location}"></span> avec une
+						capacité de <span th:text="${event.capacity}"></span>
+					</p>
 				</div>
 			</div>
 

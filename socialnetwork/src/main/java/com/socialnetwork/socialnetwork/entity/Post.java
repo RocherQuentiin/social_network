@@ -59,7 +59,12 @@ public class Post {
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Media> medias;
-
+    
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Reaction> reaction;
+    
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Comment> comment;
     // Getters and setters
 
     public UUID getId() {
