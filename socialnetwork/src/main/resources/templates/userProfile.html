@@ -201,6 +201,21 @@
 					</div>
 				</div>
 			</div>
+			
+			<div class="section-container">
+				<div class="section-header">
+					<h3><i data-lucide="star" class="icon-blue"></i> Recommandation</h3>
+				</div>
+				<div th:each="recommandations : ${listRecommandation}" class="recommandation-grid">
+					<div class="card recommandation-item" style="display: flex; align-items: center; padding: 20px; gap: 20px;">
+						<div class="plus-circle"><i data-lucide="star"></i></div>
+						<div class="project-info" style="padding: 0;">
+							<h4><span th:text="${recommandations.score}"></span> / 5.0 par <span th:text="${recommandations.user.firstName}"></span> <span th:text="${recommandations.user.lastName}"></span></h4>
+							<p th:text="${recommandations.reason}"></p>
+						</div>
+					</div>
+				</div>
+			</div>
 		</section>
 	</main>
 
