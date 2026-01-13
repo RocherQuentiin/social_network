@@ -11,7 +11,7 @@ import com.socialnetwork.socialnetwork.enums.EventAttendanceStatus;
 
 public interface IEventAttendeeRepository extends JpaRepository<EventAttendee, UUID> {
 
-	Optional<EventAttendee> findByidAndUser_id(UUID eventID, UUID userID);
+	Optional<EventAttendee> findByEvent_idAndUser_id(UUID eventID, UUID userID);
 
 	List<EventAttendee> findBystatusAndEvent_creator_id(EventAttendanceStatus pending, UUID userID);
 
