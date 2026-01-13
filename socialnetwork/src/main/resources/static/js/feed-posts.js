@@ -171,5 +171,21 @@ document.addEventListener('DOMContentLoaded', function(){
 			})
 		}
 	}
+	
+	const annoucements = document.querySelectorAll(".announcement-part");
+	const eventAction = document.querySelectorAll(".eventAction");
+	
+	annoucements.forEach(el => {
+		el.addEventListener('click', GoToEvent, el)
+	})
+	
+	eventAction.forEach(el => {
+		el.addEventListener('click', GoToEvent, el)
+	})
+	
+	function GoToEvent(el){
+		let eventId = el.currentTarget.getAttribute('event-id');
+		window.location.href = "/event/" + eventId;
+	}
 
 });
