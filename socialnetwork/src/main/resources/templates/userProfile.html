@@ -129,27 +129,16 @@
 					<h3>
 						<i data-lucide="rocket" class="icon-blue"></i> Projets
 					</h3>
-					<a href="#" class="modifier-btn">Voir tout</a>
+					<a th:href="@{/projects}" class="modifier-btn">Voir tout</a>
 				</div>
-				<div class="projects-grid">
-					<div class="card project-item">
-						<img th:src="@{${userProfile.user.profilePictureUrl}}"
-							alt="Projet">
-						<div class="project-info">
-							<h4>
-								ISEP Dashboard <span class="type-tag">Web</span>
-							</h4>
-							<p>Application de tableau de bord...</p>
-							<a href="#" class="details-link">Détails <i
-								data-lucide="arrow-right"></i></a>
-						</div>
-					</div>
-					<div class="card add-project-placeholder">
+				<div id="user-projects-profile" class="projects-grid">
+					<!-- Projects will be loaded dynamically -->
+					<div class="card add-project-placeholder" id="add-project-card">
 						<div class="plus-circle">
 							<i data-lucide="plus"></i>
 						</div>
-						<strong>Ajouter un projet</strong> <span>Montrez vos
-							réalisations académiques</span>
+						<strong>Ajouter un projet</strong> 
+						<span>Montrez vos réalisations académiques</span>
 					</div>
 				</div>
 			</div>
@@ -288,6 +277,14 @@
 		</div>
 	</div>
 	<script th:src="@{/js/userProfile.js}"></script>
+	<script>
+		// Pass user ID to JavaScript
+		window.currentUserId = '[[${isConnect}]]';
+		// Initialize lucide icons
+		if (typeof lucide !== 'undefined') {
+			lucide.createIcons();
+		}
+	</script>
 	<div th:replace="~{fragments/footer :: footer-fragment}"></div>
 
 </body>
