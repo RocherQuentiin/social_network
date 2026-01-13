@@ -5,45 +5,9 @@
     padding: 0 20px;
 }
 
-/* --- VUE EN LIGNE (LISTE) --- */
-.user-grid.list-view {
-    grid-template-columns: 1fr;
-}
-
-.user-grid.list-view .user-card {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    padding: 15px 30px;
-    text-align: left;
-}
-
-.user-grid.list-view .user-card-top {
-    flex-shrink: 0;
-}
-
-.user-grid.list-view .user-card-body {
-    flex-grow: 1;
-    margin: 0;
-}
-
-.user-grid.list-view .user-card-footer {
-    margin: 0;
-    min-width: 280px;
-    justify-content: flex-end;
-}
-
-@media (max-width: 768px) {
-    .user-grid.list-view .user-card {
-        flex-direction: column;
-        text-align: center;
-    }
-}
-
-/* HERO SECTION */
+/* --- HERO SECTION --- */
 .directory-hero {
-    background: linear-gradient(rgba(28, 32, 40, 0.9), rgba(28, 32, 40, 0.9)),
-    url('/img/fond.png');
+    background: linear-gradient(rgba(28, 32, 40, 0.9), rgba(28, 32, 40, 0.9)), url('/img/fond.png');
     background-size: cover;
     text-align: center;
     padding: 60px 20px;
@@ -81,7 +45,23 @@
     outline: none;
 }
 
-/* FILTERS */
+.btn-publish {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-publish:hover {
+    background: var(--bg-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* --- FILTERS --- */
 .filters-area { margin-bottom: 30px; }
 .filter-row { display: flex; align-items: center; gap: 20px; margin-bottom: 12px; }
 .filter-label { color: var(--text-dim); font-weight: bold; min-width: 70px; }
@@ -102,22 +82,8 @@
     color: white;
     border-color: var(--primary);
 }
-.btn-publish{
-    background: var(--primary);
-    color: white;
-    border-color: var(--primary);
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-}
 
-.btn-publish:hover {
-    background: var(--bg-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    padding: 12px 27px;
-}
-/* USER GRID */
+/* --- GRID & VIEW SWITCHER --- */
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -135,32 +101,34 @@
     gap: 20px;
 }
 
+/* --- USER CARD --- */
 .user-card {
     padding: 24px;
-    transition: transform 0.2s;
+    transition: all 0.2s;
     background: rgba(255,255,255,0.05);
     border: 1px solid var(--border);
     border-radius: 12px;
 }
 
-.user-card:hover { transform: translateY(-5px);
+.user-card:hover {
+    transform: translateY(-5px);
     border-color: var(--primary);
-    box-shadow: 0 4px 8px rgba(10,0,0,0.2);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.4);
     background: var(--bg-dark);
-   }
+}
 
 .user-card-top { display: flex; justify-content: space-between; align-items: flex-start; }
-
-.btn-more-small { background: none; border: none; color: var(--text-dim); cursor: pointer; }
-.btn-more-small:hover { color: white; }
-
 .avatar-container { position: relative; }
 .avatar-directory { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; }
+
 .online-badge {
     position: absolute; bottom: 5px; right: 5px;
     width: 14px; height: 14px;
     background: #10b981; border: 3px solid var(--bg-card); border-radius: 50%;
 }
+
+.btn-more-small { background: none; border: none; color: var(--text-dim); cursor: pointer; }
+.btn-more-small:hover { color: white; }
 
 .user-card-body { margin: 15px 0; }
 .user-card-body h3 { font-size: 1.15rem; margin-bottom: 4px; }
@@ -169,60 +137,43 @@
 
 .user-card-footer { display: flex; gap: 10px; margin-top: 20px; }
 
-.btn-connect {
-    flex: 1;
-    background: rgba(29, 155, 240, 0.1);
-    color: var(--primary);
-    border: 1px solid rgba(29, 155, 240, 0.2);
-    padding: 10px;
-    border-radius: 8px;
-    font-weight: bold;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    cursor: pointer;
-}
-
-.btn-connect:hover {
-    background: var(--gold);
-    color: var(--bg-card);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    padding: 12px 27px;
-}
-
-.btn-msg-small {
+/* Boutons secondaires (Message & Vue) */
+.btn-msg-small, .user-view {
     background: rgba(255,255,255,0.05);
     border: 1px solid var(--border);
     color: white;
     padding: 10px 14px;
     border-radius: 8px;
     cursor: pointer;
+    transition: all 0.2s;
 }
-.btn-msg-small:hover {
+
+.btn-msg-small:hover, .user-view:hover {
     background-color: var(--gold);
-    color: var(--bg-card);
+    color: var(--bg-dark);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    padding: 7px 15px;
+    border-color: var(--gold);
 }
 
-.user-view{
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border);
-    color: white;
-    padding: 10px 14px;
-    border-radius: 8px;
-    cursor: pointer;
+/* --- LIST VIEW OVERRIDE --- */
+.user-grid.list-view { grid-template-columns: 1fr; }
+
+.user-grid.list-view .user-card {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding: 15px 30px;
+    text-align: left;
 }
 
-.user-view:hover {
-    background-color: var(--gold);
-    color: var(--bg-card);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    padding: 7px 15px;
+.user-grid.list-view .user-card-body { flex-grow: 1; margin: 0; }
+.user-grid.list-view .user-card-footer { margin: 0; min-width: 280px; justify-content: flex-end; }
+
+@media (max-width: 768px) {
+    .user-grid.list-view .user-card { flex-direction: column; text-align: center; }
 }
 
-/* PAGINATION */
+/* --- PAGINATION --- */
 .pagination-wrapper {
     display: flex; justify-content: center; align-items: center;
     gap: 8px; margin-top: 50px;
@@ -235,6 +186,8 @@
     color: white;
     border-radius: 8px;
     cursor: pointer;
+    transition: 0.2s;
 }
 
 .btn-page.active { background: var(--primary); border-color: var(--primary); }
+.btn-page:hover:not(.active) { border-color: var(--primary); }

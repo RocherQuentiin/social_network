@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.socialnetwork.socialnetwork.business.interfaces.repository.IConnectionRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IConnectionService;
 import com.socialnetwork.socialnetwork.business.utils.Utils;
 import com.socialnetwork.socialnetwork.entity.Connection;
@@ -23,9 +24,24 @@ import jakarta.servlet.http.HttpServletRequest;
 public class FriendRequestController {
 
     private final IConnectionService connectionService;
+    private final IConnectionRepository connectionRepository;
 
-    public FriendRequestController(IConnectionService connectionService) {
+    public FriendRequestController(IConnectionService connectionService, IConnectionRepository connectionRepository) {
         this.connectionService = connectionService;
+        this.connectionRepository = connectionRepository;
+    }
+
+    @GetMapping("/accepted-ids")
+    public ResponseEntity<List<UUID>> getAcceptedFriendIds(HttpServletRequest request) {
+        Object userIsConnect = Utils.validPage(request, true);
+        if (userIsConnect == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        UUID userId = UUID.fromString(userIsConnect.toString());
+        List<UUID> friendIds = connectionRepository.findAllFriendsId(userId);
+
+        return ResponseEntity.ok(friendIds);
     }
 
     @PostMapping("/send")
