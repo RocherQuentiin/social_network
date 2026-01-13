@@ -13,7 +13,7 @@
 <body>
 	<div th:replace="~{fragments/header :: header-fragment}"></div>
 	<a th:if="${eventinfo.creator.id == isConnect}" id="btn-edit" class="btn-primary-header">Editer l'évenement</a>
-	<a th:if="${eventinfo.creator.id != isConnect && attendee == null}" th:data-id="*{eventinfo.id}" id="btn-join-event" class="btn-primary-header">Rejoindre l'évenement</a>
+	<a th:if="${eventinfo.creator.id != isConnect && attendee == null && particpantsCpt < eventinfo.capacity}" th:data-id="*{eventinfo.id}" id="btn-join-event" class="btn-primary-header">Rejoindre l'évenement</a>
 	<p th:if="${eventinfo.creator.id != isConnect && attendee != null}" th:text="${attendee.status}"></p>
 	<br>
 	<a th:if="${eventinfo.creator.id != isConnect && attendee != null && attendee.status != 'DECLINED'}" th:data-id="*{eventinfo.id}" id="btn-quit-event" class="btn-primary-header">Quitter l'évenement</a>
@@ -30,12 +30,17 @@
 	</p>
 
 	<p>
-		Capacité : <span th:text="${eventinfo.capacity}"></span>
+		Capacité : <span th:text="${particpantsCpt}"></span> / <span th:text="${eventinfo.capacity}"></span>
 	</p>
 
 	<p>
 		Description : <span th:text="${eventinfo.description}"></span>
 	</p>
+	<br>
+	<div>
+		<p>Participants : </p>
+		<p th:each="participant : ${participants}"><span th:text="${participant.user.lastName}"></span> <span th:text="${participant.user.firstName}"></span></p>
+	</div>
 	
 	<div id="editEventModal">
 		<div class="modal-card card">

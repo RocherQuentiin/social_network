@@ -209,8 +209,8 @@ function displayReceivedRequests(requests, requestsEvent) {
                     <p>Envoyée le ${new Date(req.createdAt).toLocaleDateString()}</p>
                 </div>
                 <div class="request-actions">
-                    <button class="btn btn-success btn-accept event" data-event-id="${eventId}" data-user-id="${requesterId}">Accepter</button>
-                    <button class="btn btn-danger btn-decline event" data-event-id="${eventId}" data-user-id="${requesterId}">Refuser</button>
+                    <button class="btn btn-success btn-accept-event" data-event-id="${eventId}" data-user-id="${requesterId}">Accepter</button>
+                    <button class="btn btn-danger btn-decline-event" data-event-id="${eventId}" data-user-id="${requesterId}">Refuser</button>
                 </div>
             </div>
         `;
@@ -231,6 +231,23 @@ function displayReceivedRequests(requests, requestsEvent) {
 		btn.addEventListener('click', function() {
 			const requesterId = this.getAttribute('data-id');
 			declineRequest(requesterId);
+		});
+	});
+	
+	// Attach event listeners to accept/decline buttons
+	document.querySelectorAll('.btn-accept-event').forEach(btn => {
+		btn.addEventListener('click', function() {
+			const requesterId = this.getAttribute('data-user-id');
+			const eventId = this.getAttribute('data-event-id');
+			acceptEventRequest(requesterId, eventId);
+		});
+	});
+
+	document.querySelectorAll('.btn-decline-event').forEach(btn => {
+		btn.addEventListener('click', function() {
+			const requesterId = this.getAttribute('data-user-id');
+			const eventId = this.getAttribute('data-event-id');
+			declineEventRequest(requesterId, eventId);
 		});
 	});
 }
@@ -290,6 +307,52 @@ function acceptRequest(requesterId) {
 				loadPendingRequests();
 			} else {
 				alert('Failed to accept request');
+			}
+		})
+		.catch(error => console.error('Error:', error));
+}
+
+function acceptEventRequest(requesterId, eventId) {
+	var payload = {
+		requesterId: requesterId,
+		eventId: eventId,
+	};
+	fetch('/eventattendee/accept', {
+		method: 'PUT',
+		headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    	},
+    	body: 'requesterId=' + requesterId + '&eventId=' + eventId
+	})
+		.then(response => {
+			if (response.status === 200) {
+				alert('Event join accepted!');
+				loadPendingRequests();
+			} else {
+				alert('Failed to accept request');
+			}
+		})
+		.catch(error => console.error('Error:', error));
+}
+
+function declineEventRequest(requesterId, eventId) {
+	var payload = {
+		requesterId: requesterId,
+		eventId: eventId,
+	};
+	fetch('/eventattendee/decline', {
+		method: 'PUT',
+		headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    	},
+    	body: 'requesterId=' + requesterId + '&eventId=' + eventId
+	})
+		.then(response => {
+			if (response.status === 200) {
+				alert('Event join declined!');
+				loadPendingRequests();
+			} else {
+				alert('Failed to declined request');
 			}
 		})
 		.catch(error => console.error('Error:', error));
