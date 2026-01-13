@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projets</title>
+    <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/project.css}">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div th:replace="~{fragments/header :: header-fragment}"></div>
+    
+    <!-- Hidden element to pass user ID to JavaScript -->
+    <div th:attr="data-current-user-id=${isConnect}" style="display:none;"></div>
+    
+    <div class="projects-container">
+        <h1>Gestion des Projets</h1>
+        
+        <!-- Button to create a new project -->
+        <button id="btn-create-project" class="btn-primary-header">Créer un projet</button>
+        
+        <!-- List of user's projects -->
+        <section class="projects-section">
+            <h2>Mes projets</h2>
+            <div id="user-projects" class="projects-list">
+                <!-- Projects will be loaded here -->
+            </div>
+        </section>
+        
+        <!-- Create Project Modal -->
+        <div id="createProjectModal" class="modal">
+            <div class="modal-card card">
+                <div class="modal-header">
+                    <h3>Créer un nouveau projet</h3>
+                    <button id="closeCreateModal" aria-label="Fermer">✕</button>
+                </div>
+                <form id="createProjectForm">
+                    <div class="form-group">
+                        <label for="projectName">Nom du projet</label>
+                        <input type="text" id="projectName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectDescription">Description</label>
+                        <textarea id="projectDescription" name="description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectVisibility">Visibilité</label>
+                        <select id="projectVisibility" name="visibility" required>
+                            <option value="PUBLIC">Public</option>
+                            <option value="FRIENDS">Amis</option>
+                            <option value="PRIVATE">Privé</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary">Créer</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Edit Project Modal -->
+        <div id="editProjectModal" class="modal">
+            <div class="modal-card card">
+                <div class="modal-header">
+                    <h3>Modifier le projet</h3>
+                    <button id="closeEditModal" aria-label="Fermer">✕</button>
+                </div>
+                <form id="editProjectForm">
+                    <input type="hidden" id="editProjectId" name="id">
+                    <div class="form-group">
+                        <label for="editProjectName">Nom du projet</label>
+                        <input type="text" id="editProjectName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProjectDescription">Description</label>
+                        <textarea id="editProjectDescription" name="description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProjectVisibility">Visibilité</label>
+                        <select id="editProjectVisibility" name="visibility" required>
+                            <option value="PUBLIC">Public</option>
+                            <option value="FRIENDS">Amis</option>
+                            <option value="PRIVATE">Privé</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary">Modifier</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Project Members Modal -->
+        <div id="projectMembersModal" class="modal">
+            <div class="modal-card card">
+                <div class="modal-header">
+                    <h3>Membres du projet</h3>
+                    <button id="closeMembersModal" aria-label="Fermer">✕</button>
+                </div>
+                <div id="membersList" class="members-list">
+                    <!-- Members will be loaded here -->
+                </div>
+                <div id="addMemberSection" class="add-member-section">
+                    <h4>Ajouter un membre</h4>
+                    <form id="addMemberForm">
+                        <input type="hidden" id="addMemberProjectId" name="projectId">
+                        <div class="form-group">
+                            <label for="memberUserId">Utilisateur</label>
+                            <select id="memberUserId" name="userId" required>
+                                <option value="">Sélectionner un utilisateur</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="memberRole">Rôle</label>
+                            <select id="memberRole" name="role" required>
+                                <option value="MEMBER">Membre</option>
+                                <option value="ADMIN">Administrateur</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary">Ajouter</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/projects.js}"></script>
+</body>
+
+</html>
