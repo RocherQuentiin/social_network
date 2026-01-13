@@ -210,5 +210,28 @@ document.addEventListener('DOMContentLoaded', function(){
 		})
 		
 	})
+	
+	const postInputSearch = document.getElementById("post-search");
+	const post = document.querySelectorAll(".post-card.card");
+	
+	postInputSearch.addEventListener('input', function(){
+	    let inputValue = postInputSearch.value.toLowerCase();
+	    console.log(post)
+	    post.forEach(elm => {
+			let firstName = elm.getAttribute('data-author-firstname').toLowerCase();
+			let lastName = elm.getAttribute('data-auhtor-lastname').toLowerCase();
+			let postVisibility = elm.getAttribute('data-post-visibility').toLowerCase();
+			let postContent = elm.getAttribute('data-post-content').toLowerCase();
+			
+			if(firstName.includes(inputValue) || lastName.includes(inputValue) 
+			|| postContent.includes(inputValue) || postVisibility.includes(inputValue)){
+				elm.style.display = "";
+			}
+			else{
+				elm.style.display = "none";
+			}
+		})
+		
+	})
 
 });

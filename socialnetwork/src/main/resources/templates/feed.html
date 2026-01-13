@@ -112,7 +112,7 @@
 
 			<div class="posts-list">
 				<article th:each="post : ${posts}" class="post-card card"
-					th:attr="data-post-card-id=${post.id}, data-post-visibility=${post.visibilityType}">
+					th:attr="data-post-card-id=${post.id}, data-auhtor-lastname=${post.author.lastName}, data-author-firstName=${post.author.lastName}, data-post-content=${post.content},  data-post-visibility=${post.visibilityType}">
 
 					<div class="post-header">
 						<img th:src="@{${post.author.profilePictureUrl}}"
