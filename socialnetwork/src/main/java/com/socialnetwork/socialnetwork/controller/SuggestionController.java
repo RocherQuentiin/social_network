@@ -11,8 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.socialnetwork.socialnetwork.business.interfaces.service.ISuggestionUserService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
-import com.socialnetwork.socialnetwork.business.utils.SuggestionUser;
+import com.socialnetwork.socialnetwork.business.service.SuggestionUserService;
 import com.socialnetwork.socialnetwork.business.utils.Utils;
 import com.socialnetwork.socialnetwork.entity.Connection;
 import com.socialnetwork.socialnetwork.entity.User;
@@ -24,9 +25,11 @@ import jakarta.servlet.http.HttpServletRequest;
 public class SuggestionController {
 
 	private IUserService userService;
+	private ISuggestionUserService suggestionService;
 	
-	public SuggestionController(IUserService userService) {
+	public SuggestionController(IUserService userService, ISuggestionUserService suggestionService) {
 		this.userService = userService;
+		this.suggestionService = suggestionService;
 	}
 	
 	@GetMapping("")
@@ -44,7 +47,7 @@ public class SuggestionController {
         }
         
         return new ResponseEntity<>(
-        		  SuggestionUser.getSuggestionUser(users, user.getBody()), 
+        		  this.suggestionService.getSuggestionUser(users, user.getBody()), 
 			      HttpStatus.OK);
     }
 }
