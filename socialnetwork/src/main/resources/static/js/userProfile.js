@@ -49,7 +49,7 @@ if (!confirm('Voulez-vous vraiment supprimer cette hobby ?')) return;
 		body: 'hobbyName=' + hobbyName
 	}).then(function(r) {
 		if (r.ok) {  
-			window.location.reload(); 
+			window.location.href = "/profil"; 
 		}
 		else if (r.status === 403) { alert('Accès refusé'); }
 		else { r.text().then(function(t) { console.error(t); alert('Erreur lors de la sauvegarde'); }); }
@@ -84,7 +84,7 @@ if (!confirm('Voulez-vous vraiment supprimer cette compétence ?')) return;
 		body: 'competenceName=' + competenceName
 	}).then(function(r) {
 		if (r.ok) {  
-			window.location.reload(); 
+			window.location.href = "/profil"; 
 		}
 		else if (r.status === 403) { alert('Accès refusé'); }
 		else { r.text().then(function(t) { console.error(t); alert('Erreur lors de la sauvegarde'); }); }
