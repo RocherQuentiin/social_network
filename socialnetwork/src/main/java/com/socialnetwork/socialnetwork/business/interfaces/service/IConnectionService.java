@@ -17,4 +17,6 @@ public interface IConnectionService {
     ResponseEntity<List<Connection>> getPendingFor(UUID receiverId);
 
     ResponseEntity<List<Connection>> getSentRequestsFor(UUID requesterId);
+
+	List<Connection> findAllAcceptedRequestByUserID(UUID requesterId);
 }

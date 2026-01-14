@@ -11,6 +11,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.socialnetwork.socialnetwork.enums.IsepSpecialization;
 import com.socialnetwork.socialnetwork.enums.UserGender;
 
@@ -35,6 +37,7 @@ public class Profile {
 
     @OneToOne
     @JoinColumn(name = "user_id", unique = true, nullable = false)
+    @JsonIgnore
     private User user;
 
     @Column(length = 100)

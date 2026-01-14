@@ -51,7 +51,7 @@ if (btn.classList.contains('btn-delete'))  {
 			if  (r.ok) {
 				// remove element from DOM
 				var card = document.querySelector('[data-post-card-id="' + postId + '"]');
-				if  (card) card.remov();
+				if  (card) card.remove();
 			} else if (r.status === 403) { alert('Accès refusé'); }
 			else { r.text().then(function(t)  { console.erro(t); alert('Erreur lors de la suppression'); }); }
 		}).catch(function(err) { console.error(err); alert('Erreur réseau'); });

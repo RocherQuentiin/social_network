@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -39,7 +40,7 @@ public class UserSearchController {
                     (user.getLastName() != null && user.getLastName().toLowerCase().contains(query))
                 )
                 .limit(20) // Limit results to 20
-                .toList();
+                .collect(Collectors.toList());;
             
             System.out.println("Search query: " + query + " - Found: " + filteredUsers.size() + " users");
             return ResponseEntity.ok(filteredUsers);
