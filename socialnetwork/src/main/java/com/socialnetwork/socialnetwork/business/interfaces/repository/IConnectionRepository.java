@@ -32,4 +32,9 @@ public interface IConnectionRepository extends JpaRepository<Connection, UUID> {
             AND (requester_id = :userID OR receiver_id = :userID)
             """, nativeQuery = true)
     List<UUID> findAllFriendsId(@Param("userID") UUID userID);
+    
+    @Query(value = """
+            select * from `connection` where  requester_id = :userID and connection_status = 'ACCEPTED' or receiver_id = :userID and connection_status = 'ACCEPTED';
+            """, nativeQuery = true)
+    List<Connection> findAllAcceptedRequestByUserID(@Param("userID") UUID userID);
 }

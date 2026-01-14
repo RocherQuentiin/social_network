@@ -13,7 +13,6 @@ public interface IUserRepository extends JpaRepository<User, UUID>{
 	Optional<User> findByUsername(String username);
 
 	Optional<User> findByEmail(String email);
-
 	long countByIsActiveTrue();
 
 	// find admin by role if needed
