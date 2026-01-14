@@ -53,7 +53,7 @@ public class EventAttendeeService implements IEventAttendeeService{
 
 	@Override
 	public ResponseEntity<List<EventAttendee>> getSentRequestsFor(UUID requesterId) {
-		List<EventAttendee> listEventAttendee = this.repository.findBystatusAndUser_id(EventAttendanceStatus.PENDING, requesterId);;
+		List<EventAttendee> listEventAttendee = this.repository.findBystatusAndUser_id(EventAttendanceStatus.PENDING, requesterId);
 		return new ResponseEntity<List<EventAttendee>>(listEventAttendee, HttpStatus.OK);
 	}
 
