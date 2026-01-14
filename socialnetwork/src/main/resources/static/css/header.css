@@ -256,6 +256,30 @@
     .menu-burger { display: block; }
 }
 
+@media (max-width: 480px) {
+    .navbar {
+        height: 60px;
+    }
+    
+    .navbar-container {
+        padding: 0 12px;
+    }
+    
+    .navbar-logo {
+        gap: 8px;
+        font-size: 14px;
+    }
+    
+    .logo-box {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .mobile-menu {
+        top: 60px;
+    }
+}
+
 @media (max-width: 850px) {
     .footer-container {
         flex-direction: column;
