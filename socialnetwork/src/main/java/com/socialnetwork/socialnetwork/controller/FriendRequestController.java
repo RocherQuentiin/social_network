@@ -118,7 +118,6 @@ public class FriendRequestController {
         if (userIsConnect == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        System.out.println("sent : " + UUID.fromString(userIsConnect.toString()));
 
         UUID requesterId = UUID.fromString(userIsConnect.toString());
         return connectionService.getSentRequestsFor(requesterId);
