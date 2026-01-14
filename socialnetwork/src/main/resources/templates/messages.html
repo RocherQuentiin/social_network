@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messagerie - ISEP Connect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/messages.css}">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+    <!-- Hidden input to store user ID -->
+    <input type="hidden" id="currentUserId" th:value="${userId}">
+    
+    <div th:replace="~{fragments/header :: header-fragment}"></div>
+
+    <div class="messaging-container">
+        <!-- Conversations List -->
+        <aside class="conversations-sidebar">
+            <div class="sidebar-header">
+                <h2>Messages</h2>
+                <button class="btn-new-conversation" id="newMessageBtn" title="Nouvelle conversation">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+
+            <!-- Tabs for switching between Private and Project messages -->
+            <div class="message-tabs">
+                <button class="tab-btn active" data-tab="private">
+                    <i class="fas fa-user"></i> Privé
+                </button>
+                <button class="tab-btn" data-tab="projects">
+                    <i class="fas fa-users"></i> Projets
+                </button>
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="conversationSearch" placeholder="Chercher une conversation..." class="input-field">
+            </div>
+
+            <!-- Private Conversations Tab Content -->
+            <div id="privateTab" class="tab-content active">
+                <div id="conversationsList" class="conversations-list">
+                    <!-- Private conversations will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Project Conversations Tab Content -->
+            <div id="projectsTab" class="tab-content" style="display: none;">
+                <div class="project-groups-header">
+                    <select id="projectSelector" class="input-field">
+                        <option value="">Sélectionner un projet</option>
+                    </select>
+                    <button id="createGroupBtn" class="btn-create-group" title="Créer un groupe de discussion">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div id="projectGroupsList" class="conversations-list">
+                    <!-- Project groups will be loaded here -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Chat Area -->
+        <main class="chat-area">
+            <div id="noChatSelected" class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-comment-dots"></i>
+                </div>
+                <h3>Aucune conversation sélectionnée</h3>
+                <p>Sélectionnez une conversation ou commencez une nouvelle discussion</p>
+            </div>
+
+            <div id="chatWindow" class="chat-window" style="display: none;">
+                <div class="chat-header">
+                    <button class="btn-back-mobile" id="btnBackToConversations" title="Retour aux conversations">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <img id="otherUserAvatar" class="avatar-small" src="" alt="">
+                    <div class="chat-header-info">
+                        <h3 id="chatHeaderName"></h3>
+                        <span id="chatStatus" class="status">En ligne</span>
+                    </div>
+                    <span id="chatType" class="chat-type-badge" style="display: none;"></span>
+                </div>
+
+                <div id="messagesContainer" class="messages-container">
+                    <!-- Messages will be loaded here -->
+                </div>
+
+                <div class="message-input-area">
+                    <textarea id="messageInput" placeholder="Écrivez votre message..." rows="2" class="message-textarea"></textarea>
+                    <button id="sendMessageBtn" class="btn-send primary">
+                        <i class="fas fa-paper-plane"></i> Envoyer
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Notifications Sidebar -->
+        <aside class="notifications-sidebar">
+            <div class="sidebar-header">
+                <h2>Notifications</h2>
+                <span id="unreadCount" class="badge">0</span>
+            </div>
+
+            <button id="markAllReadBtn" class="btn-mark-all-read">
+                Marquer tout comme lu
+            </button>
+
+            <div id="notificationsList" class="notifications-list">
+                <!-- Notifications will be loaded here -->
+            </div>
+        </aside>
+    </div>
+
+    <!-- Modal for new conversation -->
+    <div id="newConversationModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h2>Nouvelle conversation</h2>
+                <button class="btn-modal-close" id="closeModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="userSearch">Chercher un utilisateur</label>
+                    <div class="search-wrapper">
+                        <input type="text" id="userSearch" placeholder="Nom, email ou @username..." class="input-field">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                    <div id="userSearchResults" class="search-results"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for creating project group -->
+    <div id="createGroupModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h2>Créer un groupe de discussion</h2>
+                <button class="btn-modal-close" id="closeGroupModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="groupProjectSelect">Projet</label>
+                    <select id="groupProjectSelect" class="input-field" required>
+                        <option value="">Sélectionner un projet</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="groupName">Nom du groupe</label>
+                    <input type="text" id="groupName" class="input-field" placeholder="Ex: Général, Développement, Design..." required>
+                </div>
+                <div class="form-group">
+                    <label for="groupDescription">Description (optionnelle)</label>
+                    <textarea id="groupDescription" class="input-field" rows="3" placeholder="Description du groupe de discussion..."></textarea>
+                </div>
+                <button id="confirmCreateGroupBtn" class="btn-send primary" style="width: 100%;">
+                    Créer le groupe
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/chat.js}"></script>
+    <script th:src="@{/js/project-chat.js}"></script>
+</body>
+</html>

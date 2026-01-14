@@ -63,6 +63,30 @@
     color: var(--gold);
 }
 
+/* Notification wrapper for badge */
+.notification-icon-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Notification badge */
+.notification-badge {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    background: var(--accent, #1d9bf0);
+    color: white;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+}
+
 /* Barre bleue sous le lien actif */
 .navbar-links a.active {
     position: relative;
@@ -230,6 +254,30 @@
     .navbar-links { display: none; }
     .navbar-actions .btn-primary-header { display: none; }
     .menu-burger { display: block; }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        height: 60px;
+    }
+    
+    .navbar-container {
+        padding: 0 12px;
+    }
+    
+    .navbar-logo {
+        gap: 8px;
+        font-size: 14px;
+    }
+    
+    .logo-box {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .mobile-menu {
+        top: 60px;
+    }
 }
 
 @media (max-width: 850px) {

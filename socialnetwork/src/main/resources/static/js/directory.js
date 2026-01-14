@@ -10,6 +10,46 @@ function callCorrectPage(el) {
     console.log(userId);
 }
 
+// Message button click handler
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.btn-msg-small')) {
+        const btn = e.target.closest('.btn-msg-small');
+        const userId = btn.getAttribute('data-id');
+        if (userId) {
+            openOrCreateConversation(userId);
+        }
+    }
+});
+
+async function openOrCreateConversation(userId) {
+    try {
+        // Get or create conversation with the user
+        const response = await fetch(`/api/messages/conversation/${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Failed to get/create conversation. Status:', response.status, 'Message:', errorText);
+            alert('Impossible de créer la conversation: ' + errorText);
+            return;
+        }
+
+        const conversation = await response.json();
+        console.log('Conversation created/fetched:', conversation);
+        
+        // Navigate to messages page and store the conversation ID to auto-select it
+        sessionStorage.setItem('selectedConversationId', conversation.id);
+        window.location.href = '/messages';
+    } catch (error) {
+        console.error('Error opening/creating conversation:', error);
+        alert('Erreur lors de la création de la conversation');
+    }
+}
+
 
 document.addEventListener('DOMContentLoaded', function() {
     const gridBtn = document.querySelector('.view-switcher button:first-of-type');
