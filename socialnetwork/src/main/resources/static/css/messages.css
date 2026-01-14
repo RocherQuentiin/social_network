@@ -95,6 +95,88 @@
 }
 
 /* ==========================================
+   MESSAGE TABS (Private / Projects)
+========================================== */
+
+.message-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-secondary);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px 16px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.tab-btn:hover {
+    background: var(--bg-card);
+    color: var(--text-primary);
+}
+
+.tab-btn.active {
+    background: var(--accent, #1d9bf0);
+    color: white;
+    border-color: var(--accent, #1d9bf0);
+}
+
+.tab-btn i {
+    font-size: 14px;
+}
+
+.tab-content {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.tab-content:not(.active) {
+    display: none;
+}
+
+/* Chat Type Badge */
+.chat-type-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.chat-type-badge.project {
+    background: #10b981;
+    color: white;
+}
+
+.chat-type-badge.private {
+    background: var(--accent, #1d9bf0);
+    color: white;
+}
+
+/* Project Group Item Styling */
+.conversation-item.project-group {
+    border-left: 3px solid #10b981;
+}
+
+.conversation-item.project-group .conversation-name::before {
+    content: "📁 ";
+}
+
+/* ==========================================
    SEARCH BOX
 ========================================== */
 

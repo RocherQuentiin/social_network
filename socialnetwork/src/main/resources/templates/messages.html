@@ -28,12 +28,32 @@
                 </button>
             </div>
 
+            <!-- Tabs for switching between Private and Project messages -->
+            <div class="message-tabs">
+                <button class="tab-btn active" data-tab="private">
+                    <i class="fas fa-user"></i> Privé
+                </button>
+                <button class="tab-btn" data-tab="projects">
+                    <i class="fas fa-users"></i> Projets
+                </button>
+            </div>
+
             <div class="search-box">
                 <input type="text" id="conversationSearch" placeholder="Chercher une conversation..." class="input-field">
             </div>
 
-            <div id="conversationsList" class="conversations-list">
-                <!-- Conversations will be loaded here -->
+            <!-- Private Conversations Tab Content -->
+            <div id="privateTab" class="tab-content active">
+                <div id="conversationsList" class="conversations-list">
+                    <!-- Private conversations will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Project Conversations Tab Content -->
+            <div id="projectsTab" class="tab-content" style="display: none;">
+                <div id="projectGroupsList" class="conversations-list">
+                    <!-- Project groups will be loaded here -->
+                </div>
             </div>
         </aside>
 
@@ -54,6 +74,7 @@
                         <h3 id="chatHeaderName"></h3>
                         <span id="chatStatus" class="status">En ligne</span>
                     </div>
+                    <span id="chatType" class="chat-type-badge" style="display: none;"></span>
                 </div>
 
                 <div id="messagesContainer" class="messages-container">
@@ -110,5 +131,6 @@
     </div>
 
     <script th:src="@{/js/chat.js}"></script>
+    <script th:src="@{/js/project-chat.js}"></script>
 </body>
 </html>

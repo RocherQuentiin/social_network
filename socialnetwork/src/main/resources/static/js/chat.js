@@ -536,10 +536,19 @@ function initializeApp() {
     initializeWebSocket();
     initializeNotificationWebSocket();
     
+    // Tab switching functionality
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const tab = this.dataset.tab;
+            switchTab(tab);
+        });
+    });
+    
     // Button listeners
     document.getElementById('newMessageBtn').addEventListener('click', openNewConversationModal);
     document.getElementById('closeModalBtn').addEventListener('click', closeNewConversationModal);
-    document.getElementById('sendMessageBtn').addEventListener('click', sendMessage);
+    document.getElementById('sendMessageBtn').addEventListener('click', handleSendMessage);
     document.getElementById('markAllReadBtn').addEventListener('click', async () => {
         await fetch('/api/notifications/read-all', { method: 'POST' });
         loadNotifications();
@@ -556,7 +565,7 @@ function initializeApp() {
     messageInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            sendMessage();
+            handleSendMessage();
         }
     });
     
@@ -571,6 +580,76 @@ function initializeApp() {
     
     // Refresh conversations every 30 seconds
     setInterval(loadConversations, 30000);
+}
+
+/**
+ * Switch between Private and Projects tabs
+ */
+function switchTab(tabName) {
+    // Update tab buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+    
+    // Update tab content
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+        content.style.display = 'none';
+    });
+    
+    if (tabName === 'private') {
+        document.getElementById('privateTab').classList.add('active');
+        document.getElementById('privateTab').style.display = 'block';
+        // Clear current chat if switching tabs
+        clearCurrentChat();
+    } else if (tabName === 'projects') {
+        document.getElementById('projectsTab').classList.add('active');
+        document.getElementById('projectsTab').style.display = 'block';
+        // Load project groups if not already loaded
+        if (typeof loadProjectGroups === 'function') {
+            loadProjectGroups();
+        }
+        // Clear current chat if switching tabs
+        clearCurrentChat();
+    }
+}
+
+/**
+ * Clear current chat window
+ */
+function clearCurrentChat() {
+    document.getElementById('noChatSelected').style.display = 'flex';
+    document.getElementById('chatWindow').style.display = 'none';
+    currentConversationId = null;
+    currentOtherId = null;
+    
+    // Unsubscribe from any active subscriptions
+    if (currentConversationSubscription) {
+        currentConversationSubscription.unsubscribe();
+        currentConversationSubscription = null;
+    }
+}
+
+/**
+ * Handle send message - determines if private or project message
+ */
+function handleSendMessage() {
+    const content = document.getElementById('messageInput').value.trim();
+    
+    if (!content) {
+        return;
+    }
+    
+    // Check if we're in project mode
+    if (typeof isProjectMode === 'function' && isProjectMode()) {
+        if (typeof sendProjectMessage === 'function') {
+            sendProjectMessage(content);
+        }
+    } else {
+        // Private message
+        sendMessage();
+    }
 }
 
 // Close modal when clicking outside
