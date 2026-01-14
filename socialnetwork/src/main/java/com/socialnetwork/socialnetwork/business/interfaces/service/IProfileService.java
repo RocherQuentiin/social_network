@@ -16,4 +16,6 @@ public interface IProfileService {
 
 	ResponseEntity<Profile> updateProfile(User user, Profile profile);
 
+	void save(Profile profile);
+
 }

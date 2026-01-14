@@ -956,3 +956,31 @@
     .btn-publish { width: 100%; }
     .post-footer { justify-content: space-between; }
 }
+
+
+.search-bar-wrapper {
+    max-width: 600px;
+    margin: 0.5em auto;
+    display: flex;
+    gap: 12px;
+    background: rgba(0,0,0,0.2);
+    padding: 8px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+.search-input-group {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+}
+
+.search-input-group input {
+    background: transparent;
+    border: none;
+    color: white;
+    width: 100%;
+    padding: 10px;
+    outline: none;
+}

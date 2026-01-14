@@ -485,7 +485,7 @@
     }
 }
 
-#editEventModal, #userRecommandationModal {
+#editEventModal, #userRecommandationModal, #editHobbyModal, #editCompetenciesModal {
     display: none;
     position: fixed;
     inset: 0;
@@ -497,7 +497,7 @@
     padding: 20px;
 }
 
-#editEventModal .card, #userRecommandationModal .card {
+#editEventModal .card, #userRecommandationModal .card, #editHobbyModal .card, #editCompetenciesModal .card {
     width: 100%;
     max-width: 550px;
     background: #1c2028;
@@ -521,7 +521,7 @@
     color: var(--text-main);
 }
 
-#closeEventEditModal, #closeUserRecommandationModal {
+#closeEventEditModal, #closeUserRecommandationModal, #closeHobbyEditModal, #closeCompetenciesEditModal {
     background: transparent;
     border: none;
     color: var(--text-dim);
@@ -530,7 +530,7 @@
     line-height: 1;
 }
 
-#closeEventEditModal:hover, #closeUserRecommandationModal:hover{
+#closeEventEditModal:hover, #closeUserRecommandationModal:hover, #closeHobbyEditModal:hover, #closeCompetenciesEditModal:hover{
     color: white;
 }
 
@@ -617,7 +617,7 @@ input:focus, select:focus, textarea:focus {
     font-size: 0.9rem;
 }
 
-.btn-event-submit, .btn-submit {
+.btn-event-submit, .btn-submit, .btn-competence-submit {
     width: 100%;
     background: var(--primary);
     color: white;
@@ -661,4 +661,8 @@ textarea {
     font-weight: 500;
     background-color: #2196f3;
     color: white;
+}
+
+.btn-change-password{
+	margin : 20px;
 }

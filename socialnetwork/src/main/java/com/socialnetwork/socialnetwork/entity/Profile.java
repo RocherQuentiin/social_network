@@ -42,6 +42,12 @@ public class Profile {
 
     @Column(length = 255)
     private String website;
+    
+    @Column(length = 255)
+    private String linkedin;
+    
+    @Column(length = 255)
+    private String github;
 
     @Column(name = "phone_number", length = 20)
     private String phoneNumber;
@@ -72,6 +78,10 @@ public class Profile {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "json")
     private Map<String, Object> interests;
+    
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "json")
+    private Map<String, Object> competencies;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -202,4 +212,32 @@ public class Profile {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+	public String getLinkedin() {
+		return linkedin;
+	}
+
+	public void setLinkedin(String linkedin) {
+		this.linkedin = linkedin;
+	}
+
+	public String getGithub() {
+		return github;
+	}
+
+	public void setGithub(String github) {
+		this.github = github;
+	}
+
+	public Map<String, Object> getCompetencies() {
+		return competencies;
+	}
+
+	public void setCompetencies(Map<String, Object> competencies) {
+		this.competencies = competencies;
+	}
+	
+	
+    
+    
 }
