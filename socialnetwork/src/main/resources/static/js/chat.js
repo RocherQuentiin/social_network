@@ -166,7 +166,13 @@ function displayMessage(message, isNew = false) {
     const isSent = message.senderId === currentUserId;
     messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
     
-    const time = new Date(message.timestamp).toLocaleTimeString('fr-FR', { 
+    // Handle timestamp - use current time if not provided or invalid
+    let timestamp = message.timestamp || Date.now();
+    if (typeof timestamp === 'string') {
+        timestamp = new Date(timestamp).getTime();
+    }
+    
+    const time = new Date(timestamp).toLocaleTimeString('fr-FR', { 
         hour: '2-digit', 
         minute: '2-digit' 
     });

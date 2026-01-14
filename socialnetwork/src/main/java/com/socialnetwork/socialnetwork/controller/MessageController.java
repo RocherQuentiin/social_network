@@ -51,13 +51,19 @@ public class MessageController {
         ResponseEntity<List<Message>> messages = messageService.getConversationMessages(conversationId);
         
         List<MessageDTO> dtos = messages.getBody().stream()
-            .map(msg -> new MessageDTO(
-                msg.getId(),
-                msg.getConversation().getId(),
-                msg.getSender().getId(),
-                msg.getSender().getUsername(),
-                msg.getContent()
-            ))
+            .map(msg -> {
+                MessageDTO dto = new MessageDTO(
+                    msg.getId(),
+                    msg.getConversation().getId(),
+                    msg.getSender().getId(),
+                    msg.getSender().getUsername(),
+                    msg.getContent()
+                );
+                dto.setTimestamp(msg.getCreatedAt().atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli());
+                dto.setSenderAvatar(msg.getSender().getProfilePictureUrl());
+                dto.setIsRead(msg.getIsRead());
+                return dto;
+            })
             .collect(Collectors.toList());
         
         return new ResponseEntity<>(dtos, messages.getStatusCode());
