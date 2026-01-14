@@ -15,21 +15,166 @@ document.addEventListener('DOMContentLoaded', function() {
         projectStompClient = stompClient;
     }
     loadUserProjects();
+    
+    // Setup create group button
+    const createGroupBtn = document.getElementById('createGroupBtn');
+    if (createGroupBtn) {
+        createGroupBtn.addEventListener('click', openCreateGroupModal);
+    }
+    
+    const closeGroupModalBtn = document.getElementById('closeGroupModalBtn');
+    if (closeGroupModalBtn) {
+        closeGroupModalBtn.addEventListener('click', closeCreateGroupModal);
+    }
+    
+    const confirmCreateGroupBtn = document.getElementById('confirmCreateGroupBtn');
+    if (confirmCreateGroupBtn) {
+        confirmCreateGroupBtn.addEventListener('click', createProjectGroup);
+    }
+    
+    // Setup project selector filter
+    const projectSelector = document.getElementById('projectSelector');
+    if (projectSelector) {
+        projectSelector.addEventListener('change', filterGroupsByProject);
+    }
 });
+
+/**
+ * Open create group modal
+ */
+function openCreateGroupModal() {
+    const modal = document.getElementById('createGroupModal');
+    const projectSelect = document.getElementById('groupProjectSelect');
+    
+    // Populate project dropdown
+    projectSelect.innerHTML = '<option value="">Sélectionner un projet</option>';
+    userProjects.forEach(project => {
+        const option = document.createElement('option');
+        option.value = project.id;
+        option.textContent = project.name;
+        projectSelect.appendChild(option);
+    });
+    
+    modal.style.display = 'flex';
+    modal.style.visibility = 'visible';
+    modal.style.opacity = '1';
+    document.body.style.overflow = 'hidden';
+}
+
+/**
+ * Close create group modal
+ */
+function closeCreateGroupModal() {
+    const modal = document.getElementById('createGroupModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+    
+    // Clear form
+    document.getElementById('groupProjectSelect').value = '';
+    document.getElementById('groupName').value = '';
+    document.getElementById('groupDescription').value = '';
+}
+
+/**
+ * Create a new project message group
+ */
+function createProjectGroup() {
+    const projectId = document.getElementById('groupProjectSelect').value;
+    const name = document.getElementById('groupName').value.trim();
+    const description = document.getElementById('groupDescription').value.trim();
+    
+    if (!projectId || !name) {
+        alert('Veuillez sélectionner un projet et entrer un nom pour le groupe');
+        return;
+    }
+    
+    const formData = new URLSearchParams();
+    formData.append('projectId', projectId);
+    formData.append('name', name);
+    if (description) {
+        formData.append('description', description);
+    }
+    
+    fetch('/api/project-messages/groups', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to create group');
+        }
+        return response.json();
+    })
+    .then(group => {
+        closeCreateGroupModal();
+        loadProjectGroups(); // Reload the list
+        alert('Groupe créé avec succès!');
+    })
+    .catch(error => {
+        console.error('Error creating group:', error);
+        alert('Erreur lors de la création du groupe');
+    });
+}
+
+/**
+ * Filter groups by selected project
+ */
+function filterGroupsByProject() {
+    const selectedProjectId = document.getElementById('projectSelector').value;
+    const groupItems = document.querySelectorAll('.conversation-item.project-group');
+    
+    groupItems.forEach(item => {
+        if (!selectedProjectId) {
+            item.style.display = 'flex';
+        } else {
+            const groupProjectId = item.dataset.projectId;
+            item.style.display = groupProjectId === selectedProjectId ? 'flex' : 'none';
+        }
+    });
+}
+
 
 /**
  * Load all projects user is part of
  */
 function loadUserProjects() {
-    fetch('/api/projects/my-projects')
-        .then(response => response.json())
+    fetch('/api/project/my-projects')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load projects');
+            }
+            return response.json();
+        })
         .then(projects => {
-            userProjects = projects;
+            // Ensure projects is an array
+            userProjects = Array.isArray(projects) ? projects : [];
             loadProjectGroups();
+            populateProjectSelector();
         })
         .catch(error => {
             console.error('Error loading projects:', error);
+            userProjects = [];
+            loadProjectGroups();
         });
+}
+
+/**
+ * Populate project selector dropdown
+ */
+function populateProjectSelector() {
+    const projectSelector = document.getElementById('projectSelector');
+    if (!projectSelector) return;
+    
+    projectSelector.innerHTML = '<option value="">Tous les projets</option>';
+    userProjects.forEach(project => {
+        const option = document.createElement('option');
+        option.value = project.id;
+        option.textContent = project.name;
+        projectSelector.appendChild(option);
+    });
 }
 
 /**
@@ -38,6 +183,16 @@ function loadUserProjects() {
 function loadProjectGroups() {
     const projectGroupsList = document.getElementById('projectGroupsList');
     projectGroupsList.innerHTML = '<div class="loading-spinner">Chargement...</div>';
+
+    // Check if userProjects is valid
+    if (!Array.isArray(userProjects) || userProjects.length === 0) {
+        projectGroupsList.innerHTML = `
+            <div class="empty-state">
+                <p>Aucun projet</p>
+                <small>Vous n'êtes membre d'aucun projet</small>
+            </div>`;
+        return;
+    }
 
     // Get all message groups for user's projects
     const groupPromises = userProjects.map(project => 
@@ -54,7 +209,7 @@ function loadProjectGroups() {
                 projectGroupsList.innerHTML = `
                     <div class="empty-state">
                         <p>Aucun groupe de discussion</p>
-                        <small>Les groupes apparaîtront ici une fois créés dans vos projets</small>
+                        <small>Créez un groupe pour commencer à discuter dans vos projets</small>
                     </div>`;
                 return;
             }
@@ -78,6 +233,7 @@ function createProjectGroupItem(group) {
     const div = document.createElement('div');
     div.className = 'conversation-item project-group';
     div.dataset.groupId = group.id;
+    div.dataset.projectId = group.projectId;
     
     div.innerHTML = `
         <div class="conversation-avatar">
@@ -217,23 +373,19 @@ function displayProjectMessage(message) {
         minute: '2-digit'
     }) : '';
 
-    messageDiv.innerHTML = `
-        ${!isOwnMessage ? `
-            <div class="message-avatar">
-                <img src="${message.senderAvatar || '/img/default-avatar.png'}" alt="${escapeHtml(message.senderName)}">
-            </div>
-        ` : ''}
-        <div class="message-content">
-            ${!isOwnMessage ? `<div class="message-sender">${escapeHtml(message.senderName)}</div>` : ''}
-            <div class="message-bubble">
-                <p>${escapeHtml(message.content)}</p>
-                ${timestamp ? `<span class="message-time">${timestamp}</span>` : ''}
-            </div>
-        </div>
-    `;
+    const avatarHtml = !isOwnMessage ? `<div class="message-avatar"><img src="${message.senderAvatar || '/img/default-avatar.png'}" alt="${escapeHtml(message.senderName)}"></div>` : '';
+    const senderHtml = !isOwnMessage ? `<div class="message-sender">${escapeHtml(message.senderName)}</div>` : '';
+    const timeHtml = timestamp ? `<span class="message-time">${timestamp}</span>` : '';
+
+    messageDiv.innerHTML = `${avatarHtml}<div class="message-content">${senderHtml}<div class="message-bubble"><p>${escapeHtml(message.content)}</p>${timeHtml}</div></div>`;
 
     messagesContainer.appendChild(messageDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    
+    // Update unread badge if message is from another user
+    if (!isOwnMessage && typeof updateUnreadMessagesBadge === 'function') {
+        updateUnreadMessagesBadge();
+    }
 }
 
 /**
