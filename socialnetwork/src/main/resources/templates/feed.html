@@ -1,22 +1,19 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fil d'actualité - ISEP Connect</title>
-<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
-<link rel="stylesheet" th:href="@{/css/header.css}">
-<link rel="stylesheet" th:href="@{/css/feed.css}">
-<script src="https://unpkg.com/lucide@latest"></script>
-<meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}" />
-<meta th:if="${_csrf != null}" name="_csrf_header"
-	th:content="${_csrf.headerName}" />
-<meta th:if="${session.userId != null}" name="userId"
-	th:content="${session.userId}" />
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/fr.min.js"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Fil d'actualité - ISEP Connect</title>
+	<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+	<link rel="stylesheet" th:href="@{/css/header.css}">
+	<link rel="stylesheet" th:href="@{/css/feed.css}">
+	<link rel="stylesheet" th:href="@{/css/project.css}">
+	<script src="https://unpkg.com/lucide@latest"></script>
+	<meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}" />
+	<meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}" />
+	<meta th:if="${session.userId != null}" name="userId" th:content="${session.userId}" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/fr.min.js"></script>
 </head>
 <body class="bg-dark">
 
@@ -136,52 +133,7 @@
 		</div>
 
 		<div id="eventsContainer" style="display: none;">
-			<h2 class="section-title" style="color: white; margin-bottom: 20px;">Annonces à la une</h2>
-			<article th:each="event : ${events}" class="event-card card">
-				<div class="event-header">
-					<div class="post-meta">
-						<h3 th:text="${event.name}" style="color: var(--primary); margin:0;"></h3>
-						<p><span th:text="${event.creator.lastName}"></span>  <span th:text="${event.creator.firstName}"> </span> </p>
-					</div>
-				</div>
-
-				<div class="event-description">
-					<p th:text="${event.description}"></p>
-				</div>
-
-				<div class="event-grid-info">
-					<p><i data-lucide="map-pin"></i> <span th:text="${event.location}"></span></p>
-					<p><i data-lucide="users"></i> <span th:text="${event.capacity}"></span> places</p>
-					<p><i data-lucide="eye"></i> <span th:text="${event.visibilityType}"></span></p>
-					<p><i data-lucide="calendar"></i><span class="event-date-period" th:attr="data-timestamp=${event.eventDate}"></span></p>
-				</div>
-
-				<div class="event-participants">
-					<p class="participants-label">Participants inscrits</p>
-					<div class="participants-list">
-				  <span class="participant-tag" th:each="participant : ${participants}">
-					 <span th:text="${participant.user.firstName}"></span>
-					 <span th:text="${participant.user.lastName}"></span>
-				  </span>
-						<span th:if="${#lists.isEmpty(participants)}" style="font-size: 0.8rem; font-style: italic; opacity: 0.5;">Aucun inscrit pour le moment</span>
-					</div>
-				</div>
-
-				<div class="event-footer">
-
-					<a th:if="${event.creator.id != isConnect && attendee == null && particpantsCpt < event.capacity}" th:data-id="*{event.id}" id="btn-join-event" class="btn-primary-header">
-						Rejoindre l'évenement</a>
-					<p th:if="${event.creator.id != isConnect && attendee != null}" th:text="${attendee.status}"></p>
-					<a th:if="${event.creator.id == isConnect}" id="btn-edit" class="btn-primary-header">Editer l'évenement</a>
-
-					<span th:if="${event.creator.id != isConnect && attendee != null}" class="status-badge" th:text="${attendee.status}"></span>
-
-					<a th:if="${event.creator.id != isConnect && attendee != null && attendee.status != 'DECLINED'}"
-					   th:data-id="*{event.id}" id="btn-quit-event" class="btn-event btn-quit">
-						Quitter
-					</a>
-				</div>
-			</article>
+			<div th:replace="~{events :: events-fragment}"></div>
 		</div>
 	</main>
 
