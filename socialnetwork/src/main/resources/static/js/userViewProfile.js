@@ -59,6 +59,30 @@ document.addEventListener('DOMContentLoaded', function() {
     loadUserProjectsView();
 });
 
+function setupJoinProjectModal() {
+    const closeBtn = document.getElementById('closeJoinProjectModal');
+    const form = document.getElementById('joinProjectForm');
+    
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            const modal = document.getElementById('joinProjectModal');
+            if (modal) modal.classList.remove('active');
+        });
+    }
+    
+    if (form) {
+        form.addEventListener('submit', handleJoinProjectFromProfile);
+    }
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', (event) => {
+        const modal = document.getElementById('joinProjectModal');
+        if (event.target == modal) {
+            modal.classList.remove('active');
+        }
+    });
+}
+
 async function loadUserProjectsView() {
     const viewedUserId = window.viewedUserId;
     
@@ -69,7 +93,7 @@ async function loadUserProjectsView() {
     
     try {
         // Load public projects created by the viewed user
-        const response = await fetch(`/api/project/creator/${viewedUserId}/public`, {
+        const response = await fetch(`/api/project/creator/${viewedUserId}/public?t=${Date.now()}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json'
@@ -122,12 +146,14 @@ function createProjectCardForViewProfile(project) {
     const truncatedDesc = description.length > 80 ? description.substring(0, 80) + '...' : description;
     
     card.innerHTML = `
-        <div class="project-info">
-            <h4>
-                ${escapeHtmlView(project.name)} 
-                <span class="type-tag">${visibilityBadge}</span>
-            </h4>
-            <p>${escapeHtmlView(truncatedDesc)}</p>
+        <div style="display: flex; gap: 15px; align-items: flex-start;">
+            <div class="project-info" style="flex: 1;">
+                <h4 style="margin-top: 0;">
+                    ${escapeHtmlView(project.name)} 
+                    <span class="type-tag">${visibilityBadge}</span>
+                </h4>
+                <p>${escapeHtmlView(truncatedDesc)}</p>
+            </div>
         </div>
     `;
     
@@ -152,4 +178,75 @@ function escapeHtmlView(text) {
         "'": '&#039;'
     };
     return text.replace(/[&<>"']/g, m => map[m]);
+}
+
+function openJoinProjectModal(projectId, projectName, projectDescription) {
+    const modal = document.getElementById('joinProjectModal');
+    if (!modal) return;
+    
+    document.getElementById('joinProjectId').value = projectId;
+    document.getElementById('joinProjectName').textContent = projectName;
+    document.getElementById('joinProjectDesc').textContent = projectDescription;
+    document.getElementById('joinMessage').value = '';
+    modal.classList.add('active');
+}
+
+function closeJoinProjectModalView() {
+    const modal = document.getElementById('joinProjectModal');
+    if (modal) modal.classList.remove('active');
+}
+
+async function handleJoinProjectFromProfile(e) {
+    e.preventDefault();
+    
+    const projectId = document.getElementById('joinProjectId').value;
+    const message = document.getElementById('joinMessage').value.trim();
+
+    if (!projectId) {
+        showAlertView('Projet introuvable', 'error');
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/project/${projectId}/request`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                message: message,
+                skillName: null
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.text();
+            if (response.status === 409) {
+                showAlertView('Vous êtes déjà membre de ce projet ou avez déjà demandé à rejoindre', 'info');
+            } else {
+                showAlertView(errorData || 'Erreur lors de l\'envoi de la demande', 'error');
+            }
+            return;
+        }
+
+        showAlertView('Demande d\'adhésion envoyée avec succès!', 'success');
+        closeJoinProjectModalView();
+    } catch (error) {
+        console.error('Error joining project:', error);
+        showAlertView('Erreur lors de l\'envoi de la demande', 'error');
+    }
+}
+
+function showAlertView(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type}`;
+    alertDiv.textContent = message;
+    alertDiv.style.cssText = 'position: fixed; top: 20px; right: 20px; padding: 15px 20px; background: #1d9bf0; color: white; border-radius: 8px; z-index: 1000;';
+    
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 3000);
 }
