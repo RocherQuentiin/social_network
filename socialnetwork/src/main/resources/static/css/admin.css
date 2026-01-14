@@ -1,0 +1,21 @@
+:root{--badge-bg:#f1f5f9;--badge-success:#16a34a;--badge-danger:#dc2626;--badge-warning:#f59e0b}
+.table-responsive{overflow:auto}
+.admin-users-table{width:100%;border-collapse:collapse;font-size:0.95rem}
+.admin-users-table thead th{padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.admin-users-table tbody td{padding:10px 12px;border-bottom:1px dashed rgba(0,0,0,0.04);vertical-align:middle}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:0.8rem}
+.badge-success{background:var(--badge-success);color:#fff}
+.badge-danger{background:var(--badge-danger);color:#fff}
+.badge-muted{background:var(--badge-bg);color:var(--text-dim)}
+.user-actions button{margin-right:6px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:transparent;cursor:pointer}
+.user-actions button.btn-primary{background:var(--primary);color:white;border:none}
+/* simple modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:2000}
+.modal-content{background:var(--bg-card);padding:18px;border-radius:10px;min-width:280px;max-width:420px;border:1px solid var(--border)}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+@media (max-width:700px){
+ .admin-grid{grid-template-columns:1fr}
+ .admin-users-table thead{display:none}
+ .admin-users-table tbody td{display:block;padding:8px}
+ .admin-users-table tbody tr{margin-bottom:10px;border:1px solid var(--border);border-radius:8px;padding:8px}
+}

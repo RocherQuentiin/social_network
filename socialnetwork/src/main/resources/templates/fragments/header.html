@@ -1,4 +1,7 @@
 <header th:fragment="header-fragment" class="navbar" xmlns:th="http://www.thymeleaf.org">
+    <link rel="icon" th:href="@{/img/favicon.svg}" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <div class="navbar-container">
         <a th:href="@{/}" class="navbar-logo">
             <div class="logo-box"><i data-lucide="graduation-cap"></i></div>
@@ -13,6 +16,7 @@
                 <span id="unread-messages-badge" class="notification-badge" style="display: none;"></span>
             </a>
             <a th:if="${isConnect != null}" th:href="@{/projects}">Projets</a>
+            <a th:if="${session.userRole == 'ADMIN'}" th:href="@{/admin/dashboard}" style="color:var(--primary); font-weight:600;">Administration</a>
             <a th:if="${isConnect != null}" th:href="@{/profil}">Mon Profil</a>
             <a th:if="${isConnect != null}" th:href="@{/profil/pending-requests}" class="notification-icon-wrapper">
                 <span>Demandes</span>
@@ -37,6 +41,7 @@
             <span id="unread-messages-badge-mobile" class="notification-badge" style="display: none;"></span>
         </a>
         <a  th:if="${isConnect != null}" th:href="@{/profil}">Mon Profil</a>
+        <a th:if="${session.userRole == 'ADMIN'}" th:href="@{/admin/dashboard}" style="color:var(--primary); font-weight:600;">Administration</a>
         <div th:if="${isConnect == null}"><a th:href="@{/login}" class="btn-primary-header-mini">Connexion</a></div>
         <a th:if="${isConnect != null}" th:href="@{/profil/pending-requests}">Demandes</a>
     </div>
