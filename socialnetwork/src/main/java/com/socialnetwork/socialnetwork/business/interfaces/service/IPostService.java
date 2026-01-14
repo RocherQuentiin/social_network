@@ -10,4 +10,5 @@ import com.socialnetwork.socialnetwork.entity.Post;
 public interface IPostService {
 	public ResponseEntity<List<Post>> getAllPostVisibilityPublic();
 	public ResponseEntity<List<Post>> getAllPostForConnectedUser(UUID userID);
+	public ResponseEntity<Post> createPost(Post post);
 }

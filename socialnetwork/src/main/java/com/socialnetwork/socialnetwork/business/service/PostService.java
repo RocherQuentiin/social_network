@@ -31,4 +31,9 @@ public class PostService implements IPostService{
 		return new ResponseEntity<>(listPost, HttpStatus.OK);
 		
 	}
+	
+	public ResponseEntity<Post> createPost(Post post){
+		Post savedPost = this.repository.save(post);
+		return new ResponseEntity<>(savedPost, HttpStatus.CREATED);
+	}
 }
