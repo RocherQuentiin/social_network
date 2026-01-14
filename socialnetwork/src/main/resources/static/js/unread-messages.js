@@ -4,8 +4,16 @@ async function updateUnreadMessagesBadge() {
         // Get unread private messages count
         const privateResponse = await fetch('/api/messages/unread-count');
         if (!privateResponse.ok) return;
-        
-        let totalCount = await privateResponse.json();
+
+        let totalCount = 0;
+        try {
+            // be defensive: handle empty/non-JSON responses
+            const txt = await privateResponse.text();
+            totalCount = txt ? JSON.parse(txt) : 0;
+        } catch (e) {
+            console.warn('Unread private messages response not JSON, falling back to 0', e);
+            totalCount = 0;
+        }
         
         // Get unread project messages count
         try {
@@ -45,8 +53,15 @@ async function getUnreadProjectMessagesCount() {
         // Get user's projects
         const projectsResponse = await fetch('/api/project/my-projects');
         if (!projectsResponse.ok) return 0;
-        
-        const projects = await projectsResponse.json();
+
+        let projects = [];
+        try {
+            const txt = await projectsResponse.text();
+            projects = txt ? JSON.parse(txt) : [];
+        } catch (e) {
+            console.warn('Projects response not JSON, skipping project unread counts', e);
+            return 0;
+        }
         if (!Array.isArray(projects) || projects.length === 0) return 0;
         
         // Get unread count for each project's groups
@@ -56,16 +71,28 @@ async function getUnreadProjectMessagesCount() {
             try {
                 const groupsResponse = await fetch(`/api/project-messages/groups/${project.id}`);
                 if (!groupsResponse.ok) continue;
-                
-                const groups = await groupsResponse.json();
+
+                let groups = [];
+                try {
+                    const txt = await groupsResponse.text();
+                    groups = txt ? JSON.parse(txt) : [];
+                } catch (e) {
+                    console.warn(`Groups response not JSON for project ${project.id}`, e);
+                    continue;
+                }
                 if (!Array.isArray(groups)) continue;
                 
                 for (const group of groups) {
                     try {
                         const unreadResponse = await fetch(`/api/project-messages/${group.id}/unread-count`);
                         if (unreadResponse.ok) {
-                            const count = await unreadResponse.json();
-                            totalUnread += count;
+                            try {
+                                const txt = await unreadResponse.text();
+                                const count = txt ? JSON.parse(txt) : 0;
+                                totalUnread += count;
+                            } catch (e) {
+                                console.warn(`Unread count response invalid JSON for group ${group.id}`, e);
+                            }
                         }
                     } catch (error) {
                         console.warn(`Could not fetch unread count for group ${group.id}:`, error);

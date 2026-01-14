@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS user (
     cover_picture_url VARCHAR(255),
     is_verified BOOLEAN DEFAULT false,
     is_active BOOLEAN DEFAULT true,
+    role ENUM('STUDENT','PROF','USER','ADMIN') DEFAULT 'USER',
+    suspended_until TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

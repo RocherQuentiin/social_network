@@ -12,6 +12,7 @@ CREATE TYPE connection_status AS ENUM ('PENDING', 'ACCEPTED', 'BLOCKED');
 CREATE TYPE notification_type AS ENUM ('FRIEND_REQUEST', 'POST_LIKE', 'COMMENT', 'MESSAGE', 'MENTION', 'FOLLOW');
 CREATE TYPE event_attendance_status AS ENUM ('PENDING', 'ACCEPTED', 'DECLINED', 'MAYBE');
 CREATE TYPE project_member_role AS ENUM ('OWNER', 'ADMIN', 'MEMBER');
+CREATE TYPE user_role AS ENUM ('STUDENT', 'PROF', 'USER', 'ADMIN');
 CREATE TYPE isep_specialization AS ENUM ('SOFTWARE_ENGINEERING', 'DATA_SCIENCE', 'CYBERSECURITY', 'EMBEDDED_SYSTEMS');
 
 -- Core tables
@@ -27,6 +28,8 @@ CREATE TABLE "user" (
     cover_picture_url VARCHAR(255),
     is_verified BOOLEAN DEFAULT false,
     is_active BOOLEAN DEFAULT true,
+    role user_role DEFAULT 'USER',
+    suspended_until TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
