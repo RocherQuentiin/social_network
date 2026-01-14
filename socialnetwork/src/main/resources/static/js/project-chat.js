@@ -198,7 +198,7 @@ function loadProjectGroups() {
     const groupPromises = userProjects.map(project => 
         fetch(`/api/project-messages/groups/${project.id}`)
             .then(response => response.json())
-            .then(groups => groups.map(group => ({...group, projectName: project.name})))
+            .then(groups => groups.map(group => ({...group, projectId: project.id, projectName: project.name})))
     );
 
     Promise.all(groupPromises)
