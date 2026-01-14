@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS conversation (
     CONSTRAINT fk_conversation_participant1 FOREIGN KEY (participant_1_id) REFERENCES user(id) ON DELETE CASCADE,
     CONSTRAINT fk_conversation_participant2 FOREIGN KEY (participant_2_id) REFERENCES user(id) ON DELETE CASCADE,
     CONSTRAINT unique_conversation UNIQUE(participant_1_id, participant_2_id),
-    CONSTRAINT prevent_self_conversation CHECK (participant_1_id < participant_2_id)
+    CONSTRAINT prevent_self_conversation CHECK (participant_1_id != participant_2_id)
 );
 
 -- create message (references conversation)

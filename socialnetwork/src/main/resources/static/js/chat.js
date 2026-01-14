@@ -60,6 +60,7 @@ async function loadConversations() {
 function createConversationItem(conversation) {
     const item = document.createElement('div');
     item.className = 'conversation-item';
+    item.dataset.conversationId = conversation.conversationId;
     item.onclick = () => selectConversation(conversation);
     
     const preview = conversation.lastMessage ? conversation.lastMessage.substring(0, 50) + '...' : 'Aucun message';
@@ -535,6 +536,34 @@ function initializeApp() {
     loadNotifications();
     initializeWebSocket();
     initializeNotificationWebSocket();
+    
+    // Check if a conversation ID was stored (from message button in directory)
+    const selectedConversationId = sessionStorage.getItem('selectedConversationId');
+    if (selectedConversationId) {
+        sessionStorage.removeItem('selectedConversationId');
+        // Auto-select the conversation after a short delay to allow loadConversations to complete
+        setTimeout(() => {
+            const conversationItems = document.querySelectorAll('.conversation-item');
+            let foundItem = false;
+            conversationItems.forEach(item => {
+                if (item.dataset.conversationId === selectedConversationId) {
+                    item.click();
+                    foundItem = true;
+                }
+            });
+            if (!foundItem) {
+                // Reload conversations and try again
+                loadConversations().then(() => {
+                    const items = document.querySelectorAll('.conversation-item');
+                    items.forEach(item => {
+                        if (item.dataset.conversationId === selectedConversationId) {
+                            item.click();
+                        }
+                    });
+                });
+            }
+        }, 500);
+    }
     
     // Tab switching functionality
     const tabButtons = document.querySelectorAll('.tab-btn');

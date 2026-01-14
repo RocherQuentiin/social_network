@@ -32,18 +32,54 @@ public class MessageController {
     
     @GetMapping("/conversation/{otherUserId}")
     public ResponseEntity<?> getConversation(HttpServletRequest request, @PathVariable UUID otherUserId) {
-        HttpSession session = request.getSession();
-        UUID userId = UUID.fromString(session.getAttribute("userId").toString());
-        
-        ResponseEntity<User> currentUser = userService.getUserById(userId);
-        ResponseEntity<User> otherUser = userService.getUserById(otherUserId);
-        
-        if (currentUser.getStatusCode() != HttpStatusCode.valueOf(200) || 
-            otherUser.getStatusCode() != HttpStatusCode.valueOf(200)) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        try {
+            HttpSession session = request.getSession();
+            Object userIdObj = session.getAttribute("userId");
+            
+            if (userIdObj == null) {
+                return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+            }
+            
+            UUID userId = UUID.fromString(userIdObj.toString());
+            
+            System.out.println("=== Get/Create Conversation ===");
+            System.out.println("Current User ID: " + userId);
+            System.out.println("Other User ID: " + otherUserId);
+            System.out.println("Are they same? " + userId.equals(otherUserId));
+            
+            // Prevent self-conversation
+            if (userId.equals(otherUserId)) {
+                return new ResponseEntity<>("Cannot create conversation with yourself", HttpStatus.BAD_REQUEST);
+            }
+            
+            ResponseEntity<User> currentUser = userService.getUserById(userId);
+            ResponseEntity<User> otherUser = userService.getUserById(otherUserId);
+            
+            if (currentUser.getStatusCode() != HttpStatusCode.valueOf(200) || 
+                otherUser.getStatusCode() != HttpStatusCode.valueOf(200)) {
+                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+            }
+            
+            System.out.println("Current User: " + currentUser.getBody().getUsername());
+            System.out.println("Other User: " + otherUser.getBody().getUsername());
+            
+            ResponseEntity<Conversation> convResponse = messageService.getOrCreateConversation(currentUser.getBody(), otherUser.getBody());
+            Conversation conversation = convResponse.getBody();
+            
+            // Return a simple DTO to avoid circular references
+            java.util.Map<String, Object> dto = new java.util.LinkedHashMap<>();
+            dto.put("id", conversation.getId());
+            dto.put("conversationId", conversation.getId());
+            dto.put("otherUserId", otherUser.getBody().getId());
+            dto.put("otherUserName", otherUser.getBody().getUsername());
+            dto.put("otherUserAvatar", otherUser.getBody().getProfilePictureUrl());
+            
+            return new ResponseEntity<>(dto, HttpStatus.OK);
+        } catch (Exception e) {
+            System.err.println("Error in getConversation: " + e.getMessage());
+            e.printStackTrace();
+            return new ResponseEntity<>("Internal server error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        
-        return messageService.getOrCreateConversation(currentUser.getBody(), otherUser.getBody());
     }
     
     @GetMapping("/{conversationId}")

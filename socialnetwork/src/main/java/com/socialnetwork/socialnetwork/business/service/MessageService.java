@@ -28,6 +28,11 @@ public class MessageService implements IMessageService {
     
     @Override
     public ResponseEntity<Conversation> getOrCreateConversation(User user1, User user2) {
+        // Prevent self-conversation
+        if (user1.getId().equals(user2.getId())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        
         Optional<Conversation> existing = conversationRepository.findConversationBetweenUsers(user1.getId(), user2.getId());
         
         if (existing.isPresent()) {
