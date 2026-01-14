@@ -1,11 +1,13 @@
 package com.socialnetwork.socialnetwork.dto;
 
 import com.socialnetwork.socialnetwork.enums.VisibilityType;
+import java.util.List;
 
 public class ProjectDto {
     private String name;
     private String description;
     private VisibilityType visibility;
+    private List<String> skills;
 
     public ProjectDto() {
     }
@@ -38,5 +40,13 @@ public class ProjectDto {
 
     public void setVisibility(VisibilityType visibility) {
         this.visibility = visibility;
+    }
+
+    public List<String> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<String> skills) {
+        this.skills = skills;
     }
 }

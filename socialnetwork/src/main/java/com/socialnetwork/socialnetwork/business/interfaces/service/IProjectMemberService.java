@@ -45,4 +45,9 @@ public interface IProjectMemberService {
      * Check if user is member of project
      */
     boolean isMemberOfProject(UUID projectId, UUID userId);
+
+    /**
+     * Update a member's role in a project
+     */
+    ResponseEntity<ProjectMember> updateMemberRole(UUID projectId, UUID memberId, ProjectMemberRole newRole, UUID requesterId);
 }

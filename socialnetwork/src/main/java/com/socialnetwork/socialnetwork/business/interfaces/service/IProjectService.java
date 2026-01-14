@@ -31,6 +31,11 @@ public interface IProjectService {
     ResponseEntity<List<Project>> getProjectsByCreator(UUID userId);
 
     /**
+     * Get user's own projects (where user is owner or member)
+     */
+    ResponseEntity<List<Project>> getUserProjects(UUID userId);
+
+    /**
      * Get all public projects
      */
     ResponseEntity<List<Project>> getPublicProjects();
@@ -44,4 +49,9 @@ public interface IProjectService {
      * Delete a project
      */
     ResponseEntity<Void> deleteProject(UUID projectId, UUID userId);
+    
+    /**
+     * Transfer ownership to another member
+     */
+    ResponseEntity<Void> transferOwnership(UUID projectId, UUID newOwnerId, UUID currentOwnerId);
 }

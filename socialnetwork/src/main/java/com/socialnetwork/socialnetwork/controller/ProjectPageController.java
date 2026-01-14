@@ -70,6 +70,7 @@ public class ProjectPageController {
         String userName = user.getBody().getFirstName() + " " + user.getBody().getLastName();
         model.addAttribute("userId", userId.toString());
         model.addAttribute("userName", userName);
+        model.addAttribute("currentUserId", userIsConnected.toString());
 
         return "userPublicProjects";
     }

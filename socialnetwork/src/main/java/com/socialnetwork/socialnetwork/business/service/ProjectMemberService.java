@@ -241,6 +241,10 @@ public class ProjectMemberService implements IProjectMemberService {
 
         Optional<ProjectMember> membership = projectMemberRepository.findByProjectAndUser(project.get(), user.get());
         if (!membership.isPresent()) {
+            // Fallback: treat project creator as OWNER even if no membership record exists
+            if (project.get().getCreator() != null && project.get().getCreator().getId().equals(userId)) {
+                return new ResponseEntity<>(ProjectMemberRole.OWNER, HttpStatus.OK);
+            }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
@@ -261,5 +265,47 @@ public class ProjectMemberService implements IProjectMemberService {
 
         Optional<ProjectMember> membership = projectMemberRepository.findByProjectAndUser(project.get(), user.get());
         return membership.isPresent();
+    }
+
+    @Override
+    public ResponseEntity<ProjectMember> updateMemberRole(UUID projectId, UUID memberId, ProjectMemberRole newRole, UUID requesterId) {
+        // Get project
+        Optional<Project> project = projectRepository.findById(projectId);
+        if (!project.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Get member to update
+        Optional<User> memberUser = userRepository.findById(memberId);
+        if (!memberUser.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Get requester
+        Optional<User> requester = userRepository.findById(requesterId);
+        if (!requester.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Check requester's role (must be OWNER)
+        Optional<ProjectMember> requesterMembership = projectMemberRepository.findByProjectAndUser(project.get(), requester.get());
+        boolean isRequesterOwner = requesterMembership.isPresent() && requesterMembership.get().getRole() == ProjectMemberRole.OWNER;
+        
+        // Also allow if requester is the project creator
+        if (!isRequesterOwner && !project.get().getCreator().getId().equals(requesterId)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        // Get member's membership
+        Optional<ProjectMember> memberMembership = projectMemberRepository.findByProjectAndUser(project.get(), memberUser.get());
+        if (!memberMembership.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Update role
+        memberMembership.get().setRole(newRole);
+        ProjectMember updated = projectMemberRepository.save(memberMembership.get());
+
+        return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 }

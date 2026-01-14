@@ -12,9 +12,12 @@ import com.socialnetwork.socialnetwork.business.interfaces.repository.IProjectMe
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IProjectRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IUserRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IProjectService;
+import com.socialnetwork.socialnetwork.business.interfaces.service.IProjectSkillService;
+import com.socialnetwork.socialnetwork.business.interfaces.service.IPostService;
 import com.socialnetwork.socialnetwork.dto.ProjectDto;
 import com.socialnetwork.socialnetwork.entity.Project;
 import com.socialnetwork.socialnetwork.entity.ProjectMember;
+import com.socialnetwork.socialnetwork.entity.Post;
 import com.socialnetwork.socialnetwork.entity.User;
 import com.socialnetwork.socialnetwork.enums.ProjectMemberRole;
 import com.socialnetwork.socialnetwork.enums.VisibilityType;
@@ -25,12 +28,19 @@ public class ProjectService implements IProjectService {
     private final IProjectRepository projectRepository;
     private final IProjectMemberRepository projectMemberRepository;
     private final IUserRepository userRepository;
+    private final IProjectSkillService projectSkillService;
+    private final IPostService postService;
 
-    public ProjectService(IProjectRepository projectRepository, IProjectMemberRepository projectMemberRepository,
-                         IUserRepository userRepository) {
+    public ProjectService(IProjectRepository projectRepository, 
+                         IProjectMemberRepository projectMemberRepository,
+                         IUserRepository userRepository,
+                         IProjectSkillService projectSkillService,
+                         IPostService postService) {
         this.projectRepository = projectRepository;
         this.projectMemberRepository = projectMemberRepository;
         this.userRepository = userRepository;
+        this.projectSkillService = projectSkillService;
+        this.postService = postService;
     }
 
     @Override
@@ -57,6 +67,16 @@ public class ProjectService implements IProjectService {
         ownerMember.setUser(creator.get());
         ownerMember.setRole(ProjectMemberRole.OWNER);
         projectMemberRepository.save(ownerMember);
+
+        // Add skills if provided
+        if (projectDto.getSkills() != null && !projectDto.getSkills().isEmpty()) {
+            projectSkillService.addSkillsToProject(savedProject.getId(), projectDto.getSkills());
+            
+            // Create a post for public projects with skills
+            if (savedProject.getVisibilityType() == VisibilityType.PUBLIC) {
+                createRecruitmentPost(savedProject, projectDto.getSkills(), creator.get());
+            }
+        }
 
         return new ResponseEntity<>(savedProject, HttpStatus.CREATED);
     }
@@ -111,6 +131,48 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
+    public ResponseEntity<List<Project>> getUserProjects(UUID userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (!user.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Get projects where user is creator (OWNER)
+        Optional<List<Project>> createdProjects = projectRepository.findByCreator(user.get());
+        
+        // Get projects where user is a member
+        Optional<List<ProjectMember>> memberProjects = projectMemberRepository.findByUser(user.get());
+        
+        List<Project> allProjects = new java.util.ArrayList<>();
+        
+        if (createdProjects.isPresent()) {
+            allProjects.addAll(createdProjects.get());
+        }
+        
+        if (memberProjects.isPresent()) {
+            // Add member projects that are not already added (to avoid duplicates)
+            for (ProjectMember member : memberProjects.get()) {
+                if (member.getProject() != null && !allProjects.contains(member.getProject())) {
+                    allProjects.add(member.getProject());
+                }
+            }
+        }
+
+        if (allProjects.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // Sort by updatedAt descending (most recent first), fallback to createdAt
+        allProjects.sort((a, b) -> {
+            java.time.LocalDateTime dateA = a.getUpdatedAt() != null ? a.getUpdatedAt() : a.getCreatedAt();
+            java.time.LocalDateTime dateB = b.getUpdatedAt() != null ? b.getUpdatedAt() : b.getCreatedAt();
+            return dateB.compareTo(dateA);
+        });
+
+        return new ResponseEntity<>(allProjects, HttpStatus.OK);
+    }
+
+    @Override
     public ResponseEntity<List<Project>> getPublicProjects() {
         Optional<List<Project>> projects = projectRepository.findByVisibilityType(VisibilityType.PUBLIC);
         if (!projects.isPresent() || projects.get().isEmpty()) {
@@ -148,6 +210,97 @@ public class ProjectService implements IProjectService {
         }
 
         projectRepository.delete(project.get());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    
+    /**
+     * Create a recruitment post for a public project with skills
+     */
+    private void createRecruitmentPost(Project project, List<String> skills, User creator) {
+        try {
+            StringBuilder postContent = new StringBuilder();
+            postContent.append("🚀 Nouveau projet : ").append(project.getName()).append("\n\n");
+            
+            if (project.getDescription() != null && !project.getDescription().isEmpty()) {
+                postContent.append(project.getDescription()).append("\n\n");
+            }
+            
+            postContent.append("🔍 Compétences recherchées :\n");
+            for (String skill : skills) {
+                postContent.append("• ").append(skill).append("\n");
+            }
+            
+            postContent.append("\n💼 Intéressé(e) ? Consultez mon profil pour voir le projet et demander à rejoindre !");
+            
+            Post post = new Post();
+            post.setAuthor(creator);
+            post.setContent(postContent.toString());
+            post.setVisibilityType(VisibilityType.PUBLIC);
+            post.setAllowComments(true);
+            
+            postService.createPost(post);
+        } catch (Exception e) {
+            // Log error but don't fail project creation
+            System.err.println("Failed to create recruitment post: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<Void> transferOwnership(UUID projectId, UUID newOwnerId, UUID currentOwnerId) {
+        // Get the project
+        Optional<Project> projectOpt = projectRepository.findById(projectId);
+        if (!projectOpt.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Project project = projectOpt.get();
+
+        // Verify current user is allowed: project creator OR has OWNER role in membership
+        boolean isCreator = project.getCreator() != null && project.getCreator().getId().equals(currentOwnerId);
+        boolean isOwnerRole = false;
+        Optional<User> currentUserOpt = userRepository.findById(currentOwnerId);
+        if (currentUserOpt.isPresent()) {
+            Optional<ProjectMember> currentMembership = projectMemberRepository.findByProjectAndUser(project, currentUserOpt.get());
+            isOwnerRole = currentMembership.isPresent() && currentMembership.get().getRole() == ProjectMemberRole.OWNER;
+        }
+
+        if (!isCreator && !isOwnerRole) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        // Get the new owner
+        Optional<User> newOwnerOpt = userRepository.findById(newOwnerId);
+        if (!newOwnerOpt.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Verify new owner is a member of the project
+        Optional<ProjectMember> memberOpt = projectMemberRepository.findByProjectAndUser(project, newOwnerOpt.get());
+        if (!memberOpt.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // User is not a member
+        }
+
+        // Update project creator
+        project.setCreator(newOwnerOpt.get());
+        projectRepository.save(project);
+
+        // Update membership roles
+        // Get current owner's membership and downgrade if exists
+        Optional<User> currentUserOpt2 = userRepository.findById(currentOwnerId);
+        if (currentUserOpt2.isPresent()) {
+            Optional<ProjectMember> currentOwnerMembership = projectMemberRepository.findByProjectAndUser(project, currentUserOpt2.get());
+            if (currentOwnerMembership.isPresent()) {
+                // Downgrade from OWNER to MEMBER
+                currentOwnerMembership.get().setRole(ProjectMemberRole.MEMBER);
+                projectMemberRepository.save(currentOwnerMembership.get());
+            }
+        }
+
+        // Make sure new owner has OWNER role in ProjectMember
+        ProjectMember newOwnerMembership = memberOpt.get();
+        newOwnerMembership.setRole(ProjectMemberRole.OWNER);
+        projectMemberRepository.save(newOwnerMembership);
+
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
