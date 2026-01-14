@@ -11,7 +11,8 @@ if (friendRequestButtons.length > 0) {
 }
 
 function handleFriendRequest(event) {
-	const button = event.target;
+
+	const button = event.target == undefined ? event : event.target;
 	const userId = button.getAttribute('data-id');
 	const action = button.getAttribute('data-action') || 'send';
 
@@ -20,42 +21,42 @@ function handleFriendRequest(event) {
 	const originalText = button.textContent;
 	button.textContent = 'En attente...';
 
-    const endpoint =
-        action === 'accept' ? '/friend-request/accept' :
-        action === 'decline' ? '/friend-request/decline' :
-            '/friend-request/send';
+	const endpoint =
+		action === 'accept' ? '/friend-request/accept' :
+			action === 'decline' ? '/friend-request/decline' :
+				'/friend-request/send';
 
-    const params = action === 'send' ? 'userId=' + userId : 'requesterId=' + userId;
+	const params = action === 'send' ? 'userId=' + userId : 'requesterId=' + userId;
 
-    fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: params
-    })
-        .then(response => {
-            button.disabled = false;
-            button.textContent = originalText;
+	fetch(endpoint, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		body: params
+	})
+		.then(response => {
+			button.disabled = false;
+			button.textContent = originalText;
 
-            if (response.status === 200) {
-                customAlert('Succès', 'Opération réussie! La page va se recharger...', 'success');
-                setTimeout(() => window.location.reload(), 1500);
-            } else if (response.status === 409) {
-                customAlert('Information', 'Cette demande existe déjà ou vous êtes déjà amis', 'info');
-                button.disabled = false;
-            } else if (response.status === 403) {
-                customAlert('Accès refusé', 'Cet utilisateur n\'autorise pas les demandes pour le moment.', 'error');
-                button.disabled = false;
-            } else {
-                customAlert('Erreur', 'Une erreur s\'est produite. Veuillez réessayer.', 'error');
-                button.disabled = false;
-            }
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-            customAlert('Erreur', 'Erreur de connexion. Veuillez réessayer.', 'error');
-            button.disabled = false;
-            button.textContent = originalText;
-        });
+			if (response.status === 200) {
+				customAlert('Succès', 'Opération réussie! La page va se recharger...', 'success');
+				setTimeout(() => window.location.reload(), 1500);
+			} else if (response.status === 409) {
+				customAlert('Information', 'Cette demande existe déjà ou vous êtes déjà amis', 'info');
+				button.disabled = false;
+			} else if (response.status === 403) {
+				customAlert('Accès refusé', 'Cet utilisateur n\'autorise pas les demandes pour le moment.', 'error');
+				button.disabled = false;
+			} else {
+				customAlert('Erreur', 'Une erreur s\'est produite. Veuillez réessayer.', 'error');
+				button.disabled = false;
+			}
+		})
+		.catch(error => {
+			console.error('Erreur:', error);
+			customAlert('Erreur', 'Erreur de connexion. Veuillez réessayer.', 'error');
+			button.disabled = false;
+			button.textContent = originalText;
+		});
 }
 
 /**
@@ -229,7 +230,7 @@ function displayReceivedRequests(requests, requestsEvent) {
 			declineRequest(requesterId);
 		});
 	});
-	
+
 	// Attach event listeners to accept/decline buttons
 	document.querySelectorAll('.btn-accept-event').forEach(btn => {
 		btn.addEventListener('click', function() {
@@ -316,9 +317,9 @@ function acceptEventRequest(requesterId, eventId) {
 	fetch('/eventattendee/accept', {
 		method: 'PUT',
 		headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-    	},
-    	body: 'requesterId=' + requesterId + '&eventId=' + eventId
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: 'requesterId=' + requesterId + '&eventId=' + eventId
 	})
 		.then(response => {
 			if (response.status === 200) {
@@ -339,9 +340,9 @@ function declineEventRequest(requesterId, eventId) {
 	fetch('/eventattendee/decline', {
 		method: 'PUT',
 		headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-    	},
-    	body: 'requesterId=' + requesterId + '&eventId=' + eventId
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: 'requesterId=' + requesterId + '&eventId=' + eventId
 	})
 		.then(response => {
 			if (response.status === 200) {
@@ -377,40 +378,116 @@ function declineRequest(requesterId) {
  * Show notification badge count (count only received requests)
  */
 function loadNotificationBadge() {
-    fetch('/friend-request/pending', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-    })
-        .then(response => response.status === 200 ? response.json() : [])
-        .then(requests => {
-            const badge = document.getElementById('notification-badge');
-            if (badge) {
-                badge.textContent = requests.length;
-                badge.style.display = requests.length > 0 ? 'inline-block' : 'none';
-            }
-        })
-        .catch(error => console.error('Error loading badge:', error));
+	fetch('/friend-request/pending', {
+		method: 'GET',
+		headers: { 'Content-Type': 'application/json' }
+	})
+		.then(response => response.status === 200 ? response.json() : [])
+		.then(requests => {
+			const badge = document.getElementById('notification-badge');
+			if (badge) {
+				badge.textContent = requests.length;
+				badge.style.display = requests.length > 0 ? 'inline-block' : 'none';
+			}
+		})
+		.catch(error => console.error('Error loading badge:', error));
 }
 
 function markAcceptedFriends() {
-    fetch('/friend-request/accepted-ids')
-        .then(response => response.status === 200 ? response.json() : [])
-        .then(friendIds => {
-            const btns = document.querySelectorAll('.btn-friend-request');
-            const friendSet = new Set(friendIds);
-            btns.forEach(btn => {
-                const uid = btn.getAttribute('data-id');
-                if (friendSet.has(uid)) {
-                    btn.outerHTML = `<span class="badge-friends"><i data-lucide="check"></i> Amis</span>`;
-                }
-            });
-            if (window.lucide) lucide.createIcons();
-        })
-        .catch(err => console.error('Erreur lors du chargement des amis:', err));
+	fetch('/friend-request/accepted-ids')
+		.then(response => response.status === 200 ? response.json() : [])
+		.then(friendIds => {
+			const btns = document.querySelectorAll('.btn-friend-request');
+			const friendSet = new Set(friendIds);
+			btns.forEach(btn => {
+				const uid = btn.getAttribute('data-id');
+				if (friendSet.has(uid)) {
+					btn.outerHTML = `<span class="badge-friends"><i data-lucide="check"></i> Amis</span>`;
+				}
+			});
+			if (window.lucide) lucide.createIcons();
+		})
+		.catch(err => console.error('Erreur lors du chargement des amis:', err));
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    loadPendingRequests();
-    loadNotificationBadge();
-    markAcceptedFriends();
+function displaySuggestionRequests(requests) {
+	const container = document.getElementById('suggestions-container');
+	if (!container) return;
+
+	if (requests.length) {
+		container.innerHTML = '<p>Pas de suggestions.</p>';
+		return;
+	}
+
+	let html = '<div class="pending-requests-list sent-list">';
+	html += '<h3>Suggestions amis</h3>';
+	
+	
+	Object.entries(requests).forEach(([key, value]) => {
+		var tabKey = key.split(" ");
+		var id = tabKey[0]
+		var requesterName = tabKey[1] + " " + tabKey[2];
+
+		html += `
+            <div class="pending-request-item">
+                <div class="request-info">
+                    <strong>${requesterName}</strong>
+                </div>
+                <div class="request-actions">
+                    <button class="btn btn-success btn-friend-request" data-id="${id}" data-action="send">Demande d'amis</button>
+                    <button class="btn btn-primary-header view-profile" data-id="${id}">Voir profil</button>
+                </div>
+            </div>
+        `;
+    });
+	
+	html += '</div>';
+
+	container.innerHTML = html;
+	
+	// Attach event listeners to accept/decline buttons
+	document.querySelectorAll('.btn-friend-request').forEach(btn => {
+		btn.addEventListener('click', function() {
+			console.log(btn)
+			handleFriendRequest(btn);
+		});
+	});
+
+	document.querySelectorAll('.view-profile').forEach(btn => {
+		btn.addEventListener('click', function() {
+			const requesterId = this.getAttribute('data-id');
+			window.location.href = "/profil/" + userId;
+		});
+	});
+}
+
+
+
+function loadSuggestion() {
+	fetch('/suggestion', {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	})
+		.then(response => {
+			if (response.status === 200) {
+				return response.json();
+			} else {
+				console.error('Failed to load pending requests');
+				return [];
+			}
+		})
+		.then(requests => {
+			displaySuggestionRequests(requests);
+		})
+		.catch(error => console.error('Error loading pending requests:', error));
+
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+	loadPendingRequests();
+	loadSuggestion();
+	loadNotificationBadge();
+	markAcceptedFriends();
 });
