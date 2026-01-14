@@ -315,6 +315,11 @@ function loadProjectGroupMessages(groupId) {
 
             messages.forEach(message => {
                 displayProjectMessage(message);
+                
+                // Mark unread messages as read
+                if (!message.isRead) {
+                    markProjectMessageAsRead(message.id);
+                }
             });
 
             // Scroll to bottom
@@ -434,6 +439,29 @@ function sendProjectMessage(content) {
 }
 
 /**
+ * Mark a project message as read
+ */
+function markProjectMessageAsRead(messageId) {
+    fetch(`/api/project-messages/${messageId}/read`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            // Update unread badge
+            if (typeof updateUnreadMessagesBadge === 'function') {
+                updateUnreadMessagesBadge();
+            }
+        }
+    })
+    .catch(error => {
+        console.warn('Error marking message as read:', error);
+    });
+}
+
+/**
  * Check if we're in project mode
  */
 function isProjectMode() {
@@ -445,3 +473,4 @@ function isProjectMode() {
 window.loadProjectGroups = loadProjectGroups;
 window.sendProjectMessage = sendProjectMessage;
 window.isProjectMode = isProjectMode;
+window.markProjectMessageAsRead = markProjectMessageAsRead;
