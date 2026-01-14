@@ -33,6 +33,21 @@
     </main>
 
     <div th:replace="~{fragments/footer :: footer-fragment}"></div>
+    
+    
+    <div id="editEventModal">
+		<div class="modal-card card">
+		 	<div class="modal-header">
+                    <h3>Information</h3>
+                    <button id="closeEditModal" aria-label="Fermer">✕</button>
+            </div>
+			<div class="modal-body">
+				<div class="input-wrapper">
+						<p id="whysuggestion"></p>
+				</div>
+			</div>
+		</div>
+	</div>
 
     <script th:src="@{/js/header.js}"></script>
     <script th:src="@{/js/friendRequest.js}"></script>

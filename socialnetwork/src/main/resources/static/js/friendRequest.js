@@ -10,6 +10,19 @@ if (friendRequestButtons.length > 0) {
 	});
 }
 
+function showAlert(message, type = 'info') {
+    // Create a simple alert - you can replace this with a toast notification
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} active`;
+    alertDiv.textContent = message;
+    
+    document.body.insertBefore(alertDiv, document.body.firstChild);
+    
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 3000);
+}
+
 function handleFriendRequest(event) {
 
 	const button = event.target == undefined ? event : event.target;
@@ -38,22 +51,22 @@ function handleFriendRequest(event) {
 			button.textContent = originalText;
 
 			if (response.status === 200) {
-				customAlert('Succès', 'Opération réussie! La page va se recharger...', 'success');
+				showAlert('Opération réussie! La page va se recharger...', 'success');
 				setTimeout(() => window.location.reload(), 1500);
 			} else if (response.status === 409) {
-				customAlert('Information', 'Cette demande existe déjà ou vous êtes déjà amis', 'info');
+				showAlert('Cette demande existe déjà ou vous êtes déjà amis', 'info');
 				button.disabled = false;
 			} else if (response.status === 403) {
-				customAlert('Accès refusé', 'Cet utilisateur n\'autorise pas les demandes pour le moment.', 'error');
+				showAlert('Cet utilisateur n\'autorise pas les demandes pour le moment.', 'error');
 				button.disabled = false;
 			} else {
-				customAlert('Erreur', 'Une erreur s\'est produite. Veuillez réessayer.', 'error');
+				showAlert('Une erreur s\'est produite. Veuillez réessayer.', 'error');
 				button.disabled = false;
 			}
 		})
 		.catch(error => {
 			console.error('Erreur:', error);
-			customAlert('Erreur', 'Erreur de connexion. Veuillez réessayer.', 'error');
+			showAlert('Erreur de connexion. Veuillez réessayer.', 'error');
 			button.disabled = false;
 			button.textContent = originalText;
 		});
@@ -141,6 +154,19 @@ function loadSentRequests() {
 				})
 		})
 		.catch(error => console.error('Error loading sent requests:', error));
+}
+
+function showAlert(message, type = 'info') {
+    // Create a simple alert - you can replace this with a toast notification
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} active`;
+    alertDiv.textContent = message;
+    
+    document.body.insertBefore(alertDiv, document.body.firstChild);
+    
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 3000);
 }
 
 function markSentButtons(requests) {
@@ -436,9 +462,12 @@ function displaySuggestionRequests(requests) {
                 <div class="request-actions">
                     <button class="btn btn-success btn-friend-request" data-id="${id}" data-action="send">Demande d'amis</button>
                     <button class="btn btn-primary-header view-profile" data-id="${id}">Voir profil</button>
+                    <button class="btn btn-primary-header question" data-reason="${value}">?</button>
                 </div>
             </div>
         `;
+        
+        
     });
 	
 	html += '</div>';
@@ -455,13 +484,27 @@ function displaySuggestionRequests(requests) {
 
 	document.querySelectorAll('.view-profile').forEach(btn => {
 		btn.addEventListener('click', function() {
+		console.log(btn)
 			const requesterId = this.getAttribute('data-id');
-			window.location.href = "/profil/" + userId;
+			window.location.href = "/profil/" + requesterId;
+		});
+	});
+	
+	document.querySelectorAll('.question').forEach(btn => {
+		btn.addEventListener('click', function() {
+			const reason = this.getAttribute('data-reason');
+			DisplayReasonModal(reason);
 		});
 	});
 }
 
+function DisplayReasonModal(reason){
+	document.getElementById("editEventModal").style.display = "flex";
+	document.getElementById("whysuggestion").innerText = reason;
+}
 
+document.getElementById("closeEditModal").addEventListener('click',closeModal);
+function closeModal(){  document.getElementById("editEventModal").style.display = 'none'; }
 
 function loadSuggestion() {
 	fetch('/suggestion', {
