@@ -107,6 +107,12 @@ function selectConversation(conversation) {
         document.getElementById('noChatSelected').style.display = 'none';
         document.getElementById('chatWindow').style.display = 'flex';
         
+        // Mobile: Add mobile-active class to show chat area
+        const chatArea = document.querySelector('.chat-area');
+        if (chatArea && window.innerWidth <= 480) {
+            chatArea.classList.add('mobile-active');
+        }
+        
         // Update header
         document.getElementById('chatHeaderName').textContent = conversation.otherUserName;
         document.getElementById('otherUserAvatar').src = conversation.otherUserAvatar || '/img/default-avatar.png';
@@ -686,5 +692,18 @@ document.addEventListener('click', function(e) {
     const modal = document.getElementById('newConversationModal');
     if (modal && e.target === modal) {
         closeNewConversationModal();
+    }
+});
+
+// Mobile: Handle back button to return to conversations list
+document.addEventListener('DOMContentLoaded', function() {
+    const btnBackToConversations = document.getElementById('btnBackToConversations');
+    if (btnBackToConversations) {
+        btnBackToConversations.addEventListener('click', function() {
+            const chatArea = document.querySelector('.chat-area');
+            if (chatArea) {
+                chatArea.classList.remove('mobile-active');
+            }
+        });
     }
 });
