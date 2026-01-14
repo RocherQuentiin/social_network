@@ -43,7 +43,7 @@
 		<nav class="side-nav card">
 			<a href="#" class="nav-item active" id="showPosts"><i data-lucide="home"></i> Fil d'actualité</a>
 			<a href="#" class="nav-item" id="showEvents"><i data-lucide="megaphone"></i> Annonces</a>
-			<a href="#" class="nav-item"><i data-lucide="message-square"></i> Messages</a>
+			<a href="#" class="nav-item" id="showProjects"><i data-lucide="message-square"></i> Projets</a>
 			<a href="#" class="nav-item"><i data-lucide="calendar"></i> Calendrier</a>
 			<hr>
 			<a href="/privacy" class="nav-item"><i data-lucide="settings"></i> Paramètres</a>
@@ -134,6 +134,10 @@
 
 		<div id="eventsContainer" style="display: none;">
 			<div th:replace="~{events :: events-fragment}"></div>
+		</div>
+
+		<div id="projectsContainer" style="display: none;">
+
 		</div>
 	</main>
 
@@ -251,44 +255,91 @@
 <script th:src="@{/js/comments.js}"></script>
 <script th:src="@{/js/event.js}"></script>
 <script>
-	lucide.createIcons();
-	document.addEventListener("DOMContentLoaded", function() {
-		moment.locale('fr');
-		document.querySelectorAll('.post-date, .event-date-period').forEach(el => {
-			const raw = el.getAttribute('data-timestamp');
-			if (raw) {
-				const m = moment(raw);
-				el.innerText = el.classList.contains('post-date') && moment().diff(m, 'hours') < 24 ? m.fromNow() : m.format('D MMMM YYYY');
-			}
-		});
 
 		// LOGIQUE DE BASCULEMENT
-		const btnPosts = document.getElementById('showPosts');
-		const btnEvents = document.getElementById('showEvents');
-		const postsCont = document.getElementById('postsContainer');
-		const eventsCont = document.getElementById('eventsContainer');
-		const pubArea = document.getElementById('publishArea');
-		const sideList = document.getElementById('announcementsSideList');
-		const sideForm = document.getElementById('createEventArea');
+			lucide.createIcons();
 
-		function toggle(showEv) {
-			postsCont.style.display = showEv ? 'none' : 'block';
-			if(pubArea) pubArea.style.display = showEv ? 'none' : 'block';
-			eventsCont.style.display = showEv ? 'block' : 'none';
-			sideList.style.display = showEv ? 'none' : 'block';
-			sideForm.style.display = showEv ? 'block' : 'none';
-			btnEvents.classList.toggle('active', showEv);
-			btnPosts.classList.toggle('active', !showEv);
+			document.addEventListener("DOMContentLoaded", function() {
+			moment.locale('fr');
+
+			// 1. Formatage des dates
+			const formatDate = () => {
+			document.querySelectorAll('.post-date, .event-date-period').forEach(el => {
+			const raw = el.getAttribute('data-timestamp');
+			if (raw) {
+			const m = moment(raw);
+			el.innerText = el.classList.contains('post-date') && moment().diff(m, 'hours') < 24 ? m.fromNow() : m.format('D MMMM YYYY');
+		}
+		});
+		};
+			formatDate();
+
+			// 2. Éléments pour le basculement
+			const tabs = {
+			posts: {
+			btn: document.getElementById('showPosts'),
+			cont: document.getElementById('postsContainer')
+		},
+			events: {
+			btn: document.getElementById('showEvents'),
+			cont: document.getElementById('eventsContainer')
+		},
+			projects: {
+			btn: document.getElementById('showProjects'),
+			cont: document.getElementById('projectsContainer')
+		}
+		};
+
+			const sideList = document.getElementById('announcementsSideList');
+			const sideForm = document.getElementById('createEventArea');
+			const pubArea = document.getElementById('publishArea');
+
+			// 3. Fonction de basculement
+			function switchTab(mode) {
+			console.log("Basculement vers : " + mode);
+
+			Object.keys(tabs).forEach(key => {
+			const tab = tabs[key];
+			if (tab.cont) {
+			tab.cont.style.display = (key === mode) ? 'block' : 'none';
+		}
+			if (tab.btn) {
+			if (key === mode) tab.btn.classList.add('active');
+			else tab.btn.classList.remove('active');
+		}
+		});
+
+			// Éléments spécifiques
+			if (pubArea) pubArea.style.display = (mode === 'posts') ? 'block' : 'none';
+			if (sideList) sideList.style.display = (mode === 'posts') ? 'block' : 'none';
+			if (sideForm) sideForm.style.display = (mode === 'events') ? 'block' : 'none';
+
+			// Charger les projets si la fonction existe dans projects.js
+			if (mode === 'projects' && typeof loadProjects === 'function') {
+			loadProjects();
+		}
+
 			lucide.createIcons();
 		}
-		btnEvents.onclick = (e) => { e.preventDefault(); toggle(true); };
-		btnPosts.onclick = (e) => { e.preventDefault(); toggle(false); };
-	});
 
-	const modal = document.getElementById('editModal');
-	const closeBtn = document.getElementById('closeEditModal');
-	if(closeBtn) closeBtn.onclick = () => modal.style.display = "none";
-	function openEditModalFromButton(btn) { modal.style.display = "flex"; }
+			// 4. Assignation des événements
+			if (tabs.posts.btn) tabs.posts.btn.onclick = (e) => { e.preventDefault(); switchTab('posts'); };
+			if (tabs.events.btn) tabs.events.btn.onclick = (e) => { e.preventDefault(); switchTab('events'); };
+			if (tabs.projects.btn) tabs.projects.btn.onclick = (e) => { e.preventDefault(); switchTab('projects'); };
+
+			// Affichage par défaut
+			switchTab('posts');
+		});
+
+			// Logique des Modaux (Hors DOMContentLoaded pour être accessible par les onclick HTML)
+			const modal = document.getElementById('editModal');
+			const closeBtn = document.getElementById('closeEditModal');
+			if(closeBtn) closeBtn.onclick = () => modal.style.display = "none";
+
+			function openEditModalFromButton(btn) {
+			if(modal) modal.style.display = "flex";
+		}
+
 </script>
 </body>
 </html>
