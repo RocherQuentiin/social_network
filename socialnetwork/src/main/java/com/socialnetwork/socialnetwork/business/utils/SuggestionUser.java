@@ -15,7 +15,7 @@ public class SuggestionUser {
 			if(listUsers.get(i).getProfile().getIsepSpecialization() != null && user.getProfile().getIsepSpecialization() != null) {
 				if(listUsers.get(i).getProfile().getIsepSpecialization().equals(user.getProfile().getIsepSpecialization())) {
 					String specialization = user.getProfile().getIsepSpecialization().toString().replace('_', ' ');
-					suggestion += "Vous faites la même spécialisation : " + specialization;
+					suggestion += "Vous faites partie de la même spécialisation : " + specialization;
 				}
 			}
 			
@@ -24,6 +24,8 @@ public class SuggestionUser {
 					suggestion += "Vous faites partie de la même promo : " + user.getProfile().getPromoYear();
 				}
 			}
+			
+			
 			
 			if(!suggestion.equals("")) {
 				map.put(listUsers.get(i).getId() + " " + listUsers.get(i).getLastName() + " " + listUsers.get(i).getFirstName(), suggestion);
