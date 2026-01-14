@@ -301,5 +301,4 @@ function sortPostsByDates() {
     posts.forEach(post => container.appendChild(post));
 }
 
-
 });

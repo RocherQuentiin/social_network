@@ -3,15 +3,19 @@ package com.socialnetwork.socialnetwork.controller;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -85,6 +89,103 @@ public class UserController {
 		}
 		
         return "accueil";
+    }
+    
+    @PostMapping("/user/hobby")
+    public String addHobbyUser(HttpServletRequest request, Model model, @RequestParam("hobbiesName") String hobbiesName) {
+    	Object userIsConnect = Utils.validPage(request, true);
+		model.addAttribute("isConnect", userIsConnect);
+		if(userIsConnect == null) {
+			return "accueil";
+		}
+		
+		ResponseEntity<User> user = userService.getUserById(UUID.fromString(userIsConnect.toString()));
+		ResponseEntity<Profile> profile = this.profileService.getUserProfileByUserID(user.getBody());
+		Map<String, Object> map = profile.getBody().getInterests();
+		
+		if(map != null) {
+			map.put(hobbiesName, hobbiesName);
+		}
+		else {
+			map = new HashMap<String, Object>();
+			map.put(hobbiesName, hobbiesName);
+		}
+
+		profile.getBody().setInterests(map);
+		this.profileService.save(profile.getBody());
+		
+		return showUserProfil(request, model);
+    }
+    
+    @PostMapping("/user/competencies")
+    public String addCompetenciesUser(HttpServletRequest request, Model model, @RequestParam("competenceName") String competenceName) {
+    	Object userIsConnect = Utils.validPage(request, true);
+		model.addAttribute("isConnect", userIsConnect);
+		if(userIsConnect == null) {
+			return "accueil";
+		}
+		
+		ResponseEntity<User> user = userService.getUserById(UUID.fromString(userIsConnect.toString()));
+		ResponseEntity<Profile> profile = this.profileService.getUserProfileByUserID(user.getBody());
+		Map<String, Object> map = profile.getBody().getCompetencies();
+		
+		if(map != null) {
+			map.put(competenceName, competenceName);
+		}
+		else {
+			map = new HashMap<String, Object>();
+			map.put(competenceName, competenceName);
+		}
+
+		profile.getBody().setCompetencies(map);
+		this.profileService.save(profile.getBody());
+		
+		return showUserProfil(request, model);
+    }
+    
+    @DeleteMapping("/user/hobby/delete")
+    public ResponseEntity<String> deleteHobbyUser(HttpServletRequest request, Model model, @RequestParam("hobbyName") String hobbyName) {
+    	Object userIsConnect = Utils.validPage(request, true);
+		model.addAttribute("isConnect", userIsConnect);
+		if(userIsConnect == null) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authenticated");
+		}
+		
+		ResponseEntity<User> user = userService.getUserById(UUID.fromString(userIsConnect.toString()));
+		ResponseEntity<Profile> profile = this.profileService.getUserProfileByUserID(user.getBody());
+		Map<String, Object> map = profile.getBody().getInterests();
+		
+		if(map != null) {
+			map.remove(hobbyName);
+		}
+
+		profile.getBody().setInterests(map);
+		this.profileService.save(profile.getBody());
+		
+		return ResponseEntity.ok().build();
+    }
+    
+    @DeleteMapping("/user/competence/delete")
+    public ResponseEntity<String> deleteCompetenceUser(HttpServletRequest request, Model model, @RequestParam("competenceName") String competenceName) {
+    	Object userIsConnect = Utils.validPage(request, true);
+		model.addAttribute("isConnect", userIsConnect);
+		if(userIsConnect == null) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authenticated");
+		}
+		
+		ResponseEntity<User> user = userService.getUserById(UUID.fromString(userIsConnect.toString()));
+		ResponseEntity<Profile> profile = this.profileService.getUserProfileByUserID(user.getBody());
+		Map<String, Object> map = profile.getBody().getCompetencies();
+		
+		if(map != null) {
+			System.out.println(profile.getBody().getCompetencies().size());
+			map.remove(competenceName);
+		}
+		System.out.println("taille : " + map.size());
+		profile.getBody().setCompetencies(map);
+		this.profileService.save(profile.getBody());
+		
+		return ResponseEntity.ok().build();
     }
 
 	@GetMapping("/feed")

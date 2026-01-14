@@ -66,12 +66,20 @@ public class ProfileService implements IProfileService{
 			existingProfile.get().setPromoYear(profile.getPromoYear());
 			existingProfile.get().setWebsite(profile.getWebsite());
 			existingProfile.get().setProfession(profile.getProfession());
+			existingProfile.get().setLinkedin(profile.getLinkedin());
+			existingProfile.get().setGithub(profile.getGithub());
 			repository.save(existingProfile.get());
 		}
 		
 		
 		return new ResponseEntity<>(
 			      HttpStatus.OK);
+	}
+
+	@Override
+	public void save(Profile profile) {
+		this.repository.save(profile);
+		
 	}
 	
 }

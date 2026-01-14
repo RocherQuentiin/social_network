@@ -130,12 +130,28 @@
 
 			<section class="form-section card">
 				<h3><i data-lucide="link" class="icon-blue"></i> Liens & Réseaux</h3>
+				<div class="form-grid">
 				<div class="input-group">
 					<label for="website">Portfolio ou Site web</label>
 					<div class="input-with-icon">
 						<i data-lucide="globe" style="position: absolute; margin: 12px; color: var(--text-dim);"></i>
 						<input th:field="*{userProfile.profile.website}" type="url" id="website" placeholder="https://..." style="padding-left: 40px;">
 					</div>
+				</div>
+				<div class="input-group">
+					<label for="linkedin">Linkedin</label>
+					<div class="input-with-icon">
+						<i data-lucide="globe" style="position: absolute; margin: 12px; color: var(--text-dim);"></i>
+						<input th:field="*{userProfile.profile.linkedin}" type="url" id="linkedin" placeholder="https://..." style="padding-left: 40px;">
+					</div>
+				</div>
+				<div class="input-group">
+					<label for="github">GitHub</label>
+					<div class="input-with-icon">
+						<i data-lucide="globe" style="position: absolute; margin: 12px; color: var(--text-dim);"></i>
+						<input th:field="*{userProfile.profile.github}" type="url" id="github" placeholder="https://..." style="padding-left: 40px;">
+					</div>
+				</div>
 				</div>
 			</section>
 

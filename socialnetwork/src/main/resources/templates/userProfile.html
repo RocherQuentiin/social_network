@@ -50,16 +50,22 @@
 						le profil</a> <a th:href="@{/privacy}" class="btn-primary-header">Données
 						privée</a>
 				</div>
+				<div class="btn-infos btn-change-password">
+					<a th:href="@{/changePassword}" class="btn-primary-header">Changer son mot de passe</a>
+				</div>
+				
 			</div>
 
 			<div class="card networks-card">
 				<h3 class="sidebar-title">Réseaux</h3>
 				<div class="network-links">
-					<a href="#" class="network-item">
+					<a th:if="${userProfile.profile.linkedin}"
+						th:href="${userProfile.profile.linkedin}" class="network-item">
 						<div class="item-left">
 							<i data-lucide="linkedin"></i> <span>LinkedIn</span>
 						</div> <i data-lucide="external-link" class="arrow-right"></i>
-					</a> <a href="#" class="network-item">
+					</a> <a th:if="${userProfile.profile.github}"
+						th:href="${userProfile.profile.github}" class="network-item">
 						<div class="item-left">
 							<i data-lucide="github"></i> <span>GitHub</span>
 						</div> <i data-lucide="external-link" class="arrow-right"></i>
@@ -110,17 +116,14 @@
 					<h3>
 						<i data-lucide="settings" class="icon-blue"></i> Compétences
 					</h3>
-					<button class="add-btn-square">
-						<i data-lucide="plus"></i>
-					</button>
 				</div>
 				<div class="card box-content">
-					<div class="tags-container">
-						<span class="tag">React.js <i data-lucide="x"></i></span> <span
-							class="tag">Node.js <i data-lucide="x"></i></span> <span
-							class="tag">Python <i data-lucide="x"></i></span>
-						<button class="add-tag-btn">+ Ajouter</button>
+				<div class="tags-container" >
+					<div th:data-value="${competence.value}" class="competence-container" th:each="competence : ${userProfile.profile.competencies}">
+						<span class="tag"><span th:text="${competence.value}"></span> <i data-lucide="x"></i> </span>
 					</div>
+					<button id="competencies" class="add-tag-btn">+ Ajouter</button>
+				</div>
 				</div>
 			</div>
 
@@ -188,16 +191,10 @@
 				</div>
 				<div class="card box-content">
 					<div class="interests-container">
-						<div class="interest-item">
-							<i data-lucide="camera"></i> <span>Photographie</span>
+						<div th:data-value="${hobby.value}" class="interest-item" th:each="hobby : ${userProfile.profile.interests}" >
+							 <span th:text="${hobby.value}"></span><i class="delete-hobby" data-lucide="x"></i>
 						</div>
-						<div class="interest-item">
-							<i data-lucide="basketball"></i> <span>Basketball</span>
-						</div>
-						<div class="interest-item">
-							<i data-lucide="plane"></i> <span>Voyages</span>
-						</div>
-						<button class="add-tag-btn">+ Ajouter</button>
+						<button id="loisir" class="add-tag-btn">+ Ajouter</button>
 					</div>
 				</div>
 			</div>
@@ -218,6 +215,58 @@
 			</div>
 		</section>
 	</main>
+	
+	<div id="editHobbyModal">
+		<div class="modal-card card">
+			<div class="modal-header">
+				<h3>Ajouter un loisir</h3>
+				<button id=closeHobbyEditModal aria-label="Fermer">✕</button>
+			</div>
+			<div class="modal-body">
+				<form th:action="@{/user/hobby}" method="post"
+					class="event-form">
+					<div class="input-group">
+						<label for="hobbiesName">Nom du loisir</label>
+						<div class="input-wrapper">
+							<input id="hobbiesName" type="text" name="hobbiesName"
+								placeholder="Nom de du loisir" required />
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn-event-submit">Ajouter</button>
+					</div>
+				</form>
+
+			</div>
+
+		</div>
+	</div>
+	
+	<div id="editCompetenciesModal">
+		<div class="modal-card card">
+			<div class="modal-header">
+				<h3>Ajouter une compétence</h3>
+				<button id="closeCompetenciesEditModal" aria-label="Fermer">✕</button>
+			</div>
+			<div class="modal-body">
+				<form th:action="@{/user/competencies}" method="post"
+					class="event-form">
+					<div class="input-group">
+						<label for="competenceName">Nom de compétence</label>
+						<div class="input-wrapper">
+							<input id="competenceName" type="text" name="competenceName"
+								placeholder="Compétence" required />
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn-competence-submit">Ajouter</button>
+					</div>
+				</form>
+
+			</div>
+
+		</div>
+	</div>
 
 	<div id="editEventModal">
 		<div class="modal-card card">
