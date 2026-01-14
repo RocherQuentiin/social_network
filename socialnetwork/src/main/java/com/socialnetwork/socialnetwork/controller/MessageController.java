@@ -171,4 +171,15 @@ public class MessageController {
         messageService.markAsRead(messageId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    
+    @GetMapping("/unread-count")
+    public ResponseEntity<Long> getUnreadCount(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        UUID userId = UUID.fromString(session.getAttribute("userId").toString());
+        
+        ResponseEntity<List<Message>> unreadMessages = messageService.getUnreadMessages(userId);
+        long count = unreadMessages.getBody().size();
+        
+        return new ResponseEntity<>(count, HttpStatus.OK);
+    }
 }

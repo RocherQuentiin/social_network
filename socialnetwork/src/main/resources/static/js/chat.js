@@ -118,6 +118,10 @@ function selectConversation(conversation) {
             currentConversationSubscription = stompClient.subscribe('/topic/conversation/' + currentConversationId, function(message) {
                 const msg = JSON.parse(message.body);
                 displayMessage(msg, true);
+                // Update badge when receiving new message
+                if (typeof updateUnreadMessagesBadge === 'function') {
+                    updateUnreadMessagesBadge();
+                }
             });
         }
     } catch (error) {
@@ -247,6 +251,10 @@ async function sendMessage() {
 async function markMessageAsRead(messageId) {
     try {
         await fetch(`/api/messages/${messageId}/read`, { method: 'POST' });
+        // Update badge after marking as read
+        if (typeof updateUnreadMessagesBadge === 'function') {
+            updateUnreadMessagesBadge();
+        }
     } catch (error) {
         console.error('Error marking message as read:', error);
     }
