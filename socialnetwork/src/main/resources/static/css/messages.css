@@ -176,6 +176,41 @@
     content: "📁 ";
 }
 
+/* Project Groups Header */
+.project-groups-header {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-secondary);
+}
+
+.project-groups-header select {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+.btn-create-group {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #10b981;
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.btn-create-group:hover {
+    background: #059669;
+    transform: scale(1.05);
+}
+
 /* ==========================================
    SEARCH BOX
 ========================================== */
