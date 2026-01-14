@@ -3,7 +3,30 @@
 document.addEventListener('DOMContentLoaded', function() {
     displayUserName();
     loadPublicProjects();
+    setupEventListeners();
 });
+
+function setupEventListeners() {
+    // Close join modal
+    const closeJoinModal = document.getElementById('closeJoinModal');
+    if (closeJoinModal) {
+        closeJoinModal.addEventListener('click', () => closeModal('joinProjectModal'));
+    }
+
+    // Join project form submission
+    const joinForm = document.getElementById('joinProjectForm');
+    if (joinForm) {
+        joinForm.addEventListener('submit', handleJoinProject);
+    }
+
+    // Close modal when clicking outside
+    window.addEventListener('click', (event) => {
+        const modal = document.getElementById('joinProjectModal');
+        if (event.target == modal) {
+            modal.classList.remove('active');
+        }
+    });
+}
 
 function displayUserName() {
     const userName = window.userName;
@@ -80,21 +103,96 @@ function createProjectCard(project) {
     const description = project.description || 'Aucune description';
     const createdAt = formatDate(project.createdAt);
 
+    let skillsHTML = '';
+    if (project.skills && project.skills.length > 0) {
+        skillsHTML = `
+            <div class="project-skills">
+                <div class="skills-section">
+                    <strong>Compétences recherchées</strong>
+                    <div class="skills-list">
+                        ${project.skills.map(skill => `<span class="skill-badge">${escapeHtml(skill.skillName)}</span>`).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     card.innerHTML = `
-        <div class="project-header">
-            <h3>${escapeHtml(project.name)}</h3>
-            <span class="visibility-badge visibility-${project.visibilityType.toLowerCase()}">${visibilityLabel}</span>
-        </div>
-        <p class="project-description">${escapeHtml(description)}</p>
-        <div class="project-footer">
-            <span class="project-date">
+        <h3>${escapeHtml(project.name)}</h3>
+        <p class="description">${escapeHtml(description)}</p>
+        <span class="visibility">${visibilityLabel}</span>
+        ${skillsHTML}
+        <div class="metadata">
+            <span>
                 <i data-lucide="calendar"></i>
                 ${createdAt}
             </span>
         </div>
+        <div class="actions">
+            <button class="btn-small btn-members" onclick="openJoinModal('${project.id}', '${escapeHtml(project.name)}', '${escapeHtml(description)}')">Rejoindre</button>
+        </div>
     `;
 
     return card;
+}
+
+function openJoinModal(projectId, projectName, projectDescription) {
+    document.getElementById('joinProjectId').value = projectId;
+    document.getElementById('joinProjectName').textContent = projectName;
+    document.getElementById('joinProjectDesc').textContent = projectDescription;
+    document.getElementById('joinMessage').value = '';
+    document.getElementById('joinProjectModal').classList.add('active');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+}
+
+async function handleJoinProject(e) {
+    e.preventDefault();
+    
+    const projectId = document.getElementById('joinProjectId').value;
+    const message = document.getElementById('joinMessage').value.trim();
+
+    if (!projectId) {
+        showAlert('Projet introuvable', 'error');
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/project/${projectId}/request`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                message: message,
+                skillName: null
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.text();
+            if (response.status === 409) {
+                showAlert('Vous êtes déjà membre de ce projet ou avez déjà demandé à rejoindre', 'info');
+            } else {
+                showAlert(errorData || 'Erreur lors de l\'envoi de la demande', 'error');
+            }
+            return;
+        }
+
+        showAlert('Demande d\'adhésion envoyée avec succès!', 'success');
+        closeModal('joinProjectModal');
+        
+        // Reload projects
+        setTimeout(() => {
+            loadPublicProjects();
+        }, 1500);
+    } catch (error) {
+        console.error('Error joining project:', error);
+        showAlert('Erreur lors de l\'envoi de la demande', 'error');
+    }
 }
 
 function getVisibilityLabel(visibility) {

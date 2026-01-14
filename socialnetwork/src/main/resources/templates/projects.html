@@ -14,7 +14,7 @@
     <div th:replace="~{fragments/header :: header-fragment}"></div>
     
     <!-- Hidden element to pass user ID to JavaScript -->
-    <div th:attr="data-current-user-id=${isConnect}" style="display:none;"></div>
+    <div th:attr="data-current-user-id=${currentUserId}" style="display:none;"></div>
     
     <div class="projects-container">
         <h1>Gestion des Projets</h1>
@@ -27,6 +27,14 @@
             <h2>Mes projets</h2>
             <div id="user-projects" class="projects-list">
                 <!-- Projects will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Public Projects (Discover) -->
+        <section class="projects-section">
+            <h2>Projets publics</h2>
+            <div id="public-projects" class="projects-list">
+                <!-- Public projects will be loaded here -->
             </div>
         </section>
         
@@ -53,6 +61,11 @@
                             <option value="FRIENDS">Amis</option>
                             <option value="PRIVATE">Privé</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectSkills">Compétences recherchées (optionnel)</label>
+                        <input type="text" id="projectSkills" name="skills" placeholder="Ex: Java, Spring Boot, React...">
+                        <small>Séparez les compétences par des virgules</small>
                     </div>
                     <button type="submit" class="btn-primary">Créer</button>
                 </form>
@@ -86,6 +99,12 @@
                     </div>
                     <button type="submit" class="btn-primary">Modifier</button>
                 </form>
+
+                <div class="modal-divider" style="margin: 1rem 0; border-top: 1px solid var(--border-subtle);"></div>
+                <div class="modal-body">
+                    <h4 style="margin-bottom: .5rem;">Membres du projet</h4>
+                    <div id="editMembersList" class="members-list"></div>
+                </div>
             </div>
         </div>
 
@@ -99,24 +118,73 @@
                 <div id="membersList" class="members-list">
                     <!-- Members will be loaded here -->
                 </div>
-                <div id="addMemberSection" class="add-member-section">
-                    <h4>Ajouter un membre</h4>
-                    <form id="addMemberForm">
-                        <input type="hidden" id="addMemberProjectId" name="projectId">
-                        <div class="form-group">
-                            <label for="memberUserId">Utilisateur</label>
-                            <select id="memberUserId" name="userId" required>
-                                <option value="">Sélectionner un utilisateur</option>
-                            </select>
+            </div>
+        </div>
+
+        <!-- Project Requests Modal -->
+        <div id="projectRequestsModal" class="modal">
+            <div class="modal-card card">
+                <div class="modal-header">
+                    <h3>Demandes pour rejoindre</h3>
+                    <button id="closeRequestsModal" aria-label="Fermer">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div id="requestsList" class="members-list">
+                        <!-- Requests will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transfer Ownership Modal -->
+        <div id="transferOwnershipModal" class="modal">
+            <div class="modal-card card">
+                <div class="modal-header">
+                    <h3>Quitter le projet</h3>
+                    <button id="closeTransferModal" aria-label="Fermer">✕</button>
+                </div>
+                <div class="modal-body">
+                    <p>En tant que propriétaire, vous avez deux options :</p>
+                    
+                    <div class="leave-project-option">
+                        <h4>Option 1: Transférer la propriété</h4>
+                        <p>Transférez la propriété à un autre membre et quittez le projet.</p>
+                        <p>Sélectionnez un membre du projet :</p>
+                        <div id="transferMembersList" class="leave-project-members-list"></div>
+                    </div>
+                    
+                    <div class="leave-project-option leave-project-delete">
+                        <h4>Option 2: Supprimer le projet</h4>
+                        <p>Supprimer définitivement le projet et tous ses contenus.</p>
+                        <div class="transfer-actions">
+                            <button id="deleteProjectBtn" class="btn-delete">Supprimer</button>
+                            <button id="closeTransferModal" class="btn-ghost">Annuler</button>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Join Project Modal -->
+        <div id="joinProjectModal" class="modal">
+            <div class="modal-card card">
+                <div class="modal-header">
+                    <h3>Rejoindre le projet</h3>
+                    <button id="closeJoinModal" aria-label="Fermer">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div style="margin-bottom: 1rem;">
+                        <h4 id="joinProjectName" style="margin: 0 0 0.5rem 0; color: var(--text-main);"></h4>
+                        <p id="joinProjectDesc" style="margin: 0; color: var(--text-dim); font-size: 0.9rem;"></p>
+                    </div>
+                    <form id="joinProjectForm">
+                        <input type="hidden" id="joinProjectId" name="projectId">
                         <div class="form-group">
-                            <label for="memberRole">Rôle</label>
-                            <select id="memberRole" name="role" required>
-                                <option value="MEMBER">Membre</option>
-                                <option value="ADMIN">Administrateur</option>
-                            </select>
+                            <label for="joinMessage">Message (optionnel)</label>
+                            <textarea id="joinMessage" name="message" placeholder="Expliquez pourquoi vous souhaitez rejoindre ce projet..."></textarea>
+                            <small>Votre message sera visible par les responsables du projet</small>
                         </div>
-                        <button type="submit" class="btn-primary">Ajouter</button>
+                        <button type="submit" class="btn-primary">Envoyer une demande</button>
                     </form>
                 </div>
             </div>
