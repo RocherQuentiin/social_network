@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projets publics</title>
+    <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/project.css}">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div th:replace="~{fragments/header :: header-fragment}"></div>
+    
+    <div class="projects-container">
+        <h1>Projets publics de <span id="user-name"></span></h1>
+        
+        <section class="projects-section">
+            <div id="user-public-projects" class="projects-list">
+                <!-- Projects will be loaded here -->
+            </div>
+        </section>
+    </div>
+
+    <!-- Join Project Modal -->
+    <div id="joinProjectModal" class="modal">
+        <div class="modal-card card">
+            <div class="modal-header">
+                <h3>Rejoindre le projet</h3>
+                <button id="closeJoinModal" aria-label="Fermer">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 1rem;">
+                    <h4 id="joinProjectName" style="margin: 0 0 0.5rem 0; color: var(--text-main);"></h4>
+                    <p id="joinProjectDesc" style="margin: 0; color: var(--text-dim); font-size: 0.9rem;"></p>
+                </div>
+                <form id="joinProjectForm">
+                    <input type="hidden" id="joinProjectId" name="projectId">
+                    <div class="form-group">
+                        <label for="joinMessage">Message (optionnel)</label>
+                        <textarea id="joinMessage" name="message" placeholder="Expliquez pourquoi vous souhaitez rejoindre ce projet..."></textarea>
+                        <small>Votre message sera visible par les responsables du projet</small>
+                    </div>
+                    <button type="submit" class="btn-primary">Envoyer une demande</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/userPublicProjects.js}"></script>
+    <script>
+        // Pass viewed user ID to JavaScript
+        window.viewedUserId = '[[${userId}]]';
+        window.userName = '[[${userName}]]';
+        window.currentUserId = '[[${currentUserId}]]';
+        
+        // Initialize lucide icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    </script>
+    <div th:replace="~{fragments/footer :: footer-fragment}"></div>
+</body>
+</html>
