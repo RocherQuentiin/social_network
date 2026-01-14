@@ -24,7 +24,7 @@
             <div class="sidebar-header">
                 <h2>Messages</h2>
                 <button class="btn-new-conversation" id="newMessageBtn" title="Nouvelle conversation">
-                    <i data-lucide="plus"></i>
+                    <i class="fas fa-plus"></i>
                 </button>
             </div>
 
@@ -41,7 +41,7 @@
         <main class="chat-area">
             <div id="noChatSelected" class="empty-state">
                 <div class="empty-icon">
-                    <i data-lucide="message-circle"></i>
+                    <i class="fas fa-comment-dots"></i>
                 </div>
                 <h3>Aucune conversation sélectionnée</h3>
                 <p>Sélectionnez une conversation ou commencez une nouvelle discussion</p>
@@ -63,7 +63,7 @@
                 <div class="message-input-area">
                     <textarea id="messageInput" placeholder="Écrivez votre message..." rows="2" class="message-textarea"></textarea>
                     <button id="sendMessageBtn" class="btn-send primary">
-                        <i data-lucide="send"></i> Envoyer
+                        <i class="fas fa-paper-plane"></i> Envoyer
                     </button>
                 </div>
             </div>
@@ -92,7 +92,7 @@
             <div class="modal-header">
                 <h2>Nouvelle conversation</h2>
                 <button class="btn-modal-close" id="closeModalBtn">
-                    <i data-lucide="x"></i>
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
 
@@ -101,7 +101,7 @@
                     <label for="userSearch">Chercher un utilisateur</label>
                     <div class="search-wrapper">
                         <input type="text" id="userSearch" placeholder="Nom, email ou @username..." class="input-field">
-                        <i data-lucide="search" class="search-icon"></i>
+                        <i class="fas fa-search search-icon"></i>
                     </div>
                     <div id="userSearchResults" class="search-results"></div>
                 </div>
@@ -110,8 +110,5 @@
     </div>
 
     <script th:src="@{/js/chat.js}"></script>
-    <script>
-        lucide.createIcons();
-    </script>
 </body>
 </html>
