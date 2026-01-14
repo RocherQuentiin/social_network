@@ -440,7 +440,7 @@ function displaySuggestionRequests(requests) {
 	const container = document.getElementById('suggestions-container');
 	if (!container) return;
 
-	if (requests.length) {
+	if (Object.keys(requests).length == 0) {
 		container.innerHTML = '<p>Pas de suggestions.</p>';
 		return;
 	}

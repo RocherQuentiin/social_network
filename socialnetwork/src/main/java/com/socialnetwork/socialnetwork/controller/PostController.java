@@ -53,8 +53,9 @@ public class PostController {
     }
     
     @PostMapping("/post")
-	public String handleCreatePost(Model model, HttpServletRequest request, @RequestParam("content") String content, @RequestParam("postVideoUrl") MultipartFile postVideoUrl, @RequestParam("postImageUrl") MultipartFile postImageUrl, @RequestParam(value = "visibilityType", required = false) String visibilityTypeStr, @RequestParam(value = "allowComments", required = false) String[] allowCommentsValues) {
-		HttpSession session = request.getSession(false);
+	public String handleCreatePost(Model model, HttpServletRequest request, @RequestParam("content") String content, @RequestParam("postVideoUrl") MultipartFile postVideoUrl, @RequestParam("postImageUrl") MultipartFile postImageUrl, @RequestParam("postFileUrl") MultipartFile postFileUrl, @RequestParam(value = "visibilityType", required = false) String visibilityTypeStr, @RequestParam(value = "allowComments", required = false) String[] allowCommentsValues) {
+		System.out.println("post" + postFileUrl);
+    	HttpSession session = request.getSession(false);
 		if (session == null || session.getAttribute("userId") == null) {
 			return "login";
 		}
@@ -117,6 +118,23 @@ public class PostController {
 				imageMedia.setUser(author.getBody());
 				
 				this.mediaService.create(imageMedia);
+			}
+			
+			if(postFileUrl != null && !postFileUrl.isEmpty()) {
+				System.out.println("postFile  : " + postFileUrl);
+				String uploadFileUrl = FileUpload.UploadFile(postFileUrl);
+				long fileSize = postFileUrl.getSize();
+				String extensionFile = postFileUrl.getContentType();
+				
+				Media fileMedia = new Media();
+				fileMedia.setFileSize(fileSize);
+				fileMedia.setFileUrl(uploadFileUrl);
+				fileMedia.setMediaType(MediaType.DOCUMENT);
+				fileMedia.setMimeType(extensionFile);
+				fileMedia.setPost(savePost);
+				fileMedia.setUser(author.getBody());
+				
+				this.mediaService.create(fileMedia);
 			}
 			
 			

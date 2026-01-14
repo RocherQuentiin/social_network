@@ -80,11 +80,23 @@
 								title="Vidéo">
 								<i data-lucide="video"></i>
 							</button>
+							
+							<button id="postFile" type="button" class="btn-icon-upload"
+								onclick="document.getElementById('postFileUrl').click()"
+								title="Fichier">
+								<i data-lucide="file"></i>
+							</button>
 
 							<input type="file" id="postImageUrl" name="postImageUrl"
-								accept="image/*" style="display: none;"> <input
+								accept="image/*" style="display: none;"> 
+								
+							<input
 								type="file" id="postVideoUrl" name="postVideoUrl"
 								accept=".mp4, .avi" style="display: none;">
+								
+							<input
+								type="file" id="postFileUrl" name="postFileUrl"
+								accept=".pdf,.html,.htm,.doc,.docx,.xls,.xlsx" style="display: none;">
 
 							<div class="vertical-divider"></div>
 
@@ -162,6 +174,11 @@
 									controls class="video-fluid rounded">
 									<source th:src="@{${pm.fileUrl}}" type="video/mp4">
 								</video>
+								
+								<a th:if="${pm.mediaType.toString().equals('DOCUMENT')}"
+									th:href="@{${pm.fileUrl}}" >Télécharger</a>
+									
+								
 							</div>
 						</div>
 					</div>
@@ -206,6 +223,7 @@
 							<div class="comment-input-wrapper">
 								<textarea class="comment-input"
 									placeholder="Ajouter un commentaire..." rows="1"></textarea>
+								
 								<button class="btn-send-comment">
 									<i data-lucide="send"></i>
 								</button>
