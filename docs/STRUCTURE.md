@@ -30,7 +30,7 @@ This document describes the repository layout and a suggested split of responsib
 
 - Controllers expose HTTP endpoints and delegate to services for business logic.
 - Services coordinate domain logic and use repositories to persist entities.
-- Thymeleaf templates render server-side HTML; Javascript in `static/js` adds interactivity (charts, modals).
+- Thymeleaf templates render server-side HTML; JavaScript in `static/js` adds interactivity (charts, modals).
 - The `admin` pages interact with dedicated endpoints under `/admin/*` and require `ADMIN` role.
 
 ## Suggested team responsibility split
