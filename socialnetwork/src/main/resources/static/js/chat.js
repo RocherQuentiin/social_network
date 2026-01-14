@@ -471,16 +471,25 @@ async function startConversation(userId) {
 function formatTime(dateString) {
     const date = new Date(dateString);
     const now = new Date();
-    const diffTime = Math.abs(now - date);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    // Reset time to midnight for date comparison
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const messageDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    
+    const diffTime = today - messageDate;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     
     if (diffDays === 0) {
+        // Today - show time
         return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     } else if (diffDays === 1) {
+        // Yesterday
         return 'Hier';
     } else if (diffDays < 7) {
+        // Within a week - show days ago
         return diffDays + 'j';
     } else {
+        // Older - show date
         return date.toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' });
     }
 }
