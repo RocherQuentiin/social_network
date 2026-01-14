@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -29,6 +31,7 @@ import com.socialnetwork.socialnetwork.business.interfaces.service.IEventService
 import com.socialnetwork.socialnetwork.business.interfaces.service.IFollowService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IMailService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IPostService;
+import com.socialnetwork.socialnetwork.business.interfaces.service.IProjectService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IPrivacySettingsService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IProfileService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IRecommandationService;
@@ -65,8 +68,9 @@ public class UserController {
 	private final IFollowService followService;
 	private final IEventService eventService;
 	private final IRecommandationService recommandationService;
-	
-	public UserController(IUserService userService, IRecommandationService recommandationService,  IEventService eventService, IMailService mailService, IFollowService followService, IPostService postService, ITokenService tokenService, IProfileService profileService, IPrivacySettingsService privacySettingsService) {
+	private final IProjectService projectService;
+
+	public UserController(IUserService userService, IRecommandationService recommandationService,  IEventService eventService, IMailService mailService, IFollowService followService, IPostService postService, ITokenService tokenService, IProfileService profileService, IPrivacySettingsService privacySettingsService, IProjectService projectService) {
 		this.userService = userService;
 		this.mailService = mailService;
 		this.tokenService = tokenService;
@@ -76,6 +80,7 @@ public class UserController {
 		this.followService = followService;
 		this.eventService = eventService;
 		this.recommandationService = recommandationService;
+		this.projectService = projectService;
 	}
 
     @GetMapping({"/", "/accueil"})
@@ -190,40 +195,56 @@ public class UserController {
     }
 
 	@GetMapping("/feed")
-	public String showFeed(Model model, HttpServletRequest request) {
-		model.addAttribute("name", "");
-		HttpSession session = request.getSession(false);
-		ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Paris"));
-		if (session != null && session.getAttribute("userId") != null) {
-			UUID userID = UUID.fromString(session.getAttribute("userId").toString());
-			model.addAttribute("isConnect", session.getAttribute("userId"));
-			model.addAttribute("name", this.userService.getName(userID));
-			
-			ResponseEntity<User> user = userService.getUserById(userID);
-			
-			model.addAttribute("userAvatar", user.getBody().getProfilePictureUrl());
-			
-			List<Post> posts = this.postService.getAllPostForConnectedUser(userID).getBody();
-			List<Event> events = this.eventService.getAllEventForConnectedUser(userID, now.toLocalDateTime()).getBody();
-			posts.sort(Comparator.comparing(Post::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed());
-			events.sort(Comparator.comparing(Event::getEventDate, Comparator.nullsLast(Comparator.naturalOrder())));
-			model.addAttribute("posts", posts);
-			model.addAttribute("events", events);
-		}
-		else {
-			// load posts ordered by createdAt desc
-			// pass session existence to template (optional)
-			List<Post> posts = this.postService.getAllPostVisibilityPublic().getBody();
-			List<Event> events = this.eventService.getAllEventVisibilityPublic().getBody().stream().filter(x -> x.getEventDate().isAfter(now.toLocalDateTime())).collect(Collectors.toList());
-			posts.sort(Comparator.comparing(Post::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed());
-			events.sort(Comparator.comparing(Event::getEventDate, Comparator.nullsLast(Comparator.naturalOrder())));
-			model.addAttribute("posts", posts);
-			model.addAttribute("events", events);
-		}
-		
+    public String showFeed(Model model, HttpServletRequest request) {
+        model.addAttribute("name", "");
+        HttpSession session = request.getSession(false);
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Paris"));
 
-		return "feed";
-	}
+        // On initialise des listes vides par défaut pour éviter que Thymeleaf ne plante
+        model.addAttribute("projects", new ArrayList<>());
+        model.addAttribute("publicProjects", new ArrayList<>());
+
+        if (session != null && session.getAttribute("userId") != null) {
+           UUID userID = UUID.fromString(session.getAttribute("userId").toString());
+           model.addAttribute("isConnect", session.getAttribute("userId"));
+           model.addAttribute("currentUserId", userID.toString()); // Indispensable pour tes boutons Éditer
+           model.addAttribute("name", this.userService.getName(userID));
+
+           ResponseEntity<User> user = userService.getUserById(userID);
+           model.addAttribute("userAvatar", user.getBody().getProfilePictureUrl());
+
+           // --- AJOUT DES PROJETS ICI ---
+           model.addAttribute("projects", this.projectService.getUserProjects(userID).getBody());
+           model.addAttribute("publicProjects", this.projectService.getPublicProjects().getBody());
+
+           // Chargement Posts et Events
+           List<Post> posts = this.postService.getAllPostForConnectedUser(userID).getBody();
+           List<Event> events = this.eventService.getAllEventForConnectedUser(userID, now.toLocalDateTime()).getBody();
+
+           posts.sort(Comparator.comparing(Post::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed());
+           events.sort(Comparator.comparing(Event::getEventDate, Comparator.nullsLast(Comparator.naturalOrder())));
+
+           model.addAttribute("posts", posts);
+           model.addAttribute("events", events);
+        }
+        else {
+           // Mode Public : seulement les projets publics
+           model.addAttribute("publicProjects", this.projectService.getPublicProjects().getBody());
+
+           List<Post> posts = this.postService.getAllPostVisibilityPublic().getBody();
+           List<Event> events = this.eventService.getAllEventVisibilityPublic().getBody().stream()
+                   .filter(x -> x.getEventDate().isAfter(now.toLocalDateTime()))
+                   .collect(Collectors.toList());
+
+           posts.sort(Comparator.comparing(Post::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed());
+           events.sort(Comparator.comparing(Event::getEventDate, Comparator.nullsLast(Comparator.naturalOrder())));
+
+           model.addAttribute("posts", posts);
+           model.addAttribute("events", events);
+        }
+
+        return "feed";
+    }
     
 	@GetMapping("/register")
 	public String showRegisterForm(HttpServletRequest request, Model model) {
