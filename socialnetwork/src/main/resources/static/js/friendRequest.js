@@ -451,7 +451,7 @@ function displaySuggestionRequests(requests) {
 	
 	Object.entries(requests).forEach(([key, value]) => {
 		var tabKey = key.split(" ");
-		var id = tabKey[0]
+		var id = tabKey[0];
 		var requesterName = tabKey[1] + " " + tabKey[2];
 
 		html += `
