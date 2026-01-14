@@ -3,6 +3,8 @@ package com.socialnetwork.socialnetwork.controller;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IProjectMessageService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IProjectService;
+import com.socialnetwork.socialnetwork.business.interfaces.service.IProjectMemberService;
+import com.socialnetwork.socialnetwork.business.utils.Utils;
 import com.socialnetwork.socialnetwork.dto.ProjectMessageDTO;
 import com.socialnetwork.socialnetwork.entity.ProjectMessage;
 import com.socialnetwork.socialnetwork.entity.ProjectMessageGroup;
@@ -26,13 +28,16 @@ public class ProjectMessageController {
     private final IProjectMessageService messageService;
     private final IUserService userService;
     private final IProjectService projectService;
+    private final IProjectMemberService projectMemberService;
     
     public ProjectMessageController(IProjectMessageService messageService, 
                                    IUserService userService,
-                                   IProjectService projectService) {
+                                   IProjectService projectService,
+                                   IProjectMemberService projectMemberService) {
         this.messageService = messageService;
         this.userService = userService;
         this.projectService = projectService;
+        this.projectMemberService = projectMemberService;
     }
     
     @PostMapping("/groups")
@@ -50,7 +55,30 @@ public class ProjectMessageController {
     }
     
     @GetMapping("/groups/{projectId}")
-    public ResponseEntity<List<ProjectMessageGroup>> getProjectMessageGroups(@PathVariable UUID projectId) {
+    public ResponseEntity<List<ProjectMessageGroup>> getProjectMessageGroups(
+            @PathVariable UUID projectId,
+            HttpServletRequest request) {
+        
+        // Check if user is authenticated
+        Object userIsConnected = Utils.validPage(request, true);
+        if (userIsConnected == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        UUID userId = UUID.fromString(userIsConnected.toString());
+        
+        // Check if project exists
+        ResponseEntity<Project> projectResponse = projectService.getProjectById(projectId);
+        if (projectResponse.getStatusCode() != HttpStatusCode.valueOf(200)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        
+        // Check if user is member of the project
+        ResponseEntity<?> memberResponse = projectMemberService.getUserRoleInProject(projectId, userId);
+        if (memberResponse.getStatusCode() != HttpStatus.OK) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        
         return messageService.getProjectMessageGroups(projectId);
     }
     
@@ -60,6 +88,12 @@ public class ProjectMessageController {
             @PathVariable UUID messageGroupId,
             @RequestParam String content) {
         
+        // Check if user is authenticated
+        Object userIsConnected = Utils.validPage(request, true);
+        if (userIsConnected == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
         HttpSession session = request.getSession();
         UUID senderId = UUID.fromString(session.getAttribute("userId").toString());
         
@@ -68,13 +102,21 @@ public class ProjectMessageController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         
-        ResponseEntity<ProjectMessage> message = messageService.sendProjectMessage(messageGroupId, sender.getBody(), content);
-        
-        if (message.getStatusCode() != HttpStatusCode.valueOf(201)) {
+        // Get the message group to find project ID
+        ResponseEntity<ProjectMessage> tempMessage = messageService.sendProjectMessage(messageGroupId, sender.getBody(), content);
+        if (tempMessage.getStatusCode() != HttpStatusCode.valueOf(201)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         
-        ProjectMessage msg = message.getBody();
+        ProjectMessage msg = tempMessage.getBody();
+        UUID projectId = msg.getMessageGroup().getProject().getId();
+        
+        // Check if user is member of the project
+        ResponseEntity<?> memberResponse = projectMemberService.getUserRoleInProject(projectId, senderId);
+        if (memberResponse.getStatusCode() != HttpStatus.OK) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        
         ProjectMessageDTO dto = new ProjectMessageDTO(
             msg.getId(),
             msg.getMessageGroup().getId(),
@@ -83,12 +125,38 @@ public class ProjectMessageController {
             msg.getContent()
         );
         
-        return new ResponseEntity<>(dto, message.getStatusCode());
+        return new ResponseEntity<>(dto, tempMessage.getStatusCode());
     }
     
     @GetMapping("/{messageGroupId}")
-    public ResponseEntity<List<ProjectMessageDTO>> getGroupMessages(@PathVariable UUID messageGroupId) {
+    public ResponseEntity<List<ProjectMessageDTO>> getGroupMessages(
+            @PathVariable UUID messageGroupId,
+            HttpServletRequest request) {
+        
+        // Check if user is authenticated
+        Object userIsConnected = Utils.validPage(request, true);
+        if (userIsConnected == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        UUID userId = UUID.fromString(userIsConnected.toString());
+        
         ResponseEntity<List<ProjectMessage>> response = messageService.getGroupMessages(messageGroupId);
+        
+        if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null || response.getBody().isEmpty()) {
+            // If no messages, we can't verify project membership, so return not found
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        
+        // Get the project ID from the first message's group
+        ProjectMessage firstMessage = response.getBody().get(0);
+        UUID projectId = firstMessage.getMessageGroup().getProject().getId();
+        
+        // Check if user is member of the project
+        ResponseEntity<?> memberResponse = projectMemberService.getUserRoleInProject(projectId, userId);
+        if (memberResponse.getStatusCode() != HttpStatus.OK) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         
         List<ProjectMessageDTO> dtos = response.getBody().stream()
             .map(msg -> new ProjectMessageDTO(
@@ -110,7 +178,16 @@ public class ProjectMessageController {
     }
     
     @GetMapping("/{messageGroupId}/unread-count")
-    public ResponseEntity<Long> getUnreadCount(@PathVariable UUID messageGroupId) {
+    public ResponseEntity<Long> getUnreadCount(
+            @PathVariable UUID messageGroupId,
+            HttpServletRequest request) {
+        
+        // Check if user is authenticated
+        Object userIsConnected = Utils.validPage(request, true);
+        if (userIsConnected == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
         long count = messageService.getUnreadCount(messageGroupId);
         return new ResponseEntity<>(count, HttpStatus.OK);
     }
