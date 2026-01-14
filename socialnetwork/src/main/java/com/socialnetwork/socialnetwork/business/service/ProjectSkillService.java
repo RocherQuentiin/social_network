@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectSkillService implements IProjectSkillService {
@@ -86,7 +87,7 @@ public class ProjectSkillService implements IProjectSkillService {
         List<Project> projects = skills.get().stream()
             .map(ProjectSkill::getProject)
             .distinct()
-            .toList();
+            .collect(Collectors.toList());
 
         return new ResponseEntity<>(projects, HttpStatus.OK);
     }

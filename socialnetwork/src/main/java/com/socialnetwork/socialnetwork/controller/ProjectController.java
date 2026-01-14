@@ -2,6 +2,7 @@ package com.socialnetwork.socialnetwork.controller;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -170,8 +171,7 @@ public class ProjectController {
         
         // Filter to keep only public projects
         List<Project> publicProjects = allProjects.getBody().stream()
-            .filter(project -> project.getVisibilityType() == VisibilityType.PUBLIC)
-            .toList();
+            .filter(project -> project.getVisibilityType() == VisibilityType.PUBLIC).collect(Collectors.toList());
         
         return ResponseEntity.ok(publicProjects);
     }
