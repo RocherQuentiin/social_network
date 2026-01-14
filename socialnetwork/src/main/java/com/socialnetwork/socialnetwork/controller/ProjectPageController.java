@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
+import com.socialnetwork.socialnetwork.business.interfaces.service.IProjectService;
 import com.socialnetwork.socialnetwork.business.utils.Utils;
 import com.socialnetwork.socialnetwork.entity.User;
 
@@ -20,9 +21,11 @@ import jakarta.servlet.http.HttpServletRequest;
 public class ProjectPageController {
 
     private final IUserService userService;
+    private final IProjectService projectService;
 
-    public ProjectPageController(IUserService userService) {
+    public ProjectPageController(IUserService userService, IProjectService projectService) {
         this.userService = userService;
+        this.projectService = projectService;
     }
 
     /**
@@ -39,10 +42,21 @@ public class ProjectPageController {
             return "redirect:/login";
         }
 
-        // Add user ID to model for JavaScript
-        model.addAttribute("currentUserId", userIsConnected.toString());
+        UUID userId = UUID.fromString(userIsConnected.toString());
 
-        return "projects";
+                // --- CHARGEMENT INSTANTANÉ DES DONNÉES ---
+                // On récupère les projets de l'utilisateur directement ici
+                ResponseEntity<?> userProjectsResponse = projectService.getUserProjects(userId);
+                model.addAttribute("projects", userProjectsResponse.getBody());
+
+                // On récupère les projets publics aussi si nécessaire
+                ResponseEntity<?> publicProjectsResponse = projectService.getPublicProjects();
+                model.addAttribute("publicProjects", publicProjectsResponse.getBody());
+
+                model.addAttribute("isConnect", userIsConnected);
+                model.addAttribute("currentUserId", userIsConnected.toString());
+
+                return "projects";
     }
 
     /**

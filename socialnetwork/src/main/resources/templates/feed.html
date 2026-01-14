@@ -1,343 +1,345 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fil d'actualité - ISEP Connect</title>
-<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
-<link rel="stylesheet" th:href="@{/css/header.css}">
-<link rel="stylesheet" th:href="@{/css/feed.css}">
-<script src="https://unpkg.com/lucide@latest"></script>
-<meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}" />
-<meta th:if="${_csrf != null}" name="_csrf_header"
-	th:content="${_csrf.headerName}" />
-<meta th:if="${session.userId != null}" name="userId"
-	th:content="${session.userId}" />
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/fr.min.js"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Fil d'actualité - ISEP Connect</title>
+	<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+	<link rel="stylesheet" th:href="@{/css/header.css}">
+	<link rel="stylesheet" th:href="@{/css/feed.css}">
+	<link rel="stylesheet" th:href="@{/css/project.css}">
+	<script src="https://unpkg.com/lucide@latest"></script>
+	<meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}" />
+	<meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}" />
+	<meta th:if="${session.userId != null}" name="userId" th:content="${session.userId}" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/fr.min.js"></script>
 </head>
 <body class="bg-dark">
 
-	<div th:replace="~{fragments/header :: header-fragment}"></div>
+<div th:replace="~{fragments/header :: header-fragment}"></div>
 
-	<div class="container blog-layout">
+<div class="container blog-layout">
 
-		<aside class="sidebar-left">
-			<div class="user-profile-card card">
-				<div class="profile-header">
-					<img th:src="@{${userAvatar}}" alt="Avatar" class="avatar-large">
-					<div class="profile-info">
-						<h4 th:text="${name}">Utilisateur</h4>
-						<span>Cycle Ingénieur • ISEP</span>
-					</div>
-				</div>
-				<div class="visibility-filters card-sub-section">
-					<p class="section-label">Affichage</p>
-					<div class="filter-group">
-						<label><input id="publicCheckbox" type="checkbox" checked>
-							<span class="dot public"></span> PUBLIC</label> <label><input
-							id="friendsCheckbox" type="checkbox" checked> <span
-							class="dot friends"></span> FRIENDS</label> <label><input
-							id="privateCheckbox" type="checkbox" checked> <span
-							class="dot private"></span> PRIVATE</label>
-					</div>
+	<aside class="sidebar-left">
+		<div class="user-profile-card card">
+			<div class="profile-header">
+				<img th:src="@{${userAvatar}}" alt="Avatar" class="avatar-large">
+				<div class="profile-info">
+					<h4 th:text="${name}">Utilisateur</h4>
+					<span>Cycle Ingénieur • ISEP</span>
 				</div>
 			</div>
-
-			<nav class="side-nav card">
-				<a href="#" class="nav-item active"><i data-lucide="home"></i>
-					Fil d'actualité</a> <a href="#" class="nav-item"><i
-					data-lucide="users"></i> Mes Groupes</a> <a href="#" class="nav-item"><i
-					data-lucide="message-square"></i> Messages</a> <a href="/messages"
-					class="nav-item"><i data-lucide="calendar"></i> Calendrier</a>
-				<hr>
-				<a href="#" class="nav-item"><i data-lucide="settings"></i>
-					Paramètres</a>
-			</nav>
-		</aside>
-
-		<main class="feed-main">
-			<div th:if="${session.userId != null}" class="publish-card card">
-				<form th:action="@{/post}" method="post"
-					enctype="multipart/form-data">
-					<div class="publish-top">
-						<img th:src="@{${userAvatar}}" class="avatar-small">
-						<div class="publish-input-area">
-							<textarea name="content" placeholder="Quoi de neuf ?" required></textarea>
-						</div>
-					</div>
-
-					<div class="publish-bottom">
-						<div class="media-inputs">
-							<button id="postImage" type="button" class="btn-icon-upload"
-								title="Image">
-								<i data-lucide="image"></i>
-							</button>
-							<button id="postVideo" type="button" class="btn-icon-upload"
-								onclick="document.getElementById('postVideoUrl').click()"
-								title="Vidéo">
-								<i data-lucide="video"></i>
-							</button>
-							
-							<button id="postFile" type="button" class="btn-icon-upload"
-								onclick="document.getElementById('postFileUrl').click()"
-								title="Fichier">
-								<i data-lucide="file"></i>
-							</button>
-
-							<input type="file" id="postImageUrl" name="postImageUrl"
-								accept="image/*" style="display: none;"> 
-								
-							<input
-								type="file" id="postVideoUrl" name="postVideoUrl"
-								accept=".mp4, .avi" style="display: none;">
-								
-							<input
-								type="file" id="postFileUrl" name="postFileUrl"
-								accept=".pdf,.html,.htm,.doc,.docx,.xls,.xlsx" style="display: none;">
-
-							<div class="vertical-divider"></div>
-
-							<div class="publish-options">
-								<select name="visibilityType" class="custom-select">
-									<option value="PUBLIC">Public</option>
-									<option value="FRIENDS">Amis</option>
-									<option value="PRIVATE">Privé</option>
-								</select> <label class="checkbox-label"> <input type="checkbox"
-									name="allowComments" value="true" checked /> <span>Commentaires</span>
-								</label>
-							</div>
-						</div>
-						<button type="submit" class="btn-primary">Publier</button>
-					</div>
-				</form>
-			</div>
-
-			<div class="publish-options">
-				<select id="preferences" name="preferences" class="custom-select">
-					<option value="Date">Date</option>
-					<option value="Popularité">Popularité</option>
-					<option value="Commentaires">Commentaires</option>
-				</select>
-
-			</div>
-
-			<div class="search-bar-wrapper">
-				<div class="search-input-group">
-					<i data-lucide="search"></i> <input id="post-search" type="text"
-						name="query" placeholder="Rechercher post">
+			<div class="visibility-filters card-sub-section">
+				<p class="section-label">Affichage</p>
+				<div class="filter-group">
+					<label><input id="publicCheckbox" type="checkbox" checked> <span class="dot public"></span> PUBLIC</label>
+					<label><input id="friendsCheckbox" type="checkbox" checked> <span class="dot friends"></span> FRIENDS</label>
+					<label><input id="privateCheckbox" type="checkbox" checked> <span class="dot private"></span> PRIVATE</label>
 				</div>
 			</div>
+		</div>
 
-			<div class="posts-list">
-				<article th:each="post : ${posts}" class="post-card card"
-					th:attr="data-post-card-id=${post.id}, data-post-createdAt=${post.createdAt}, data-auhtor-lastname=${post.author.lastName}, data-author-firstName=${post.author.lastName}, data-post-content=${post.content},  data-post-visibility=${post.visibilityType}">
+		<nav class="side-nav card">
+			<a href="#" class="nav-item active" id="showPosts"><i data-lucide="home"></i> Fil d'actualité</a>
+			<a href="#" class="nav-item" id="showEvents"><i data-lucide="megaphone"></i> Annonces</a>
+			<a href="#" class="nav-item" id="showProjects"><i data-lucide="message-square"></i> Projets</a>
+			<a href="#" class="nav-item"><i data-lucide="calendar"></i> Calendrier</a>
+			<hr>
+			<a href="/privacy" class="nav-item"><i data-lucide="settings"></i> Paramètres</a>
+		</nav>
+	</aside>
 
-					<div class="post-header">
-						<img th:src="@{${post.author.profilePictureUrl}}"
-							class="avatar-small">
-						<div class="post-meta">
-							<strong th:text="${post.author.username}">Auteur</strong>
-							<div class="post-sub-meta">
-								<span class="post-date"
-									th:attr="data-timestamp=${post.createdAt}"></span> <span
-									class="vis-badge" th:text="${post.visibilityType}"></span>
-							</div>
-						</div>
-
-						<div class="post-actions"
-							th:if="${isConnect != null and isConnect.toString() == post.author.id.toString()}">
-							<button type="button" class="btn-icon"
-								th:attr="data-post-id=${post.id}"
-								onclick="openEditModalFromButton(this)">
-								<i data-lucide="edit-2"></i>
-							</button>
-							<button type="button" class="btn-icon btn-delete"
-								th:attr="data-post-id=${post.id}">
-								<i data-lucide="trash-2"></i>
-							</button>
-						</div>
+	<main class="feed-main">
+		<div th:if="${session.userId != null}" class="publish-card card" id="publishArea">
+			<form th:action="@{/post}" method="post" enctype="multipart/form-data">
+				<div class="publish-top">
+					<img th:src="@{${userAvatar}}" class="avatar-small">
+					<div class="publish-input-area">
+						<textarea name="content" placeholder="Quoi de neuf ?" required></textarea>
 					</div>
-
-					<div class="post-content">
-						<p th:text="${post.content}">Contenu...</p>
-
-						<div class="post-media-container"
-							th:if="${not #lists.isEmpty(post.medias)}">
-							<div th:each="pm : ${post.medias}" class="media-item">
-								<img th:if="${pm.mediaType.toString().equals('IMAGE')}"
-									th:src="@{${pm.fileUrl}}" class="img-fluid rounded">
-
-								<video th:if="${pm.mediaType.toString().equals('VIDEO')}"
-									controls class="video-fluid rounded">
-									<source th:src="@{${pm.fileUrl}}" type="video/mp4">
-								</video>
-								
-								<a th:if="${pm.mediaType.toString().equals('DOCUMENT')}"
-									th:href="@{${pm.fileUrl}}" download>Télécharger</a>
-									
-								
-							</div>
-						</div>
-					</div>
-
-					<div class="post-footer">
-						<div class="reactions-bar" th:attr="data-post-id=${post.id}">
-							<button class="reaction-btn" data-type="LIKE">
-								<span class="emoji">👍</span><span class="count">0</span>
-							</button>
-							<button class="reaction-btn" data-type="LOVE">
-								<span class="emoji">❤️</span><span class="count">0</span>
-							</button>
-							<button class="reaction-btn" data-type="HAHA">
-								<span class="emoji">😂</span><span class="count">0</span>
-							</button>
-							<button class="reaction-btn" data-type="WOW">
-								<span class="emoji">😮</span><span class="count">0</span>
-							</button>
-							<button class="reaction-btn" data-type="SAD">
-								<span class="emoji">😢</span><span class="count">0</span>
-							</button>
-							<button class="reaction-btn" data-type="ANGRY">
-								<span class="emoji">😠</span><span class="count">0</span>
-							</button>
-							<span class="reaction-total">0 réactions</span>
-						</div>
-						<button class="action-btn btn-toggle-comments"
-							th:if="${post.allowComments}" th:attr="data-post-id=${post.id}">
-							<i data-lucide="message-circle"></i> <span class="comment-count">0</span>
-						</button>
-						<button class="action-btn btn-share">
-							<i data-lucide="share-2"></i>
-						</button>
-					</div>
-
-					<div class="comments-section" th:if="${post.allowComments}"
-						th:attr="data-post-id=${post.id}" style="display: none;">
-						<div class="comment-form">
-							<img
-								th:src="@{${session.userId != null ? userAvatar : '/img/default-avatar.png'}}"
-								class="avatar-tiny">
-							<div class="comment-input-wrapper">
-								<textarea class="comment-input"
-									placeholder="Ajouter un commentaire..." rows="1"></textarea>
-								
-								<button class="btn-send-comment">
-									<i data-lucide="send"></i>
-								</button>
-							</div>
-						</div>
-						<div class="comments-list"></div>
-					</div>
-				</article>
-			</div>
-		</main>
-
-		<aside class="sidebar-right">
-			<div class="search-bar-wrapper">
-				<div class="search-input-group">
-					<i data-lucide="search"></i> <input id="event-search" type="text"
-						name="query" placeholder="Rechercher evenements">
 				</div>
-			</div>
-
-			<div class="announcement-part card" th:each="event : ${events}"
-				th:event-id="${event.id}"
-				th:attr="data-creator-firstname=${event.creator.firstName}, data-creator-lastname=${event.creator.lastName}, data-event-name=${event.name}, data-event-location=${event.location}, data-event-visibility=${event.visibilityType}">
-				<div class="announcement-title">
-					<h5>
-						<i data-lucide="megaphone" style="color: var(- -primary)"></i>
-						Annonces
-					</h5>
-				</div>
-				<div class="announcement-item">
-					<h6 th:text="${event.name}">Inscriptions S2</h6>
-					<div class="event-actions"
-						th:if="${isConnect != null and isConnect.toString() == event.creator.id.toString()}">
-						<button type="button" class="btn-icon eventAction"
-							th:attr="event-id=${event.id}">
-							<i data-lucide="edit-2"></i>
-						</button>
+				<div class="publish-bottom">
+					<div class="media-inputs">
+						<button id="postImage" type="button" class="btn-icon-upload" title="Image"><i data-lucide="image"></i></button>
+						<button id="postVideo" type="button" class="btn-icon-upload" onclick="document.getElementById('postVideoUrl').click()" title="Vidéo"><i data-lucide="video"></i></button>
+						<input type="file" id="postImageUrl" name="postImageUrl" accept="image/*" style="display: none;">
+						<input type="file" id="postVideoUrl" name="postVideoUrl" accept=".mp4, .avi" style="display: none;">
+						<div class="vertical-divider"></div>
+						<div class="publish-options">
+							<select name="visibilityType" class="custom-select">
+								<option value="PUBLIC">Public</option>
+								<option value="FRIENDS">Amis</option>
+								<option value="PRIVATE">Privé</option>
+							</select>
+							<label class="checkbox-label"> <input type="checkbox" name="allowComments" value="true" checked /> <span>Commentaires</span></label>
+						</div>
 					</div>
-					<p>
-						<span class="event-date-period"
-							th:attr="data-timestamp=${event.eventDate}"></span> <span
-							th:text="${event.visibilityType}"></span>
-					</p>
-					<p>
-						Situé à <span th:text="${event.location}"></span> avec une
-						capacité de <span th:text="${event.capacity}"></span>
-					</p>
+					<button type="submit" class="btn-primary">Publier</button>
 				</div>
-			</div>
+			</form>
+		</div>
 
-		</aside>
-	</div>
+		<div class="posts-list" id="postsContainer">
+			<article th:each="post : ${posts}" class="post-card card" th:attr="data-post-card-id=${post.id}, data-post-visibility=${post.visibilityType}">
+				<div class="post-header">
+					<img th:src="@{${post.author.profilePictureUrl}}" class="avatar-small">
+					<div class="post-meta">
+						<strong th:text="${post.author.username}">Auteur</strong>
+						<div class="post-sub-meta">
+							<span class="post-date" th:attr="data-timestamp=${post.createdAt}"></span> <span class="vis-badge" th:text="${post.visibilityType}"></span>
+						</div>
+					</div>
+					<div class="post-actions" th:if="${isConnect != null and isConnect.toString() == post.author.id.toString()}">
+						<button type="button" class="btn-icon" th:attr="data-post-id=${post.id}" onclick="openEditModalFromButton(this)"><i data-lucide="edit-2"></i></button>
+						<button type="button" class="btn-icon btn-delete" th:attr="data-post-id=${post.id}"><i data-lucide="trash-2"></i></button>
+					</div>
+				</div>
+				<div class="post-content">
+					<p th:text="${post.content}">Contenu...</p>
+					<div class="post-media-container" th:if="${not #lists.isEmpty(post.medias)}">
+						<div th:each="pm : ${post.medias}" class="media-item">
+							<img th:if="${pm.mediaType.toString().equals('IMAGE')}" th:src="@{${pm.fileUrl}}" class="img-fluid rounded">
+							<video th:if="${pm.mediaType.toString().equals('VIDEO')}" controls class="video-fluid rounded"><source th:src="@{${pm.fileUrl}}" type="video/mp4"></video>
+						</div>
+					</div>
+				</div>
+				<div class="post-footer">
+					<div class="reactions-bar" th:attr="data-post-id=${post.id}">
+						<button class="reaction-btn" data-type="LIKE"><span class="emoji">👍</span><span class="count">0</span></button>
+						<button class="reaction-btn" data-type="LOVE"><span class="emoji">❤️</span><span class="count">0</span></button>
+						<button class="reaction-btn" data-type="HAHA"><span class="emoji">😂</span><span class="count">0</span></button>
+						<button class="reaction-btn" data-type="WOW"><span class="emoji">😮</span><span class="count">0</span></button>
+						<button class="reaction-btn" data-type="SAD"><span class="emoji">😢</span><span class="count">0</span></button>
+						<button class="reaction-btn" data-type="ANGRY"><span class="emoji">😠</span><span class="count">0</span></button>
+						<span class="reaction-total">0 réactions</span>
+					</div>
+					<button class="action-btn btn-toggle-comments" th:if="${post.allowComments}" th:attr="data-post-id=${post.id}">
+						<i data-lucide="message-circle"></i> <span class="comment-count">0</span>
+					</button>
+					<button class="action-btn btn-share"><i data-lucide="share-2"></i></button>
+				</div>
+				<div class="comments-section" th:if="${post.allowComments}" th:attr="data-post-id=${post.id}" style="display: none;">
+					<div class="comment-form">
+						<img th:src="@{${session.userId != null ? userAvatar : '/img/default-avatar.png'}}" class="avatar-tiny">
+						<div class="comment-input-wrapper">
+							<textarea class="comment-input" placeholder="Ajouter un commentaire..." rows="1"></textarea>
+							<button class="btn-send-comment"><i data-lucide="send"></i></button>
+						</div>
+					</div>
+					<div class="comments-list"></div>
+				</div>
+			</article>
+		</div>
 
-	<div id="editModal">
-		<div class="modal-card card">
-			<div class="modal-header">
-				<h3>Modifier la publication</h3>
-				<button id="closeEditModal" aria-label="Fermer">✕</button>
+		<div id="eventsContainer" style="display: none;">
+			<div th:replace="~{events :: events-fragment}"></div>
+		</div>
+		<div id="projectsContainer" style="display: none;">
+			<div th:replace="~{projects :: projects-fragment}"></div>
+		</div>
+
+	</main>
+
+	<aside class="sidebar-right">
+		<div class="announcement-part card" id="announcementsSideList">
+			<div class="announcement-title">
+				<h5><i data-lucide="megaphone" style="color: var(--primary)"></i> Annonces</h5>
 			</div>
-			<div class="modal-body">
-				<textarea id="editContent" rows="5"></textarea>
-				<div class="modal-controls">
-					<select id="editVisibility" class="custom-select">
+			<div class="announcement-item" th:each="event : ${events}" th:event-id="${event.id}">
+				<h6 th:text="${event.name}"></h6>
+				<p><span class="event-date-period" th:attr="data-timestamp=${event.eventDate}"></span></p>
+			</div>
+		</div>
+
+		<div id="createEventArea" class="card" style="display: none; padding: 15px;">
+			<h3 style="font-size: 1.1rem; margin-bottom: 15px; color: white;">Créer une annonce</h3>
+
+			<form th:action="@{/event}" method="post" class="event-form-compact">
+				<div class="input-group">
+					<input name="name" type="text" placeholder="Nom de l'événement" required />
+				</div>
+
+				<div class="input-group">
+					<input name="eventDate" type="datetime-local" required />
+				</div>
+
+				<div class="form-row">
+					<input name="capacity" type="number" min="1" placeholder="Places" required />
+					<select name="visibilityType" class="custom-select">
 						<option value="PUBLIC">Public</option>
 						<option value="FRIENDS">Amis</option>
 						<option value="PRIVATE">Privé</option>
-					</select> <label class="checkbox-label"> <input
-						id="editAllowComments" type="checkbox" /> <span>Commentaires</span>
-					</label>
+					</select>
+				</div>
+
+				<div class="input-group">
+					<input name="location" type="text" placeholder="Lieu" required />
+				</div>
+
+				<div class="input-group">
+					<textarea name="description" placeholder="Description courte..." rows="2" required></textarea>
+				</div>
+
+				<button type="submit" class="btn-primary-compact">Publier</button>
+			</form>
+		</div>
+	</aside>
+</div>
+
+<div id="editModal"><div class="modal-card card"><div class="modal-header"><h3>Modifier la publication</h3><button id="closeEditModal">✕</button></div><div class="modal-body"><textarea id="editContent" rows="5"></textarea><div class="modal-controls"><select id="editVisibility" class="custom-select"><option value="PUBLIC">Public</option><option value="FRIENDS">Amis</option><option value="PRIVATE">Privé</option></select> <label class="checkbox-label"><input id="editAllowComments" type="checkbox" /> <span>Commentaires</span></label></div></div><div class="modal-footer"><button id="saveEditBtn" class="btn-primary">Enregistrer</button></div></div></div>
+
+<div id="editEventModal" style="display:none; position: fixed; z-index: 9999; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
+	<div class="modal-card card">
+		<div class="modal-header">
+			<h3>Modifier l'événement</h3>
+			<button id="closeEventEditModal">✕</button>
+		</div>
+		<div class="modal-body">
+			<input id="eventId" type="hidden" />
+
+			<div class="input-group">
+				<label for="eventName">Nom de l'événement</label>
+				<div class="input-wrapper">
+					<input id="eventName" type="text" placeholder="Nom de l'événement" required />
 				</div>
 			</div>
+
+			<div class="input-group">
+				<label for="eventDate">Date de l'événement</label>
+				<div class="input-wrapper">
+					<input id="eventDate" type="datetime-local" required />
+				</div>
+			</div>
+
+			<div class="input-group">
+				<label for="eventCapacity">Capacité</label>
+				<div class="input-wrapper">
+					<input id="eventCapacity" type="number" placeholder="Capacité" required />
+				</div>
+			</div>
+
+			<div class="input-group">
+				<label for="eventLocation">Lieu</label>
+				<div class="input-wrapper">
+					<input id="eventLocation" type="text" placeholder="Lieu" required />
+				</div>
+			</div>
+
+			<div class="input-group">
+				<label for="eventVisibility">Visibilité</label>
+				<select id="eventVisibility" class="custom-select">
+					<option value="PUBLIC">Public</option>
+					<option value="FRIENDS">Amis</option>
+					<option value="PRIVATE">Privé</option>
+				</select>
+			</div>
+
+			<div class="input-group">
+				<label for="eventDescription">Description</label>
+				<div class="input-wrapper">
+					<input id="eventDescription" type="text" placeholder="Description" required />
+				</div>
+			</div>
+
 			<div class="modal-footer">
-				<button id="saveEditBtn" class="btn-primary">Enregistrer</button>
+				<button id="btn-event-submit" class="btn-primary" style="width:100%">Sauvegarder</button>
 			</div>
 		</div>
 	</div>
+</div>
 
-	<script th:src="@{/js/header.js}"></script>
-	<script th:src="@{/js/feed-posts.js}"></script>
-	<script th:src="@{/js/reactions.js}"></script>
-	<script th:src="@{/js/comments.js}"></script>
-	<script>
-    lucide.createIcons();
+<script th:src="@{/js/header.js}"></script>
+<script th:src="@{/js/feed-posts.js}"></script>
+<script th:src="@{/js/reactions.js}"></script>
+<script th:src="@{/js/comments.js}"></script>
+<script th:src="@{/js/event.js}"></script>
+<script>
 
-    // Moment.js Logic
-    document.addEventListener("DOMContentLoaded", function() {
-        moment.locale('fr');
-        document.querySelectorAll('.post-date').forEach(function(el) {
-            const rawDate = el.getAttribute('data-timestamp');
-            if (rawDate) {
-                const dateMoment = moment(rawDate);
-                el.innerText = moment().diff(dateMoment, 'hours') < 24 ? dateMoment.fromNow() : dateMoment.format('D MMMM YYYY');
-            }
-        });
-        
-        document.querySelectorAll('.event-date-period').forEach(function(el) {
-            const rawDate = el.getAttribute('data-timestamp');
-            if (rawDate) {
-                const dateMoment = moment(rawDate);
-                console.log(dateMoment.format('D MMMM YYYY'))
-                el.innerText = dateMoment.format('D MMMM YYYY');
-            }
-        });
-    });
+		// LOGIQUE DE BASCULEMENT
+			lucide.createIcons();
 
-    // Modal Logic
-    const modal = document.getElementById('editModal');
-    const closeBtn = document.getElementById('closeEditModal');
-    if(closeBtn) closeBtn.onclick = () => modal.style.display = "none";
-    window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; }
+			document.addEventListener("DOMContentLoaded", function() {
+			moment.locale('fr');
 
-    function openEditModalFromButton(btn) {
-        modal.style.display = "flex";
-        // La logique de remplissage du contenu est gérée dans feed-posts.js
-    }
+			// 1. Formatage des dates
+			const formatDate = () => {
+			document.querySelectorAll('.post-date, .event-date-period').forEach(el => {
+			const raw = el.getAttribute('data-timestamp');
+			if (raw) {
+			const m = moment(raw);
+			el.innerText = el.classList.contains('post-date') && moment().diff(m, 'hours') < 24 ? m.fromNow() : m.format('D MMMM YYYY');
+		}
+		});
+		};
+			formatDate();
+
+			// 2. Éléments pour le basculement
+			const tabs = {
+			posts: {
+			btn: document.getElementById('showPosts'),
+			cont: document.getElementById('postsContainer')
+		},
+			events: {
+			btn: document.getElementById('showEvents'),
+			cont: document.getElementById('eventsContainer')
+		},
+			projects: {
+			btn: document.getElementById('showProjects'),
+			cont: document.getElementById('projectsContainer')
+		}
+		};
+
+			const sideList = document.getElementById('announcementsSideList');
+			const sideForm = document.getElementById('createEventArea');
+			const pubArea = document.getElementById('publishArea');
+
+			// 3. Fonction de basculement
+			function switchTab(mode) {
+			console.log("Basculement vers : " + mode);
+
+			Object.keys(tabs).forEach(key => {
+			const tab = tabs[key];
+			if (tab.cont) {
+			tab.cont.style.display = (key === mode) ? 'block' : 'none';
+		}
+			if (tab.btn) {
+			if (key === mode) tab.btn.classList.add('active');
+			else tab.btn.classList.remove('active');
+		}
+		});
+
+			// Éléments spécifiques
+			if (pubArea) pubArea.style.display = (mode === 'posts') ? 'block' : 'none';
+			if (sideList) sideList.style.display = (mode === 'posts') ? 'block' : 'none';
+			if (sideForm) sideForm.style.display = (mode === 'events') ? 'block' : 'none';
+
+			// Charger les projets si la fonction existe dans projects.js
+			if (mode === 'projects' && typeof loadProjects === 'function') {
+			loadProjects();
+		}
+
+			lucide.createIcons();
+		}
+
+			// 4. Assignation des événements
+			if (tabs.posts.btn) tabs.posts.btn.onclick = (e) => { e.preventDefault(); switchTab('posts'); };
+			if (tabs.events.btn) tabs.events.btn.onclick = (e) => { e.preventDefault(); switchTab('events'); };
+			if (tabs.projects.btn) tabs.projects.btn.onclick = (e) => { e.preventDefault(); switchTab('projects'); };
+
+			// Affichage par défaut
+			switchTab('posts');
+		});
+
+			// Logique des Modaux (Hors DOMContentLoaded pour être accessible par les onclick HTML)
+			const modal = document.getElementById('editModal');
+			const closeBtn = document.getElementById('closeEditModal');
+			if(closeBtn) closeBtn.onclick = () => modal.style.display = "none";
+
+			function openEditModalFromButton(btn) {
+			if(modal) modal.style.display = "flex";
+		}
+
 </script>
 </body>
 </html>

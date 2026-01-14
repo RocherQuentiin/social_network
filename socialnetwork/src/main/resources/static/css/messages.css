@@ -147,6 +147,10 @@
     display: none;
 }
 
+.fas .fa-users{
+    color: var(--primary);
+}
+
 /* Chat Type Badge */
 .chat-type-badge {
     padding: 4px 12px;
@@ -158,7 +162,7 @@
 }
 
 .chat-type-badge.project {
-    background: #10b981;
+    background: var(--gold);
     color: white;
 }
 
@@ -169,7 +173,7 @@
 
 /* Project Group Item Styling */
 .conversation-item.project-group {
-    border-left: 3px solid #10b981;
+    border-left: 3px solid var(--gold);
 }
 
 .conversation-item.project-group .conversation-name::before {
@@ -195,7 +199,7 @@
     width: 36px;
     height: 36px;
     border-radius: 8px;
-    background: #10b981;
+    background: var(--gold);
     color: white;
     border: none;
     cursor: pointer;
@@ -469,7 +473,7 @@
 }
 
 .status.online {
-    color: #10b981;
+    color: var(--gold);
     font-weight: 600;
 }
 
@@ -538,7 +542,7 @@
 .message > div {
     display: flex;
     flex-direction: column;
-    max-width: 70%;
+    max-width: 100%;
 }
 
 .message-bubble {
@@ -743,7 +747,7 @@
     right: 12px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--text-tertiary);
+    color: var(--primary);
     pointer-events: none;
     width: 20px;
     height: 20px;
@@ -1015,7 +1019,7 @@
     }
 
     .message > div {
-        max-width: 85%;
+        max-width: 105%;
     }
 
     .message-bubble {
@@ -1288,3 +1292,368 @@
         height: 32px !important;
     }
 }
+
+/* ==========================================
+   MESSAGING SYSTEM - STYLESHEET
+   Intégration ISEP Connect : Privé (Bleu) vs Projets (Or)
+========================================== */
+
+/* Main Container */
+.messaging-container {
+    display: grid;
+    grid-template-columns: 280px 1fr 300px;
+    gap: 16px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    height: calc(100vh - 90px);
+    background: var(--bg-primary);
+}
+
+/* ==========================================
+   SIDEBARS
+========================================== */
+
+.conversations-sidebar,
+.notifications-sidebar {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.sidebar-header h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.badge {
+    background: var(--accent, #1d9bf0);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.btn-new-conversation {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--accent, #1d9bf0);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.btn-new-conversation:hover {
+    background: var(--accent-dark, #1a8cd8);
+    transform: scale(1.05);
+}
+
+/* ==========================================
+   TABS & SEARCH
+========================================== */
+
+.message-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-secondary);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.tab-btn.active[data-tab="private"] {
+    background: var(--accent, #1d9bf0);
+    color: white;
+    border-color: var(--accent);
+}
+
+.tab-btn.active[data-tab="projects"] {
+    background: var(--primary);
+    color: white;
+    border-color: var(--gold);
+}
+
+.search-box {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.search-box .input-field {
+    width: 100%;
+    padding: 8px 12px;
+    background: var(--bg-input, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+}
+
+/* ==========================================
+   CONVERSATIONS LIST
+========================================== */
+
+.conversations-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+}
+
+.conversation-item {
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 4px;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+}
+
+.conversation-item:hover {
+    background: var(--bg-secondary);
+}
+
+/* Couleur active Privée */
+.conversation-item.active {
+    background: rgba(29, 155, 240, 0.1);
+    border-left-color: var(--accent);
+}
+
+/* Couleur active Projet */
+.conversation-item.project-group.active {
+    background: rgba(212, 175, 55, 0.1);
+    border-left-color: var(--gold);
+}
+
+/* ==========================================
+   CHAT AREA & WINDOW
+========================================== */
+
+.chat-area {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.chat-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* --- VARIANTES DE FENÊTRE (DYNAMIQUE) --- */
+
+/* Mode PROJET */
+.chat-window.project-chat .chat-header {
+    border-bottom: 2px solid var(--gold);
+}
+
+.chat-window.project-chat .chat-type-badge {
+    display: block !important;
+    background: var(--gold);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+}
+
+/* ==========================================
+   MESSAGES BUBBLES
+========================================== */
+
+.messages-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.message {
+    display: flex;
+    margin-bottom: 4px;
+    max-width: 80%;
+}
+
+.message.sent {
+    align-self: flex-end;
+}
+
+.message.received {
+    align-self: flex-start;
+}
+
+.message-bubble {
+    padding: 12px 16px;
+    border-radius: 15px;
+    font-size: 14px;
+    line-height: 1.5;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* --- MESSAGE ENVOYÉ (Toujours bleu) --- */
+.message.sent .message-bubble {
+    background: var(--accent, #1d9bf0);
+    color: white;
+    border-bottom-right-radius: 2px;
+}
+
+/* --- MESSAGE REÇU PRIVÉ (Bleu/Gris) --- */
+.message.received .message-bubble {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-bottom-left-radius: 2px;
+    border: 1px solid var(--border);
+}
+
+.chat-window.project-chat .message.received .message-bubble {
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid var(--gold);
+    color: var(--text-primary);
+}
+
+.message-sender {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-left: 12px;
+    margin-bottom: 2px;
+    text-transform: capitalize;
+}
+
+.chat-window.private-chat .message-sender {
+    color: var(--accent);
+}
+
+/* ==========================================
+   INPUT AREA
+========================================== */
+
+.message-input-area {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 12px;
+    background: var(--bg-secondary);
+}
+
+.message-textarea {
+    flex: 1;
+    padding: 12px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    resize: none;
+    font-family: inherit;
+}
+
+/* Bouton Envoyer Dynamique */
+.btn-send.primary {
+    background: var(--accent, #1d9bf0);
+    color: white;
+    border: none;
+    padding: 0 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.chat-window.project-chat .btn-send.primary {
+    background: var(--gold);
+}
+
+.btn-send:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.1);
+}
+
+/* ==========================================
+   MODALS & GLASS CARDS
+========================================== */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(5px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.glass-card {
+    background: rgba(var(--bg-card-rgb), 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .messaging-container {
+        grid-template-columns: 1fr;
+    }
+    .conversations-sidebar, .notifications-sidebar {
+        display: none;
+    }
+}
+
+.message-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 100%;
+}
+
+.message.sent .message-content {
+    align-items: flex-end;
+}
+
+.message-bubble p {
+    margin: 0;
+    padding: 0;
+}
+
+

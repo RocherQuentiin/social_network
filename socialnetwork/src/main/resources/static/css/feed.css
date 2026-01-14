@@ -940,6 +940,299 @@
     box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
 }
 
+/* Conteneur principal de la carte d'événement */
+.event-card {
+    background: var(--card-bg); /* Utilise ta variable de fond de carte */
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Header : Titre et Date */
+.event-header h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 5px !important;
+}
+
+.post-sub-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+}
+
+/* Grille d'infos (Lieu, Capacité, Visibilité) */
+.event-grid-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+    margin: 15px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+}
+
+.event-grid-info p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: var(--text-main);
+}
+
+.event-grid-info i {
+    color: var(--primary);
+    stroke-width: 2.5px;
+}
+
+/* Description */
+.event-description {
+    margin: 15px 0;
+    line-height: 1.5;
+    color: var(--text-main);
+    border-left: 3px solid var(--primary);
+    padding-left: 15px;
+}
+
+/* Section Participants */
+.event-participants {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.participants-label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+}
+
+.participants-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.participant-tag {
+    background: rgba(var(--primary-rgb), 0.1);
+    color: var(--primary);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    border: 1px solid rgba(var(--primary-rgb), 0.2);
+}
+
+/* Pied de carte : Boutons */
+.event-footer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-event {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-edit { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+.btn-edit:hover { background: var(--primary); color: white; }
+
+.btn-join { background: var(--primary); color: white; border: none; }
+.btn-join:hover { filter: brightness(1.1); }
+
+.btn-quit { background: rgba(255, 59, 48, 0.1); color: #ff3b30; border: 1px solid rgba(255, 59, 48, 0.2); }
+.btn-quit:hover { background: #ff3b30; color: white; }
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: #5856d6;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.event-form-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.event-form-compact input,
+.event-form-compact select,
+.event-form-compact textarea {
+    width: 100%;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: white;
+    font-size: 0.85rem;
+}
+
+/* Grille pour mettre 2 éléments côte à côte */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.event-form-compact input:focus,
+.event-form-compact textarea:focus {
+    border-color: var(--primary);
+    outline: none;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-primary-compact {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-primary-compact:hover {
+    filter: brightness(1.2);
+}
+/* Conteneur principal qui couvre tout l'écran */
+#editEventModal {
+    display: none; /* Piloté par le JS */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75); /* Fond sombre transparent */
+    backdrop-filter: blur(4px); /* Effet de flou en arrière-plan */
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* La carte du modal */
+#editEventModal .modal-card {
+    background: #1e1e1e; /* Fond gris très foncé */
+    width: 100%;
+    max-width: 500px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    animation: modalAppear 0.3s ease-out;
+}
+
+/* En-tête du modal */
+#editEventModal .modal-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#editEventModal .modal-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--primary); /* Ton bleu ISEP */
+}
+
+#closeEventEditModal {
+    background: transparent;
+    border: none;
+    color: #999;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+#closeEventEditModal:hover {
+    color: white;
+}
+
+/* Corps du modal */
+#editEventModal .modal-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Champs de saisie */
+#editEventModal .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#editEventModal .input-group label {
+    font-size: 0.85rem;
+    color: #aaa;
+    font-weight: 500;
+}
+
+#editEventModal input,
+#editEventModal select {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 10px 12px;
+    color: white;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+}
+
+#editEventModal input:focus,
+#editEventModal select:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Footer / Bouton */
+#editEventModal .modal-footer {
+    padding: 15px 20px 20px;
+}
+
+#btn-event-submit-save {
+    width: 100%;
+    padding: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Animation d'entrée */
+@keyframes modalAppear {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
 @media (max-width: 1100px) {
     .blog-layout { grid-template-columns: 250px 1fr; }
     .sidebar-right { display: none; }
