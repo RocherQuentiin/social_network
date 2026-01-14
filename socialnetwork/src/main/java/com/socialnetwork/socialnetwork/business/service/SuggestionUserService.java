@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
+import com.socialnetwork.socialnetwork.entity.Profile;
 
 import com.socialnetwork.socialnetwork.business.interfaces.service.IConnectionService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.ISuggestionUserService;
@@ -62,39 +63,39 @@ public class SuggestionUserService implements ISuggestionUserService{
 			if(!match) {
 				List<Connection> userConnectionsOfSuggestionUser = this.connectionService.findAllAcceptedRequestByUserID(listUsers.get(i).getId());
 				int cptCommonFriends = findAllMatchBeetweenTwoList(userConnections, user, userConnectionsOfSuggestionUser, listUsers.get(i));
-				if(cptCommonFriends > 0) {
+				if (cptCommonFriends > 0) {
 					suggestion += "\n Vous avez " + cptCommonFriends + " amis en commun";
 				}
-		        
-				if(listUsers.get(i).getProfile().getIsepSpecialization() != null && user.getProfile().getIsepSpecialization() != null) {
-					if(listUsers.get(i).getProfile().getIsepSpecialization().equals(user.getProfile().getIsepSpecialization())) {
-						String specialization = user.getProfile().getIsepSpecialization().toString().replace('_', ' ');
-						suggestion += "\n Vous faites partie de la même spécialisation : " + specialization;
+
+				// Profiles may be null; access fields only when present
+				Profile pUser = user.getProfile();
+				Profile pCand = listUsers.get(i).getProfile();
+				if(pUser != null && pCand != null) {
+					if(pCand.getIsepSpecialization() != null && pUser.getIsepSpecialization() != null) {
+						if(pCand.getIsepSpecialization().equals(pUser.getIsepSpecialization())) {
+							String specialization = pUser.getIsepSpecialization().toString().replace('_', ' ');
+							suggestion += "\n Vous faites partie de la même spécialisation : " + specialization;
+						}
 					}
-				}
-				
-				if(listUsers.get(i).getProfile().getPromoYear() != null && user.getProfile().getPromoYear() != null) {
-					if(listUsers.get(i).getProfile().getPromoYear().equals(user.getProfile().getPromoYear())) {
-						suggestion += "\n Vous faites partie de la même promo : " + user.getProfile().getPromoYear();
+					if(pCand.getPromoYear() != null && pUser.getPromoYear() != null) {
+						if(pCand.getPromoYear().equals(pUser.getPromoYear())) {
+							suggestion += "\n Vous faites partie de la même promo : " + pUser.getPromoYear();
+						}
 					}
-				}
-				
-				if(user.getProfile().getInterests() != null && listUsers.get(i).getProfile().getInterests() != null) {
-					Set<Object> commonValues = new HashSet<>(user.getProfile().getInterests().values());
-			        commonValues.retainAll(listUsers.get(i).getProfile().getInterests().values());
-			        
-			        if(commonValues.size() > 0) {
-			        	suggestion += "\n Vous avez " + commonValues.size() + " loisirs en commun";
-			        }
-				}
-				
-				if(user.getProfile().getCompetencies() != null && listUsers.get(i).getProfile().getCompetencies() != null) {
-					Set<Object> commonValues = new HashSet<>(user.getProfile().getCompetencies().values());
-			        commonValues.retainAll(listUsers.get(i).getProfile().getCompetencies().values());
-			        
-			        if(commonValues.size() > 0) {
-			        	suggestion += "\n Vous avez " + commonValues.size() + " compétences en commun";
-			        }
+					if(pUser.getInterests() != null && pCand.getInterests() != null) {
+						Set<Object> commonValues = new HashSet<>(pUser.getInterests().values());
+						commonValues.retainAll(pCand.getInterests().values());
+						if(commonValues.size() > 0) {
+							suggestion += "\n Vous avez " + commonValues.size() + " loisirs en commun";
+						}
+					}
+					if(pUser.getCompetencies() != null && pCand.getCompetencies() != null) {
+						Set<Object> commonValues = new HashSet<>(pUser.getCompetencies().values());
+						commonValues.retainAll(pCand.getCompetencies().values());
+						if(commonValues.size() > 0) {
+							suggestion += "\n Vous avez " + commonValues.size() + " compétences en commun";
+						}
+					}
 				}
 				
 				
