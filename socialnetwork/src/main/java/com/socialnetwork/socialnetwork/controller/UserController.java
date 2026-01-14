@@ -1,6 +1,7 @@
 package com.socialnetwork.socialnetwork.controller;
 
 import java.time.ZoneId;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -276,9 +277,28 @@ public class UserController {
 		}
 		
 		else {
+			User logged = userLogin.getBody();
+			// Check if user is active
+			if (logged.getIsActive() != null && !logged.getIsActive()) {
+				model.addAttribute("error", "Votre compte a été bloqué — contactez un administrateur.");
+				model.addAttribute("user", user);
+				return "login";
+			}
+
+			// Check if user is suspended
+			if (logged.getSuspendedUntil() != null && logged.getSuspendedUntil().isAfter(LocalDateTime.now())) {
+				model.addAttribute("error", "Votre compte est suspendu jusqu'à " + logged.getSuspendedUntil().toString());
+				model.addAttribute("user", user);
+				return "login";
+			}
+
 			HttpSession session = request.getSession(true);
-			session.setAttribute("userId", userLogin.getBody().getId());
-			session.setAttribute("userEmail", userLogin.getBody().getEmail());
+			session.setAttribute("userId", logged.getId());
+			session.setAttribute("userEmail", logged.getEmail());
+			session.setAttribute("userRole", logged.getRole() != null ? logged.getRole().name() : "USER");
+			if (logged.getRole() == UserRole.ADMIN) {
+				return "redirect:/admin/dashboard";
+			}
 
 			return "redirect:/feed";
 		}
