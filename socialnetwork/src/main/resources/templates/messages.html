@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messagerie - ISEP Connect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/messages.css}">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+    <!-- Hidden input to store user ID -->
+    <input type="hidden" id="currentUserId" th:value="${userId}">
+    
+    <div th:replace="~{fragments/header :: header-fragment}"></div>
+
+    <div class="messaging-container">
+        <!-- Conversations List -->
+        <aside class="conversations-sidebar">
+            <div class="sidebar-header">
+                <h2>Messages</h2>
+                <button class="btn-new-conversation" id="newMessageBtn" title="Nouvelle conversation">
+                    <i data-lucide="plus"></i>
+                </button>
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="conversationSearch" placeholder="Chercher une conversation..." class="input-field">
+            </div>
+
+            <div id="conversationsList" class="conversations-list">
+                <!-- Conversations will be loaded here -->
+            </div>
+        </aside>
+
+        <!-- Chat Area -->
+        <main class="chat-area">
+            <div id="noChatSelected" class="empty-state">
+                <div class="empty-icon">
+                    <i data-lucide="message-circle"></i>
+                </div>
+                <h3>Aucune conversation sélectionnée</h3>
+                <p>Sélectionnez une conversation ou commencez une nouvelle discussion</p>
+            </div>
+
+            <div id="chatWindow" class="chat-window" style="display: none;">
+                <div class="chat-header">
+                    <img id="otherUserAvatar" class="avatar-small" src="" alt="">
+                    <div class="chat-header-info">
+                        <h3 id="chatHeaderName"></h3>
+                        <span id="chatStatus" class="status">En ligne</span>
+                    </div>
+                </div>
+
+                <div id="messagesContainer" class="messages-container">
+                    <!-- Messages will be loaded here -->
+                </div>
+
+                <div class="message-input-area">
+                    <textarea id="messageInput" placeholder="Écrivez votre message..." rows="2" class="message-textarea"></textarea>
+                    <button id="sendMessageBtn" class="btn-send primary">
+                        <i data-lucide="send"></i> Envoyer
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Notifications Sidebar -->
+        <aside class="notifications-sidebar">
+            <div class="sidebar-header">
+                <h2>Notifications</h2>
+                <span id="unreadCount" class="badge">0</span>
+            </div>
+
+            <button id="markAllReadBtn" class="btn-mark-all-read">
+                Marquer tout comme lu
+            </button>
+
+            <div id="notificationsList" class="notifications-list">
+                <!-- Notifications will be loaded here -->
+            </div>
+        </aside>
+    </div>
+
+    <!-- Modal for new conversation -->
+    <div id="newConversationModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h2>Nouvelle conversation</h2>
+                <button class="btn-modal-close" id="closeModalBtn">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="userSearch">Chercher un utilisateur</label>
+                    <div class="search-wrapper">
+                        <input type="text" id="userSearch" placeholder="Nom, email ou @username..." class="input-field">
+                        <i data-lucide="search" class="search-icon"></i>
+                    </div>
+                    <div id="userSearchResults" class="search-results"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/chat.js}"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

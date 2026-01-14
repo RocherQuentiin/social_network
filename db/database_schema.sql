@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS message (
     content TEXT NOT NULL,
     is_read BOOLEAN DEFAULT false,
     read_at TIMESTAMP,
+    thread_id CHAR(36),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_message_sender FOREIGN KEY (sender_id) REFERENCES user(id) ON DELETE CASCADE,
