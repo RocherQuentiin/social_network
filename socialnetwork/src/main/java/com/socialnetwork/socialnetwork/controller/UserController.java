@@ -200,24 +200,24 @@ public class UserController {
         HttpSession session = request.getSession(false);
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Paris"));
 
-        // On initialise des listes vides par défaut pour éviter que Thymeleaf ne plante
+
         model.addAttribute("projects", new ArrayList<>());
         model.addAttribute("publicProjects", new ArrayList<>());
 
         if (session != null && session.getAttribute("userId") != null) {
            UUID userID = UUID.fromString(session.getAttribute("userId").toString());
            model.addAttribute("isConnect", session.getAttribute("userId"));
-           model.addAttribute("currentUserId", userID.toString()); // Indispensable pour tes boutons Éditer
+           model.addAttribute("currentUserId", userID.toString());
            model.addAttribute("name", this.userService.getName(userID));
 
            ResponseEntity<User> user = userService.getUserById(userID);
            model.addAttribute("userAvatar", user.getBody().getProfilePictureUrl());
 
-           // --- AJOUT DES PROJETS ICI ---
+
            model.addAttribute("projects", this.projectService.getUserProjects(userID).getBody());
            model.addAttribute("publicProjects", this.projectService.getPublicProjects().getBody());
 
-           // Chargement Posts et Events
+
            List<Post> posts = this.postService.getAllPostForConnectedUser(userID).getBody();
            List<Event> events = this.eventService.getAllEventForConnectedUser(userID, now.toLocalDateTime()).getBody();
 
@@ -228,7 +228,7 @@ public class UserController {
            model.addAttribute("events", events);
         }
         else {
-           // Mode Public : seulement les projets publics
+
            model.addAttribute("publicProjects", this.projectService.getPublicProjects().getBody());
 
            List<Post> posts = this.postService.getAllPostVisibilityPublic().getBody();

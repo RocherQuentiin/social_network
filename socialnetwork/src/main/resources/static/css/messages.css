@@ -1546,27 +1546,23 @@
     border: 1px solid var(--border);
 }
 
-/* --- MESSAGE REÇU PROJET (OR) --- */
 .chat-window.project-chat .message.received .message-bubble {
     background: rgba(212, 175, 55, 0.1);
     border: 1px solid var(--gold);
     color: var(--text-primary);
 }
 
-/* --- HEADER DU MESSAGE DANS UN GROUPE --- */
-/* Style pour le nom affiché par le JavaScript */
 .message-sender {
     font-size: 11px;
     font-weight: 700;
-    color: var(--gold); /* Couleur Or pour les projets */
+    color: var(--gold);
     margin-left: 12px;
     margin-bottom: 2px;
     text-transform: capitalize;
 }
 
-/* On cache le nom pour les messages privés si tu préfères (plus intime) */
 .chat-window.private-chat .message-sender {
-    color: var(--accent); /* Bleu pour le privé */
+    color: var(--accent);
 }
 
 /* ==========================================
@@ -1644,30 +1640,20 @@
     }
 }
 
-/* Force le contenu du message (nom + bulle) à s'aligner correctement */
 .message-content {
     display: flex;
-    flex-direction: column; /* Garde le nom AU-DESSUS de la bulle */
-    align-items: flex-start; /* Aligne tout à gauche pour les reçus */
+    flex-direction: column;
+    align-items: flex-start;
     max-width: 100%;
 }
 
-/* Si c'est un message envoyé, on aligne à droite */
 .message.sent .message-content {
     align-items: flex-end;
 }
 
-/* Supprime les marges parasites qui pourraient casser la ligne */
 .message-bubble p {
     margin: 0;
     padding: 0;
 }
 
-/* Optionnel : Si tu veux que le nom soit sur la MÊME LIGNE que la bulle */
-/*
-.message-content {
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-}
-*/
+
