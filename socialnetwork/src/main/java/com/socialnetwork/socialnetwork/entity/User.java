@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.socialnetwork.socialnetwork.enums.UserRole;
 
 import jakarta.persistence.CascadeType;
@@ -75,6 +76,7 @@ public class User {
     private LocalDateTime updatedAt;
     
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Profile profile;
 
     // Getters and setters
