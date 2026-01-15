@@ -4,6 +4,7 @@ WORKDIR /workspace
 
 # copy maven files and source
 COPY pom.xml ./
+COPY .env ./
 COPY src ./src
 
 # build the application (skip tests for faster image builds)
