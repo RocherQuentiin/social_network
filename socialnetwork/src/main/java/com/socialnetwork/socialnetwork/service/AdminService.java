@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,11 +86,11 @@ public class AdminService {
 
         List<Map<String, Object>> usersSeries = usersPerDay.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(e -> {
             Map<String, Object> m2 = new HashMap<>(); m2.put("date", e.getKey()); m2.put("count", e.getValue()); return m2;
-        }).toList();
+        }).collect(Collectors.toList());
 
         List<Map<String, Object>> postsSeries = postsPerDay.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(e -> {
             Map<String, Object> m2 = new HashMap<>(); m2.put("date", e.getKey()); m2.put("count", e.getValue()); return m2;
-        }).toList();
+        }).collect(Collectors.toList());
 
         Map<String, List<Map<String, Object>>> out = new HashMap<>();
         out.put("users", usersSeries);

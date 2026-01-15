@@ -2,7 +2,7 @@ spring:
   mail:
     host: smtp-relay.brevo.com
     username: 9edc3f001@smtp-brevo.com
-    password: xsmtpsib-0e13b76d6aa594ee10f1d5feeac2da772ad87e3a75bd9de2bf624c21407bbe9f-SzJRWDYJA9dziqvP
+    password: xsmtpsib-0e13b76d6aa594ee10f1d5feeac2da772ad87e3a75bd9de2bf624c21407bbe9f-RLBiUrcmlijgJI8t
 
 front-base-url: https://socialnetworkisep.hangar.garageisep.com
 file-directory: /app/upload/
