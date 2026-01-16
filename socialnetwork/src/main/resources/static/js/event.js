@@ -1,21 +1,31 @@
 function byId(id) { return document.getElementById(id); }
 
-var btnEditModal = byId('btn-edit');
+var btnEditModal = document.querySelectorAll('.editEventModal');
 var editModal = byId('editEventModal');
 var closeEventEditModal = byId('closeEventEditModal');
 var eventSave = byId('btn-event-submit');
-var joinEvent = byId('btn-join-event');
+
+var joinEvent = document.querySelectorAll('.btn-join-event');
 var quitEvent = byId('btn-quit-event');
 
 function openModal() { if (editModal) editModal.style.display = 'flex'; }
 function closeModal() { if (editModal) editModal.style.display = 'none'; currentEditId = null; }
 
-if (btnEditModal) btnEditModal.addEventListener('click', function() { openModal(); });
 if (closeEventEditModal) closeEventEditModal.addEventListener('click', function() { closeModal(); });
 
-if (eventSave) eventSave.addEventListener('click', function() { editEvent(); });
+btnEditModal.forEach(elm => {
+  console.log(elm);
+  elm.addEventListener('click', openModal);
+});
 
-if (joinEvent) joinEvent.addEventListener('click', function(e) { joinEventUser(e); });
+
+joinEvent.forEach(elm => {
+  console.log(elm);
+  elm.addEventListener('click', joinEventUser, elm);
+});
+
+
+if (eventSave) eventSave.addEventListener('click', function() { editEvent(); });
 
 if (quitEvent) quitEvent.addEventListener('click', function(e) { quitEventUser(e); });
 

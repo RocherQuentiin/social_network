@@ -30,8 +30,16 @@
                                     <div class="publish-icons" style="display:flex; gap:8px;">
                                         <button type="button" id="postImage" class="icon-btn" style="background:transparent; border:none; color:var(--text-dim);"><i data-lucide="image"></i></button>
                                         <button type="button" id="postVideo" class="icon-btn" style="background:transparent; border:none; color:var(--text-dim);"><i data-lucide="link"></i></button>
+                                   		<button id="postFile" type="button" class="btn-icon-upload"
+								onclick="document.getElementById('postFileUrl').click()"
+								title="Fichier">
+								<i data-lucide="file"></i>
+							</button>
                                     </div>
                                     
+						<input
+								type="file" id="postFileUrl" name="postFileUrl"
+								accept=".pdf,.html,.htm,.doc,.docx,.xls,.xlsx" style="display: none;">
                                     <input type="file" id="postVideoUrl" name="postVideoUrl" accept=".mp4, .avi" style="display: none;">
                                     <input type="file" id="postImageUrl" name="postImageUrl" accept="image/*" style="display: none;">
                                   

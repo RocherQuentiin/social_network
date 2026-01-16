@@ -63,6 +63,15 @@
 					<div class="media-inputs">
 						<button id="postImage" type="button" class="btn-icon-upload" title="Image"><i data-lucide="image"></i></button>
 						<button id="postVideo" type="button" class="btn-icon-upload" onclick="document.getElementById('postVideoUrl').click()" title="Vidéo"><i data-lucide="video"></i></button>
+						<button id="postFile" type="button" class="btn-icon-upload"
+								onclick="document.getElementById('postFileUrl').click()"
+								title="Fichier">
+								<i data-lucide="file"></i>
+							</button>
+						<input
+								type="file" id="postFileUrl" name="postFileUrl"
+								accept=".pdf,.html,.htm,.doc,.docx,.xls,.xlsx" style="display: none;">
+						
 						<input type="file" id="postImageUrl" name="postImageUrl" accept="image/*" style="display: none;">
 						<input type="file" id="postVideoUrl" name="postVideoUrl" accept=".mp4, .avi" style="display: none;">
 						<div class="vertical-divider"></div>
@@ -101,6 +110,10 @@
 						<div th:each="pm : ${post.medias}" class="media-item">
 							<img th:if="${pm.mediaType.toString().equals('IMAGE')}" th:src="@{${pm.fileUrl}}" class="img-fluid rounded">
 							<video th:if="${pm.mediaType.toString().equals('VIDEO')}" controls class="video-fluid rounded"><source th:src="@{${pm.fileUrl}}" type="video/mp4"></video>
+							<a th:if="${pm.mediaType.toString().equals('DOCUMENT')}"
+									th:href="@{${pm.fileUrl}}" >Télécharger</a>
+									
+								
 						</div>
 					</div>
 				</div>
@@ -254,6 +267,7 @@
 <script th:src="@{/js/reactions.js}"></script>
 <script th:src="@{/js/comments.js}"></script>
 <script th:src="@{/js/event.js}"></script>
+<script th:src="@{/js/project.js}"></script>
 <script>
 
 		// LOGIQUE DE BASCULEMENT

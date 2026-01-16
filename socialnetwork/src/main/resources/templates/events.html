@@ -33,13 +33,12 @@
 
         <div class="event-footer">
             <a th:if="${event.creator.id != isConnect && attendee == null && particpantsCpt < event.capacity}"
-               th:attr="data-id=${event.id}" id="btn-join-event" class="btn-primary-header">
+               th:attr="data-id=${event.id}" id="btn-join-event" class="btn-primary-header btn-join-event">
                 Rejoindre l'événement
             </a>
 
             <a th:if="${event.creator.id == isConnect}"
-               id="btn-edit" class="btn-primary-header"
-               th:attr="onclick='openEditEventModal(\'' + ${event.id} + '\')'">
+               id="btn-edit" class="btn-primary-header editEventModal">
                 Editer l'événement
             </a>
 
