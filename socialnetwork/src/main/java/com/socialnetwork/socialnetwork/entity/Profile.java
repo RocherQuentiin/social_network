@@ -13,6 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.socialnetwork.socialnetwork.enums.IsepSpecialization;
 import com.socialnetwork.socialnetwork.enums.UserGender;
 
@@ -37,7 +38,7 @@ public class Profile {
 
     @OneToOne
     @JoinColumn(name = "user_id", unique = true, nullable = false)
-    @JsonIgnore
+    @JsonManagedReference
     private User user;
 
     @Column(length = 100)
