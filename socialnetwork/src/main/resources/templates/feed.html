@@ -88,6 +88,22 @@
 				</div>
 			</form>
 		</div>
+		
+			<div class="publish-options">
+				<select id="preferences" name="preferences" class="custom-select">
+					<option value="Date">Date</option>
+					<option value="Popularité">Popularité</option>
+					<option value="Commentaires">Commentaires</option>
+				</select>
+
+			</div>
+
+			<div class="search-bar-wrapper">
+				<div class="search-input-group">
+					<i data-lucide="search"></i> <input id="post-search" type="text"
+						name="query" placeholder="Rechercher post">
+				</div>
+			</div>
 
 		<div class="posts-list" id="postsContainer">
 			<article th:each="post : ${posts}" class="post-card card" th:attr="data-post-card-id=${post.id}, data-post-visibility=${post.visibilityType}">

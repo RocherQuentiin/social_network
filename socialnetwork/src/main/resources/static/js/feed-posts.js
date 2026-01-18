@@ -181,52 +181,6 @@ document.addEventListener('DOMContentLoaded', function(){
     });
 
 
-const eventInputSearch = document.getElementById("event-search");
-const annoucement = document.querySelectorAll(".announcement-part.card");
-
-eventInputSearch.addEventListener('input', function() {
-	let inputValue = eventInputSearch.value.toLowerCase();
-	annoucement.forEach(elm => {
-		let firstName = elm.getAttribute('data-creator-firstname').toLowerCase();
-		let lastName = elm.getAttribute('data-creator-lastname').toLowerCase();
-		let eventName = elm.getAttribute('data-event-name').toLowerCase();
-		let eventLocation = elm.getAttribute('data-event-location').toLowerCase();
-		let eventVisibility = elm.getAttribute('data-event-visibility').toLowerCase();
-
-		if (firstName.includes(inputValue) || lastName.includes(inputValue) || eventName.includes(inputValue)
-			|| eventLocation.includes(inputValue) || eventVisibility.includes(inputValue)) {
-			elm.style.display = "";
-		}
-		else {
-			elm.style.display = "none";
-		}
-	})
-
-})
-
-const postInputSearch = document.getElementById("post-search");
-const post = document.querySelectorAll(".post-card.card");
-
-postInputSearch.addEventListener('input', function() {
-	let inputValue = postInputSearch.value.toLowerCase();
-	console.log(post)
-	post.forEach(elm => {
-		let firstName = elm.getAttribute('data-author-firstname').toLowerCase();
-		let lastName = elm.getAttribute('data-auhtor-lastname').toLowerCase();
-		let postVisibility = elm.getAttribute('data-post-visibility').toLowerCase();
-		let postContent = elm.getAttribute('data-post-content').toLowerCase();
-
-		if (firstName.includes(inputValue) || lastName.includes(inputValue)
-			|| postContent.includes(inputValue) || postVisibility.includes(inputValue))  {
-			elm.style.display = "";
-		}
-		else {
-			elm.style.display = "none";
-		}
-	})
-
-})
-
 
 console.log(preferences)
 preferences.addEventListener("change", function() {
@@ -295,3 +249,54 @@ function sortPostsByDates() {
 }
 
 });
+
+const postInputSearch = document.getElementById("post-search");
+const post = document.querySelectorAll(".post-card.card");
+
+postInputSearch.addEventListener('input', function() {
+	let inputValue = postInputSearch.value.toLowerCase();
+	console.log(post)
+	post.forEach(elm => {
+		let firstName = elm.getAttribute('data-author-firstname').toLowerCase();
+		let lastName = elm.getAttribute('data-auhtor-lastname').toLowerCase();
+		let postVisibility = elm.getAttribute('data-post-visibility').toLowerCase();
+		let postContent = elm.getAttribute('data-post-content').toLowerCase();
+
+		if (firstName.includes(inputValue) || lastName.includes(inputValue)
+			|| postContent.includes(inputValue) || postVisibility.includes(inputValue))  {
+			elm.style.display = "";
+		}
+		else {
+			elm.style.display = "none";
+		}
+	})
+
+})
+
+
+
+const eventInputSearch = document.getElementById("event-search");
+const annoucement = document.querySelectorAll(".announcement-part.card");
+
+eventInputSearch.addEventListener('input', function() {
+	let inputValue = eventInputSearch.value.toLowerCase();
+	annoucement.forEach(elm => {
+		let firstName = elm.getAttribute('data-creator-firstname').toLowerCase();
+		let lastName = elm.getAttribute('data-creator-lastname').toLowerCase();
+		let eventName = elm.getAttribute('data-event-name').toLowerCase();
+		let eventLocation = elm.getAttribute('data-event-location').toLowerCase();
+		let eventVisibility = elm.getAttribute('data-event-visibility').toLowerCase();
+
+		if (firstName.includes(inputValue) || lastName.includes(inputValue) || eventName.includes(inputValue)
+			|| eventLocation.includes(inputValue) || eventVisibility.includes(inputValue)) {
+			elm.style.display = "";
+		}
+		else {
+			elm.style.display = "none";
+		}
+	})
+
+})
+
+
+
