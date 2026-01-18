@@ -252,10 +252,10 @@ function sortPostsByDates() {
 
 const postInputSearch = document.getElementById("post-search");
 const post = document.querySelectorAll(".post-card.card");
+const annoucement = document.querySelectorAll(".event-card.card");
 
 postInputSearch.addEventListener('input', function() {
 	let inputValue = postInputSearch.value.toLowerCase();
-	console.log(post)
 	post.forEach(elm => {
 		let firstName = elm.getAttribute('data-author-firstname').toLowerCase();
 		let lastName = elm.getAttribute('data-auhtor-lastname').toLowerCase();
@@ -270,16 +270,7 @@ postInputSearch.addEventListener('input', function() {
 			elm.style.display = "none";
 		}
 	})
-
-})
-
-
-
-const eventInputSearch = document.getElementById("event-search");
-const annoucement = document.querySelectorAll(".announcement-part.card");
-
-eventInputSearch.addEventListener('input', function() {
-	let inputValue = eventInputSearch.value.toLowerCase();
+	
 	annoucement.forEach(elm => {
 		let firstName = elm.getAttribute('data-creator-firstname').toLowerCase();
 		let lastName = elm.getAttribute('data-creator-lastname').toLowerCase();
@@ -295,6 +286,8 @@ eventInputSearch.addEventListener('input', function() {
 			elm.style.display = "none";
 		}
 	})
+	
+	
 
 })
 

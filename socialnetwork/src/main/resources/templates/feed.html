@@ -106,7 +106,7 @@
 			</div>
 
 		<div class="posts-list" id="postsContainer">
-			<article th:each="post : ${posts}" class="post-card card" th:attr="data-post-card-id=${post.id}, data-post-visibility=${post.visibilityType}">
+			<article th:each="post : ${posts}" class="post-card card" th:attr="data-post-card-id=${post.id}, data-post-visibility=${post.visibilityType}, data-post-createdAt=${post.createdAt}, data-auhtor-lastname=${post.author.lastName}, data-author-firstName=${post.author.firstName}, data-post-content=${post.content}"> 
 				<div class="post-header">
 					<img th:src="@{${post.author.profilePictureUrl}}" class="avatar-small">
 					<div class="post-meta">

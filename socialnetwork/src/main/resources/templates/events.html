@@ -6,7 +6,7 @@
        event.eventAttendee.?[
            user.id == #vars.isConnect and status != 'DECLINED'
        ]
-   )}" class="event-card card">
+   )}" th:attr="data-event-visibility=${event.visibilityType},  data-event-name=${event.name}, data-event-eventDate=${event.eventDate}, data-creator-lastname=${event.creator.lastName}, data-creator-firstname=${event.creator.firstName}, data-event-location=${event.location}" class="event-card card">
 		<div class="event-header">
 			<div class="post-meta">
 				<h3 th:text="${event.name}"
