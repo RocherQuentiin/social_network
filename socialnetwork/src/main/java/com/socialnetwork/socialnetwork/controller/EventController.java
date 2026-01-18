@@ -89,36 +89,8 @@ public class EventController {
 		return this.UserController.showUserProfil(request, model);
 	}
 
-	@GetMapping("{id}")
-	public String getEvent(HttpServletRequest request, Model model, @PathVariable("id") String id) {
-		Object userIsConnect = Utils.validPage(request, true);
-		model.addAttribute("isConnect", userIsConnect);
-		if (userIsConnect == null) {
-			return "accueil";
-		}
-
-		ResponseEntity<Event> event = this.eventService.getEventByID(UUID.fromString(id));
-
-		if (event.getStatusCode() != HttpStatusCode.valueOf(200)) {
-			return "accueil";
-		}
-		Optional<EventAttendee> attendeeExist = event.getBody().getEventAttendee().stream()
-				.filter(x -> x.getUser().getId().equals(UUID.fromString(userIsConnect.toString()))).findFirst();
-
-		model.addAttribute("eventinfo", event.getBody());
-		if (attendeeExist.isPresent()) {
-			model.addAttribute("attendee", attendeeExist.get());
-		}
-		
-		List<EventAttendee> participants = event.getBody().getEventAttendee().stream().filter(x -> x.getStatus().equals(EventAttendanceStatus.ACCEPTED)).collect(Collectors.toList()); 
-		
-		model.addAttribute("particpantsCpt", participants.size());
-		model.addAttribute("participants", participants);
-		return "event";
-	}
-
 	@PutMapping("{id}")
-	public ResponseEntity<?> updatePost(@PathVariable("id") UUID id, @RequestBody EventDto body,
+	public ResponseEntity<?> updateEvent(@PathVariable("id") UUID id, @RequestBody EventDto body,
 			HttpServletRequest request) {
 		Object userIsConnect = Utils.validPage(request, true);
 		if (userIsConnect == null) {
@@ -137,18 +109,23 @@ public class EventController {
 
 		if (body.getEventName().trim().equals("") || body.getEventDate() == null
 				|| body.getEventLocation().trim().equals("") || body.getEventVisibility().equals("")) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Fill all the inputs");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Remplir l'ensemble des champs");
+		}
+		
+		if(body.getEventCapacity() < event.getBody().getCapacity()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Capacité minimum : " + event.getBody().getCapacity());
 		}
 
 		ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Paris"));
 		LocalDateTime eventDate = LocalDateTime.parse(body.getEventDate());
 
 		if (eventDate.isBefore(now.toLocalDateTime()) || eventDate.isEqual(now.toLocalDateTime())) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("The date must be superior than the actual date");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("La date doit être supérieur a celle actuel");
 		}
 
 		event.getBody().setName(body.getEventName());
 		event.getBody().setVisibilityType(body.getEventVisibility());
+		event.getBody().setCapacity(body.getEventCapacity());
 		event.getBody().setEventDate(eventDate);
 		event.getBody().setLocation(body.getEventLocation());
 		event.getBody().setDescription(body.getEventDescription());

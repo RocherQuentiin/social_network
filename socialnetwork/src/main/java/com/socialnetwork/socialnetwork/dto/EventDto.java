@@ -7,6 +7,7 @@ public class EventDto {
 	private String eventDate;
 	private String eventLocation;
 	private String eventDescription;
+	private int eventCapacity;
 	private VisibilityType eventVisibility;
 	public String getEventName() {
 		return eventName;
@@ -38,6 +39,13 @@ public class EventDto {
 	public void setEventVisibility(VisibilityType eventVisibility) {
 		this.eventVisibility = eventVisibility;
 	}
+	public int getEventCapacity() {
+		return eventCapacity;
+	}
+	public void setEventCapacity(int eventCapacity) {
+		this.eventCapacity = eventCapacity;
+	}
+	
 
 	
 }

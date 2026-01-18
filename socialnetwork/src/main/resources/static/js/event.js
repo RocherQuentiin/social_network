@@ -6,28 +6,51 @@ var closeEventEditModal = byId('closeEventEditModal');
 var eventSave = byId('btn-event-submit');
 
 var joinEvent = document.querySelectorAll('.btn-join-event');
-var quitEvent = byId('btn-quit-event');
+var quitEvent = document.querySelectorAll('.btn-quit');
 
-function openModal() { if (editModal) editModal.style.display = 'flex'; }
+function openModal(elm) { 
+	var currentEditId = byId('eventId');
+	var eventName = byId('eventName');
+	var eventDate = byId('eventDate');
+	var eventCapacity = byId('eventCapacity');
+	var eventLocation = byId('eventLocation');
+	var eventVisibility = byId('eventVisibility');
+	var eventDescription = byId('eventDescription');
+	
+	
+	currentEditId.value = elm.currentTarget.getAttribute('data-id');
+	eventName.value = elm.currentTarget.getAttribute('data-name');
+	eventDate.value = elm.currentTarget.getAttribute('data-date');
+	eventCapacity.value = elm.currentTarget.getAttribute('data-capacity');
+	eventCapacity.min = elm.currentTarget.getAttribute('data-capacity');
+	eventLocation.value = elm.currentTarget.getAttribute('data-location');
+	eventDescription.value = elm.currentTarget.getAttribute('data-description');
+	eventVisibility.value = elm.currentTarget.getAttribute('data-visibility');
+	
+	if (editModal){ 
+		editModal.style.display = 'flex'; 
+	}
+}
 function closeModal() { if (editModal) editModal.style.display = 'none'; currentEditId = null; }
 
 if (closeEventEditModal) closeEventEditModal.addEventListener('click', function() { closeModal(); });
 
 btnEditModal.forEach(elm => {
-  console.log(elm);
-  elm.addEventListener('click', openModal);
+  elm.addEventListener('click', openModal, elm);
 });
 
 
 joinEvent.forEach(elm => {
-  console.log(elm);
   elm.addEventListener('click', joinEventUser, elm);
 });
 
+quitEvent.forEach(elm => {
+  elm.addEventListener('click', quitEventUser, elm);
+});
+
+
 
 if (eventSave) eventSave.addEventListener('click', function() { editEvent(); });
-
-if (quitEvent) quitEvent.addEventListener('click', function(e) { quitEventUser(e); });
 
 function joinEventUser(el) {
 	let eventID = el.currentTarget.getAttribute('data-id');
@@ -73,7 +96,7 @@ function editEvent() {
 	}).then(function(r) {
 		if (r.ok) { closeModal(); window.location.reload(); }
 		else if (r.status === 403) { alert('Accès refusé'); }
-		else { r.text().then(function(t) { console.error(t); alert('Erreur lors de la sauvegarde'); }); }
+		else { r.text().then(function(t) { console.error(t); alert(t); }); }
 	}).catch(function(err) { console.error(err); alert('Erreur réseau'); });
 }
 

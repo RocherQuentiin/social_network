@@ -1,51 +1,68 @@
 <div th:fragment="events-fragment">
-    <h2 class="section-title" style="color: white; margin-bottom: 20px;">Annonces à la une</h2>
+	<h2 class="section-title" style="color: white; margin-bottom: 20px;">Annonces
+		à la une</h2>
 
-    <article th:each="event : ${events}" class="event-card card">
-        <div class="event-header">
-            <div class="post-meta">
-                <h3 th:text="${event.name}" style="color: var(--primary); margin:0;"></h3>
-                <p><span th:text="${event.creator.lastName}"></span> <span th:text="${event.creator.firstName}"></span></p>
-            </div>
-        </div>
+	<article th:each="event : ${events}" th:with="attendee=${!#lists.isEmpty(
+       event.eventAttendee.?[
+           user.id == #vars.isConnect and status != 'DECLINED'
+       ]
+   )}" class="event-card card">
+		<div class="event-header">
+			<div class="post-meta">
+				<h3 th:text="${event.name}"
+					style="color: var(- -primary); margin: 0;"></h3>
+				<p>
+					<span th:text="${event.creator.lastName}"></span> <span
+						th:text="${event.creator.firstName}"></span>
+				</p>
+			</div>
+		</div>
 
-        <div class="event-description">
-            <p th:text="${event.description}"></p>
-        </div>
+		<div class="event-description">
+			<p th:text="${event.description}"></p>
+		</div>
 
-        <div class="event-grid-info">
-            <p><i data-lucide="map-pin"></i> <span th:text="${event.location}"></span></p>
-            <p><i data-lucide="users"></i> <span th:text="${event.capacity}"></span> places</p>
-            <p><i data-lucide="eye"></i> <span th:text="${event.visibilityType}"></span></p>
-            <p><i data-lucide="calendar"></i><span class="event-date-period" th:attr="data-timestamp=${event.eventDate}"></span></p>
-        </div>
+		<div class="event-grid-info">
+			<p>
+				<i data-lucide="map-pin"></i> <span th:text="${event.location}"></span>
+			</p>
+			<p>
+				<i data-lucide="users"></i> <span th:text="${event.capacity}"></span>
+				places
+			</p>
+			<p>
+				<i data-lucide="eye"></i> <span th:text="${event.visibilityType}"></span>
+			</p>
+			<p>
+				<i data-lucide="calendar"></i><span class="event-date-period"
+					th:attr="data-timestamp=${event.eventDate}"></span>
+			</p>
+		</div>
 
-        <div class="event-participants">
-            <p class="participants-label">Participants inscrits</p>
-            <div class="participants-list">
-                <span class="participant-tag" th:each="participant : ${participants}">
-                    <span th:text="${participant.user.firstName}"></span>
-                    <span th:text="${participant.user.lastName}"></span>
-                </span>
-                <span th:if="${#lists.isEmpty(participants)}" style="font-size: 0.8rem; font-style: italic; opacity: 0.5;">Aucun inscrit pour le moment</span>
-            </div>
-        </div>
+		<div class="event-participants">
+			<p class="participants-label">Participants inscrits</p>
+			<div class="participants-list">
+				<span class="participant-tag"
+					th:each="participant : ${event.eventAttendee}"> <span
+					th:text="${participant.user.firstName}"></span> <span
+					th:text="${participant.user.lastName}"></span>
+				</span> <span th:if="${#lists.isEmpty(event.eventAttendee)}"
+					style="font-size: 0.8rem; font-style: italic; opacity: 0.5;">Aucun
+					inscrit pour le moment</span>
+			</div>
+		</div>
 
-        <div class="event-footer">
-            <a th:if="${event.creator.id != isConnect && attendee == null && particpantsCpt < event.capacity}"
-               th:attr="data-id=${event.id}" id="btn-join-event" class="btn-primary-header btn-join-event">
-                Rejoindre l'événement
-            </a>
-
-            <a th:if="${event.creator.id == isConnect}"
-               id="btn-edit" class="btn-primary-header editEventModal">
-                Editer l'événement
-            </a>
-
-            <a th:if="${event.creator.id != isConnect && attendee != null && attendee.status != 'DECLINED'}"
-               th:attr="data-id=${event.id}" id="btn-quit-event" class="btn-event btn-quit">
-                Quitter
-            </a>
-        </div>
-    </article>
+		<div class="event-footer">
+			<a
+				th:if="${event.creator.id != isConnect && #lists.size(event.eventAttendee) < event.capacity && !attendee}"
+				th:attr="data-id=${event.id}" id="btn-join-event"
+				class="btn-primary-header btn-join-event"> Rejoindre l'événement
+			</a> <a th:if="${event.creator.id == isConnect}" id="btn-edit"
+				class="btn-primary-header editEventModal" th:attr="data-id=${event.id}, data-name=${event.name}, data-name=${event.name}, data-name=${event.name}, data-date=${event.eventDate}, data-capacity=${event.capacity}, data-location=${event.location}, data-visibility=${event.visibilityType}, data-description=${event.description}"> Editer l'événement </a> 
+				
+				<a th:if="${event.creator.id != isConnect && attendee}"
+				th:attr="data-id=${event.id}" class="btn-event btn-quit">
+				Quitter </a>
+		</div>
+	</article>
 </div>
