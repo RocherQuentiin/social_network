@@ -43,9 +43,10 @@
 			<p class="participants-label">Participants inscrits</p>
 			<div class="participants-list">
 				<span class="participant-tag"
-					th:each="participant : ${event.eventAttendee}"> <span
-					th:text="${participant.user.firstName}"></span> <span
+					th:each="participant : ${event.eventAttendee}" th:if="${participant.status.toString() == 'ACCEPTED' || participant.status.toString() == 'PENDING'}"> <span 
+					th:text="${participant.user.firstName}"></span> <span 
 					th:text="${participant.user.lastName}"></span>
+					<span th:if="${participant.status.toString() == 'PENDING'}">En attente</span>
 				</span> <span th:if="${#lists.isEmpty(event.eventAttendee)}"
 					style="font-size: 0.8rem; font-style: italic; opacity: 0.5;">Aucun
 					inscrit pour le moment</span>

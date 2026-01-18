@@ -172,27 +172,14 @@ document.addEventListener('DOMContentLoaded', function(){
 		}
 	}
 
-    const announcements = document.querySelectorAll(".announcement-item");
+
     const eventActions = document.querySelectorAll(".eventAction");
 
-    announcements.forEach(el => {
-        el.addEventListener('click', GoToEvent);
-    });
 
     eventActions.forEach(el => {
         el.addEventListener('click', GoToEvent);
     });
 
-    function GoToEvent(e) {
-        const target = e.currentTarget;
-        const eventId = target.getAttribute('event-id');
-
-        if (eventId) {
-            window.location.href = "/event/" + eventId;
-        } else {
-            console.error("ID de l'événement introuvable sur l'élément:", target);
-        }
-    }
 
 const eventInputSearch = document.getElementById("event-search");
 const annoucement = document.querySelectorAll(".announcement-part.card");
