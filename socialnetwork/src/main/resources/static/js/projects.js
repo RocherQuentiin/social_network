@@ -94,50 +94,46 @@ function closeModal(modalId) {
 }
 
 async function loadUserProjects() {
-    const projectsList = document.getElementById('user-projects');
-    if (!projectsList) return;
-
-    // 1. On affiche un petit spinner ou un texte discret au lieu d'une alerte
-    projectsList.innerHTML = '<p class="loading-text">Chargement de vos projets...</p>';
-
     try {
         const response = await fetch('/api/project/my-projects?t=' + Date.now(), {
             method: 'GET',
-            headers: { 'Accept': 'application/json' }
+            headers: {
+                'Accept': 'application/json'
+            }
         });
 
-        if (response.status === 204) {
-            displayNoProjects();
-            return;
+        if (!response.ok) {
+            if (response.status === 204) {
+                // No projects
+                displayNoProjects();
+                return;
+            }
+            throw new Error('Failed to load projects');
         }
 
-        if (!response.ok) throw new Error('Erreur serveur');
-
         const projects = await response.json();
-        // On n'appelle displayProjects que si on a vraiment des données
         displayProjects(projects);
-
     } catch (error) {
         console.error('Error loading projects:', error);
-        // On ne met l'alerte QUE si c'est une vraie erreur critique
-        projectsList.innerHTML = '<p class="error-text">Impossible de charger vos projets pour le moment.</p>';
+        showAlert('Erreur lors du chargement des projets', 'error');
     }
 }
 
-async function displayProjects(projects) {
+function displayProjects(projects) {
     const projectsList = document.getElementById('user-projects');
-
-    // On prépare toutes les cartes en mémoire d'abord
-    const cardPromises = projects.map(async (project) => {
-        const userRole = await getUserRoleInProject(project.id);
-        return createProjectCard(project, userRole);
-    });
-
-    const cards = await Promise.all(cardPromises);
-
-    // SEULEMENT ICI on vide le "Chargement..." pour mettre les projets
     projectsList.innerHTML = '';
-    cards.forEach(card => projectsList.appendChild(card));
+
+    if (!projects || projects.length === 0) {
+        displayNoProjects();
+        return;
+    }
+
+    // Load projects with their roles
+    projects.forEach(async (project) => {
+        const userRole = await getUserRoleInProject(project.id);
+        const projectCard = createProjectCard(project, userRole);
+        projectsList.appendChild(projectCard);
+    });
 }
 
 
@@ -208,30 +204,37 @@ async function loadPublicProjects() {
     const container = document.getElementById('public-projects');
     if (!container) return;
 
+    container.innerHTML = '';
     try {
-        const response = await fetch('/api/project/public?t=' + Date.now());
-        if (!response.ok) throw new Error('Failed to load');
+        const response = await fetch('/api/project/public?t=' + Date.now(), {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+        });
+        if (!response.ok) {
+            if (response.status === 204) {
+                container.innerHTML = `<div class="empty-state"><p>Aucun projet public pour l'instant.</p></div>`;
+                return;
+            }
+            throw new Error('Failed to load public projects');
+        }
 
         const projects = await response.json();
         const currentUserId = getCurrentUserId();
         const userRequests = await fetchUserRequestsMap();
 
-        container.innerHTML = '';
+        // Filter out projects created by self
         const filtered = projects.filter(p => p?.creator?.id !== currentUserId);
 
-        // Rendu parallèle
-        const publicCardsPromises = filtered.map(async (project) => {
+        // Render each with role check to hide join if already member
+        for (const project of filtered) {
             const role = await getUserRoleInProject(project.id);
             const reqStatus = role === 'NONE' ? userRequests[project.id] : null;
-            return createPublicProjectCard(project, role, reqStatus);
-        });
-
-        const cards = await Promise.all(publicCardsPromises);
-        cards.forEach(card => container.appendChild(card));
-
+            const card = createPublicProjectCard(project, role, reqStatus);
+            container.appendChild(card);
+        }
     } catch (e) {
         console.error('Error loading public projects:', e);
-        container.innerHTML = `<div class="empty-state"><p>Erreur de chargement.</p></div>`;
+        container.innerHTML = `<div class="empty-state"><p>Erreur de chargement des projets publics.</p></div>`;
     }
 }
 
