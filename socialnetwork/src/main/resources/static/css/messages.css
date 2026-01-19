@@ -196,8 +196,7 @@
 }
 
 .btn-create-group {
-    width: 36px;
-    height: 36px;
+    padding: 5px 10px;
     border-radius: 8px;
     background: var(--gold);
     color: white;
@@ -1172,6 +1171,7 @@
     .btn-create-group {
         width: 32px;
         height: 32px;
+        padding: 25px;
     }
 
     /* Notifications List Mobile */
@@ -1593,7 +1593,8 @@
     background: var(--accent, #1d9bf0);
     color: white;
     border: none;
-    padding: 0 20px;
+    margin-top: 5px ;
+    padding: 10px 20px;
     border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
@@ -1608,6 +1609,7 @@
     transform: translateY(-1px);
     filter: brightness(1.1);
 }
+
 
 /* ==========================================
    MODALS & GLASS CARDS

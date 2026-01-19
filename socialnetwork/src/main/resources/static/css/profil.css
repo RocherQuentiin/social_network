@@ -341,6 +341,28 @@
     transform: translateY(0);
 }
 
+.btn-profil {
+    border: solid 1px var(--primary);
+    text-decoration: none;
+    font-size: 13px;
+    color: white;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-profil:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    padding: 8px 27px;
+    background-color: var(--primary);
+}
+
 .type-tag {
     font-size: 0.7rem;
     background: rgba(255, 255, 255, 0.1);
@@ -664,5 +686,5 @@ textarea {
 }
 
 .btn-change-password{
-	margin : 20px;
+	margin-top: 20px;
 }
