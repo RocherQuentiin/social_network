@@ -46,11 +46,11 @@
 					</div>
 				</div>
 				<div class="btn-infos">
-					<a th:href="@{/editProfil}" class="btn-profil">Modifier Profil</a> <a th:href="@{/privacy}" class="btn-profil">Données
+					<a th:href="@{/editProfil}" class="btn-primary-header">Modifier Profil</a> <a th:href="@{/privacy}" class="btn-primary-header">Données
 						privée</a>
 				</div>
 				<div class="btn-infos btn-change-password">
-					<a th:href="@{/changePassword}" class="btn-profil">Mot de passe</a>
+					<a th:href="@{/changePassword}" class="btn-primary-header">Mot de passe</a>
 				</div>
 				
 			</div>
@@ -326,6 +326,7 @@
 	<script>
 		// Pass user ID to JavaScript
 		window.currentUserId = '[[${isConnect}]]';
+		window.viewedUserId = '[[${userProfile.user.id}]]';
 		// Initialize lucide icons
 		if (typeof lucide !== 'undefined') {
 			lucide.createIcons();
