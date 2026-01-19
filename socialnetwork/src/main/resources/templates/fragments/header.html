@@ -40,6 +40,7 @@
             <span>Messages</span>
             <span id="unread-messages-badge-mobile" class="notification-badge" style="display: none;"></span>
         </a>
+        <a  th:if="${isConnect != null}" th:href="@{/projects}">Projets</a>
         <a  th:if="${isConnect != null}" th:href="@{/profil}">Mon Profil</a>
         <a th:if="${session.userRole == 'ADMIN'}" th:href="@{/admin/dashboard}" style="color:var(--primary); font-weight:600;">Administration</a>
         <div th:if="${isConnect == null}"><a th:href="@{/login}" class="btn-primary-header-mini">Connexion</a></div>
