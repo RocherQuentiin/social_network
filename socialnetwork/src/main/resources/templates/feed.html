@@ -7,7 +7,6 @@
 	<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
 	<link rel="stylesheet" th:href="@{/css/header.css}">
 	<link rel="stylesheet" th:href="@{/css/feed.css}">
-	<link rel="stylesheet" th:href="@{/css/project.css}">
 	<script src="https://unpkg.com/lucide@latest"></script>
 	<meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}" />
 	<meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}" />
@@ -43,8 +42,6 @@
 		<nav class="side-nav card">
 			<a href="#" class="nav-item active" id="showPosts"><i data-lucide="home"></i> Fil d'actualité</a>
 			<a href="#" class="nav-item" id="showEvents"><i data-lucide="megaphone"></i> Annonces</a>
-			<a href="#" class="nav-item" id="showProjects"><i data-lucide="message-square"></i> Projets</a>
-			<a href="#" class="nav-item"><i data-lucide="calendar"></i> Calendrier</a>
 			<hr>
 			<a href="/privacy" class="nav-item"><i data-lucide="settings"></i> Paramètres</a>
 		</nav>
@@ -164,9 +161,6 @@
 		<div id="eventsContainer" style="display: none;">
 			<div th:replace="~{events :: events-fragment}"></div>
 		</div>
-		<div id="projectsContainer" style="display: none;">
-			<div th:replace="~{projects :: projects-fragment}"></div>
-		</div>
 
 	</main>
 
@@ -283,7 +277,6 @@
 <script th:src="@{/js/reactions.js}"></script>
 <script th:src="@{/js/comments.js}"></script>
 <script th:src="@{/js/event.js}"></script>
-<script th:src="@{/js/project.js}"></script>
 <script>
 
 		// LOGIQUE DE BASCULEMENT
@@ -314,10 +307,6 @@
 			btn: document.getElementById('showEvents'),
 			cont: document.getElementById('eventsContainer')
 		},
-			projects: {
-			btn: document.getElementById('showProjects'),
-			cont: document.getElementById('projectsContainer')
-		}
 		};
 
 			const sideList = document.getElementById('announcementsSideList');
@@ -325,37 +314,33 @@
 			const pubArea = document.getElementById('publishArea');
 
 			// 3. Fonction de basculement
-			function switchTab(mode) {
-			console.log("Basculement vers : " + mode);
+				// 3. Fonction de basculement
+				function switchTab(mode) {
+					console.log("Basculement vers : " + mode);
 
-			Object.keys(tabs).forEach(key => {
-			const tab = tabs[key];
-			if (tab.cont) {
-			tab.cont.style.display = (key === mode) ? 'block' : 'none';
-		}
-			if (tab.btn) {
-			if (key === mode) tab.btn.classList.add('active');
-			else tab.btn.classList.remove('active');
-		}
-		});
+					Object.keys(tabs).forEach(key => {
+						const tab = tabs[key];
+						if (tab.cont) {
+							tab.cont.style.display = (key === mode) ? 'block' : 'none';
+						}
+						if (tab.btn) {
+							if (key === mode) tab.btn.classList.add('active');
+							else tab.btn.classList.remove('active');
+						}
+					});
 
-			// Éléments spécifiques
-			if (pubArea) pubArea.style.display = (mode === 'posts') ? 'block' : 'none';
-			if (sideList) sideList.style.display = (mode === 'posts') ? 'block' : 'none';
-			if (sideForm) sideForm.style.display = (mode === 'events') ? 'block' : 'none';
+					// Éléments spécifiques à droite (Sidebar)
+					if (pubArea) pubArea.style.display = (mode === 'posts') ? 'block' : 'none';
+					if (sideList) sideList.style.display = (mode === 'posts') ? 'block' : 'none';
+					if (sideForm) sideForm.style.display = (mode === 'events') ? 'block' : 'none';
 
-			// Charger les projets si la fonction existe dans projects.js
-			if (mode === 'projects' && typeof loadProjects === 'function') {
-			loadProjects();
-		}
 
-			lucide.createIcons();
-		}
+					lucide.createIcons();
+				}
 
 			// 4. Assignation des événements
 			if (tabs.posts.btn) tabs.posts.btn.onclick = (e) => { e.preventDefault(); switchTab('posts'); };
 			if (tabs.events.btn) tabs.events.btn.onclick = (e) => { e.preventDefault(); switchTab('events'); };
-			if (tabs.projects.btn) tabs.projects.btn.onclick = (e) => { e.preventDefault(); switchTab('projects'); };
 
 			// Affichage par défaut
 			switchTab('posts');
