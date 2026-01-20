@@ -1329,13 +1329,13 @@
         display: none !important;
     }
 
-    #createEventArea {
-        display: block !important;
-        margin-bottom: 20px;
-        width: 100%;
+    .feed-main {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
     }
 
-    #eventsContainer {
-        display: block !important;
+    #postsContainer, #eventsContainer {
+        width: 100%;
     }
 }
