@@ -134,12 +134,20 @@
 					<a th:href="@{/projects}" class="modifier-btn">Voir tout</a>
 				</div>
 				<div id="user-projects-profile" class="projects-grid">
-					<!-- Projects will be loaded dynamically -->
-					<div class="card add-project-placeholder" id="add-project-card">
-						<div class="plus-circle">
-							<i data-lucide="plus"></i>
+					<div th:each="project : ${myProjects}" class="card project-item">
+						<div class="project-info">
+							<h4>
+								<span th:text="${project.name}">Nom Projet</span>
+								<span class="type-tag" th:text="${project.visibilityType}">Public</span>
+							</h4>
+							<p th:text="${#strings.abbreviate(project.description, 80)}">Description...</p>
+							<a th:href="@{/projects}" class="details-link">Gérer <i data-lucide="arrow-right"></i></a>
 						</div>
-						<strong>Ajouter un projet</strong> 
+					</div>
+
+					<div class="card add-project-placeholder" id="add-project-card" onclick="window.location.href='/projects'">
+						<div class="plus-circle"><i data-lucide="plus"></i></div>
+						<strong>Ajouter un projet</strong>
 						<span>Montrez vos réalisations académiques</span>
 					</div>
 				</div>
