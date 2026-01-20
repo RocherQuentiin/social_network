@@ -10,22 +10,8 @@ if (friendRequestButtons.length > 0) {
 	});
 }
 
-function showAlert(message, type = 'info') {
-    // Create a simple alert - you can replace this with a toast notification
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type} active`;
-    alertDiv.textContent = message;
-    
-    document.body.insertBefore(alertDiv, document.body.firstChild);
-    
-    setTimeout(() => {
-        alertDiv.remove();
-    }, 3000);
-}
-
 function handleFriendRequest(event) {
-
-	const button = event.target == undefined ? event : event.target;
+	const button = event.currentTarget;
 	const userId = button.getAttribute('data-id');
 	const action = button.getAttribute('data-action') || 'send';
 
@@ -51,22 +37,22 @@ function handleFriendRequest(event) {
 			button.textContent = originalText;
 
 			if (response.status === 200) {
-				showAlert('Opération réussie! La page va se recharger...', 'success');
+				customAlert('Succès', 'Opération réussie! La page va se recharger...', 'success');
 				setTimeout(() => window.location.reload(), 1500);
 			} else if (response.status === 409) {
-				showAlert('Cette demande existe déjà ou vous êtes déjà amis', 'info');
+				customAlert('Information', 'Cette demande existe déjà ou vous êtes déjà amis', 'info');
 				button.disabled = false;
 			} else if (response.status === 403) {
-				showAlert('Cet utilisateur n\'autorise pas les demandes pour le moment.', 'error');
+				customAlert('Accès refusé', 'Cet utilisateur n\'autorise pas les demandes pour le moment.', 'error');
 				button.disabled = false;
 			} else {
-				showAlert('Une erreur s\'est produite. Veuillez réessayer.', 'error');
+				customAlert('Erreur', 'Une erreur s\'est produite. Veuillez réessayer.', 'error');
 				button.disabled = false;
 			}
 		})
 		.catch(error => {
 			console.error('Erreur:', error);
-			showAlert('Erreur de connexion. Veuillez réessayer.', 'error');
+			customAlert('Erreur', 'Erreur de connexion. Veuillez réessayer.', 'error');
 			button.disabled = false;
 			button.textContent = originalText;
 		});
@@ -78,38 +64,12 @@ function handleFriendRequest(event) {
 function loadPendingRequests() {
 	fetch('/friend-request/pending', {
 		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json'
-		}
+		headers: { 'Content-Type': 'application/json' }
 	})
-		.then(response => {
-			if (response.status === 200) {
-				return response.json();
-			} else {
-				console.error('Failed to load pending requests');
-				return [];
-			}
-		})
+		.then(response => response.status === 200 ? response.json() : [])
 		.then(requests => {
-			fetch('/eventattendee/pending', {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			})
-				.then(response => {
-					if (response.status === 200) {
-						return response.json();
-					} else {
-						console.error('Failed to load pending requests');
-						return [];
-					}
-				})
-				.then(requestsEvent => {
-					displayReceivedRequests(requests, requestsEvent);
-					loadSentRequests();
-				});
-
+			displayReceivedRequests(requests);
+			loadSentRequests();
 		})
 		.catch(error => console.error('Error loading pending requests:', error));
 }
@@ -120,64 +80,20 @@ function loadPendingRequests() {
 function loadSentRequests() {
 	fetch('/friend-request/sent', {
 		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json'
-		}
+		headers: { 'Content-Type': 'application/json' }
 	})
-		.then(response => {
-			if (response.status === 200) {
-				return response.json();
-			} else {
-				console.error('Failed to load sent requests, status:', response.status);
-				return [];
-			}
-		})
+		.then(response => response.status === 200 ? response.json() : [])
 		.then(requests => {
-			fetch('/eventattendee/sent', {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			})
-				.then(response => {
-					if (response.status === 200) {
-						return response.json();
-					} else {
-						console.error('Failed to load sent requests, status:', response.status);
-						return [];
-					}
-				})
-				.then(requestsEvent => {
-					console.log('Sent requests loaded:', requests);
-					markSentButtons(requests);
-					displaySentRequests(requests, requestsEvent);
-				})
+			markSentButtons(requests);
+			displaySentRequests(requests);
 		})
 		.catch(error => console.error('Error loading sent requests:', error));
-}
-
-function showAlert(message, type = 'info') {
-    // Create a simple alert - you can replace this with a toast notification
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type} active`;
-    alertDiv.textContent = message;
-    
-    document.body.insertBefore(alertDiv, document.body.firstChild);
-    
-    setTimeout(() => {
-        alertDiv.remove();
-    }, 3000);
 }
 
 function markSentButtons(requests) {
 	if (!requests || requests.length === 0) return;
 	const btns = document.querySelectorAll('.btn-friend-request');
-	if (!btns || btns.length === 0) return;
-
-	const sentIds = new Set(requests
-		.map(r => r?.receiver?.id || r?.receiverId)
-		.filter(Boolean)
-	);
+	const sentIds = new Set(requests.map(r => r?.receiver?.id || r?.receiverId).filter(Boolean));
 
 	btns.forEach(btn => {
 		const uid = btn.getAttribute('data-id');
@@ -190,21 +106,16 @@ function markSentButtons(requests) {
 	});
 }
 
-function displayReceivedRequests(requests, requestsEvent) {
+function displayReceivedRequests(requests) {
 	const container = document.getElementById('received-requests-container');
 	if (!container) return;
-
-	if (requests.length === 0 && requestsEvent.length == 0) {
+	if (requests.length === 0) {
 		container.innerHTML = '<p>Pas de demandes reçues.</p>';
 		return;
 	}
-
-	let html = '<div class="pending-requests-list">';
-	html += '<h3>Demandes reçues</h3>';
+	let html = '<div class="pending-requests-list"><h3>Demandes reçues</h3>';
 	requests.forEach(req => {
 		const requesterName = req.requester.firstName + ' ' + req.requester.lastName;
-		const requesterId = req.requester.id;
-
 		html += `
             <div class="pending-request-item">
                 <div class="request-info">
@@ -215,167 +126,48 @@ function displayReceivedRequests(requests, requestsEvent) {
                     <button class="btn btn-success btn-accept" data-id="${req.requester.id}">Accepter</button>
                     <button class="btn btn-danger btn-decline" data-id="${req.requester.id}">Refuser</button>
                 </div>
-            </div>
-        `;
-	});
-
-	requestsEvent.forEach(req => {
-		const eventId = req.event.id;
-		const eventName = req.event.name;
-		const requesterName = req.user.firstName + ' ' + req.user.lastName;
-		const requesterId = req.user.id;
-
-		html += `
-            <div class="pending-request-item">
-                <div class="request-info">
-                    <strong>${requesterName} souhaite participer à l'événement : ${eventName}</strong>
-                    <p>Envoyée le ${new Date(req.createdAt).toLocaleDateString()}</p>
-                </div>
-                <div class="request-actions">
-                    <button class="btn btn-success btn-accept-event" data-event-id="${eventId}" data-user-id="${requesterId}">Accepter</button>
-                    <button class="btn btn-danger btn-decline-event" data-event-id="${eventId}" data-user-id="${requesterId}">Refuser</button>
-                </div>
-            </div>
-        `;
+            </div>`;
 	});
 	html += '</div>';
-
 	container.innerHTML = html;
-
-	// Attach event listeners to accept/decline buttons
-	document.querySelectorAll('.btn-accept').forEach(btn => {
-		btn.addEventListener('click', function() {
-			const requesterId = this.getAttribute('data-id');
-			acceptRequest(requesterId);
-		});
-	});
-
-	document.querySelectorAll('.btn-decline').forEach(btn => {
-		btn.addEventListener('click', function() {
-			const requesterId = this.getAttribute('data-id');
-			declineRequest(requesterId);
-		});
-	});
-
-	// Attach event listeners to accept/decline buttons
-	document.querySelectorAll('.btn-accept-event').forEach(btn => {
-		btn.addEventListener('click', function() {
-			const requesterId = this.getAttribute('data-user-id');
-			const eventId = this.getAttribute('data-event-id');
-			acceptEventRequest(requesterId, eventId);
-		});
-	});
-
-	document.querySelectorAll('.btn-decline-event').forEach(btn => {
-		btn.addEventListener('click', function() {
-			const requesterId = this.getAttribute('data-user-id');
-			const eventId = this.getAttribute('data-event-id');
-			declineEventRequest(requesterId, eventId);
-		});
-	});
+	document.querySelectorAll('.btn-accept').forEach(btn => btn.addEventListener('click', function() { acceptRequest(this.getAttribute('data-id')); }));
+	document.querySelectorAll('.btn-decline').forEach(btn => btn.addEventListener('click', function() { declineRequest(this.getAttribute('data-id')); }));
 }
 
-function displaySentRequests(requests, requestsEvent) {
+function displaySentRequests(requests) {
 	const container = document.getElementById('sent-requests-container');
 	if (!container) return;
-
-	if (requests.length === 0 && requestsEvent.length == 0) {
+	if (requests.length === 0) {
 		container.innerHTML = '<p>Pas de demandes en attente.</p>';
 		return;
 	}
-
-	let html = '<div class="pending-requests-list sent-list">';
-	html += '<h3>Demandes envoyées (en attente)</h3>';
+	let html = '<div class="pending-requests-list sent-list"><h3>Demandes envoyées</h3>';
 	requests.forEach(req => {
 		const receiverName = req.receiver.firstName + ' ' + req.receiver.lastName;
-		const receiverId = req.receiver.id;
-
 		html += `
             <div class="pending-request-item sent-item">
                 <div class="request-info">
-                    <strong class="status-pending">${receiverName}</strong>
+                    <strong>${receiverName}</strong>
                     <p class="status-pending">En attente d'acceptation depuis le ${new Date(req.createdAt).toLocaleDateString()}</p>
                 </div>
-            </div>
-        `;
-	});
-	requestsEvent.forEach(req => {
-		const eventName = req.event.name;
-
-		html += `
-            <div class="pending-request-item sent-item">
-                <div class="request-info">
-                    <strong class="status-pending">Événement : ${eventName}</strong>
-                    <p class="status-pending">En attente d'acceptation depuis le ${new Date(req.createdAt).toLocaleDateString()}</p>
-                </div>
-            </div>
-        `;
+            </div>`;
 	});
 	html += '</div>';
-
 	container.innerHTML = html;
 }
 
 function acceptRequest(requesterId) {
 	fetch('/friend-request/accept', {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
+		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 		body: 'requesterId=' + requesterId
 	})
 		.then(response => {
 			if (response.status === 200) {
-				alert('Friend request accepted!');
+				customAlert('Succès', 'Demande acceptée !', 'success');
 				loadPendingRequests();
 			} else {
-				alert('Failed to accept request');
-			}
-		})
-		.catch(error => console.error('Error:', error));
-}
-
-function acceptEventRequest(requesterId, eventId) {
-	var payload = {
-		requesterId: requesterId,
-		eventId: eventId,
-	};
-	fetch('/eventattendee/accept', {
-		method: 'PUT',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		body: 'requesterId=' + requesterId + '&eventId=' + eventId
-	})
-		.then(response => {
-			if (response.status === 200) {
-				alert('Event join accepted!');
-				loadPendingRequests();
-			} else {
-				alert('Failed to accept request');
-			}
-		})
-		.catch(error => console.error('Error:', error));
-}
-
-function declineEventRequest(requesterId, eventId) {
-	var payload = {
-		requesterId: requesterId,
-		eventId: eventId,
-	};
-	fetch('/eventattendee/decline', {
-		method: 'PUT',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		body: 'requesterId=' + requesterId + '&eventId=' + eventId
-	})
-		.then(response => {
-			if (response.status === 200) {
-				alert('Event join declined!');
-				loadPendingRequests();
-			} else {
-				alert('Failed to declined request');
+				customAlert('Erreur', 'Impossible d\'accepter la demande.', 'error');
 			}
 		})
 		.catch(error => console.error('Error:', error));
@@ -384,17 +176,15 @@ function declineEventRequest(requesterId, eventId) {
 function declineRequest(requesterId) {
 	fetch('/friend-request/decline', {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
+		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 		body: 'requesterId=' + requesterId
 	})
 		.then(response => {
 			if (response.status === 200) {
-				alert('Friend request declined!');
+				customAlert('Refusé', 'Demande déclinée.', 'info');
 				loadPendingRequests();
 			} else {
-				alert('Failed to decline request');
+				customAlert('Erreur', 'Impossible de refuser la demande.', 'error');
 			}
 		})
 		.catch(error => console.error('Error:', error));
@@ -435,6 +225,12 @@ function markAcceptedFriends() {
 		})
 		.catch(err => console.error('Erreur lors du chargement des amis:', err));
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+	loadPendingRequests();
+	loadNotificationBadge();
+	markAcceptedFriends();
+});
 
 function displaySuggestionRequests(requests) {
 	const container = document.getElementById('suggestions-container');
