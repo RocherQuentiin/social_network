@@ -18,6 +18,17 @@
 
 <div th:replace="~{fragments/header :: header-fragment}"></div>
 
+<div class="mobile-tabs-nav">
+	<button class="mobile-tab-btn active" id="mobileShowPosts">
+		<i data-lucide="home"></i>
+		<span>Fil</span>
+	</button>
+	<button class="mobile-tab-btn" id="mobileShowEvents">
+		<i data-lucide="megaphone"></i>
+		<span>Annonces</span>
+	</button>
+</div>
+
 <div class="container blog-layout">
 
 	<aside class="sidebar-left">
@@ -278,83 +289,107 @@
 <script th:src="@{/js/comments.js}"></script>
 <script th:src="@{/js/event.js}"></script>
 <script>
+	// Initialisation globale
+	lucide.createIcons();
 
-		// LOGIQUE DE BASCULEMENT
-			lucide.createIcons();
+	document.addEventListener("DOMContentLoaded", function() {
+		moment.locale('fr');
 
-			document.addEventListener("DOMContentLoaded", function() {
-			moment.locale('fr');
-
-			// 1. Formatage des dates
-			const formatDate = () => {
+		// 1. Formatage des dates
+		const formatDate = () => {
 			document.querySelectorAll('.post-date, .event-date-period').forEach(el => {
-			const raw = el.getAttribute('data-timestamp');
-			if (raw) {
-			const m = moment(raw);
-			el.innerText = el.classList.contains('post-date') && moment().diff(m, 'hours') < 24 ? m.fromNow() : m.format('D MMMM YYYY');
-		}
-		});
-		};
-			formatDate();
-
-			// 2. Éléments pour le basculement
-			const tabs = {
-			posts: {
-			btn: document.getElementById('showPosts'),
-			cont: document.getElementById('postsContainer')
-		},
-			events: {
-			btn: document.getElementById('showEvents'),
-			cont: document.getElementById('eventsContainer')
-		},
-		};
-
-			const sideList = document.getElementById('announcementsSideList');
-			const sideForm = document.getElementById('createEventArea');
-			const pubArea = document.getElementById('publishArea');
-
-			// 3. Fonction de basculement
-				// 3. Fonction de basculement
-				function switchTab(mode) {
-					console.log("Basculement vers : " + mode);
-
-					Object.keys(tabs).forEach(key => {
-						const tab = tabs[key];
-						if (tab.cont) {
-							tab.cont.style.display = (key === mode) ? 'block' : 'none';
-						}
-						if (tab.btn) {
-							if (key === mode) tab.btn.classList.add('active');
-							else tab.btn.classList.remove('active');
-						}
-					});
-
-					// Éléments spécifiques à droite (Sidebar)
-					if (pubArea) pubArea.style.display = (mode === 'posts') ? 'block' : 'none';
-					if (sideList) sideList.style.display = (mode === 'posts') ? 'block' : 'none';
-					if (sideForm) sideForm.style.display = (mode === 'events') ? 'block' : 'none';
-
-
-					lucide.createIcons();
+				const raw = el.getAttribute('data-timestamp');
+				if (raw) {
+					const m = moment(raw);
+					el.innerText = el.classList.contains('post-date') && moment().diff(m, 'hours') < 24 ? m.fromNow() : m.format('D MMMM YYYY');
 				}
+			});
+		};
+		formatDate();
 
-			// 4. Assignation des événements
-			if (tabs.posts.btn) tabs.posts.btn.onclick = (e) => { e.preventDefault(); switchTab('posts'); };
-			if (tabs.events.btn) tabs.events.btn.onclick = (e) => { e.preventDefault(); switchTab('events'); };
+		// 2. Définition des éléments (Accessibles dans toute la fonction DOMContentLoaded)
+		const tabs = {
+			posts: {
+				btn: document.getElementById('showPosts'),
+				cont: document.getElementById('postsContainer')
+			},
+			events: {
+				btn: document.getElementById('showEvents'),
+				cont: document.getElementById('eventsContainer')
+			},
+		};
 
-			// Affichage par défaut
-			switchTab('posts');
-		});
+		const sideList = document.getElementById('announcementsSideList');
+		const sideForm = document.getElementById('createEventArea');
+		const pubArea = document.getElementById('publishArea');
+		const mobileBtnPosts = document.getElementById('mobileShowPosts');
+		const mobileBtnEvents = document.getElementById('mobileShowEvents');
 
-			// Logique des Modaux (Hors DOMContentLoaded pour être accessible par les onclick HTML)
-			const modal = document.getElementById('editModal');
-			const closeBtn = document.getElementById('closeEditModal');
-			if(closeBtn) closeBtn.onclick = () => modal.style.display = "none";
+		// 3. LA fonction de basculement (Unique et complète)
+		window.switchTab = function(mode) {
+			console.log("Basculement vers : " + mode);
 
-			function openEditModalFromButton(btn) {
-			if(modal) modal.style.display = "flex";
-		}
+			// Gérer l'affichage des sections principales
+			Object.keys(tabs).forEach(key => {
+				if (tabs[key].cont) tabs[key].cont.style.display = (key === mode) ? 'block' : 'none';
+				if (tabs[key].btn) {
+					if (key === mode) tabs[key].btn.classList.add('active');
+					else tabs[key].btn.classList.remove('active');
+				}
+			});
 
+			// Gérer les boutons mobiles
+			if(mobileBtnPosts && mobileBtnEvents) {
+				if(mode === 'posts') {
+					mobileBtnPosts.classList.add('active');
+					mobileBtnEvents.classList.remove('active');
+				} else {
+					mobileBtnEvents.classList.add('active');
+					mobileBtnPosts.classList.remove('active');
+				}
+			}
+
+			// Gérer le formulaire de création d'événement (Le déplacement mobile)
+			if (mode === 'events') {
+				if (window.innerWidth <= 992) {
+					// MOBILE : On déplace le formulaire dans le flux principal
+					if (sideForm && tabs.events.cont) {
+						tabs.events.cont.prepend(sideForm);
+						sideForm.style.display = 'block';
+					}
+				} else {
+					// DESKTOP : Il reste dans la sidebar (assurez-vous que sidebar-right est visible en CSS)
+					if (sideForm) sideForm.style.display = 'block';
+				}
+			} else {
+				if (sideForm) sideForm.style.display = 'none';
+			}
+
+			// Gestion des autres éléments
+			if (pubArea) pubArea.style.display = (mode === 'posts') ? 'block' : 'none';
+			if (sideList) sideList.style.display = (mode === 'posts') ? 'block' : 'none';
+
+			lucide.createIcons();
+		};
+
+		// 4. Assignation des événements
+		if (tabs.posts.btn) tabs.posts.btn.onclick = (e) => { e.preventDefault(); switchTab('posts'); };
+		if (tabs.events.btn) tabs.events.btn.onclick = (e) => { e.preventDefault(); switchTab('events'); };
+		if (mobileBtnPosts) mobileBtnPosts.onclick = () => switchTab('posts');
+		if (mobileBtnEvents) mobileBtnEvents.onclick = () => switchTab('events');
+
+		// Affichage par défaut
+		switchTab('posts');
+	});
+
+	// Logique des Modaux
+	const modal = document.getElementById('editModal');
+	const closeBtn = document.getElementById('closeEditModal');
+	if(closeBtn) closeBtn.onclick = () => modal.style.display = "none";
+
+	function openEditModalFromButton(btn) {
+		if(modal) modal.style.display = "flex";
+	}
 </script>
 </body>
 </html>
