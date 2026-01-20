@@ -707,3 +707,29 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+//affichage sur petit ecrant
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.querySelector('.messaging-container');
+    const backBtn = document.getElementById('btnBackToConversations');
+
+    document.getElementById('conversationsList').addEventListener('click', function(e) {
+        const item = e.target.closest('.conversation-item');
+        if (item) {
+
+            container.classList.add('chat-open');
+        }
+    });
+
+    document.getElementById('projectGroupsList').addEventListener('click', function(e) {
+        if (e.target.closest('.conversation-item')) {
+            container.classList.add('chat-open');
+        }
+    });
+
+    if (backBtn) {
+        backBtn.addEventListener('click', function() {
+            container.classList.remove('chat-open');
+        });
+    }
+});
