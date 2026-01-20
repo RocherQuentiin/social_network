@@ -23,7 +23,7 @@
                     <form th:action="@{/users/search}" method="get" class="search-bar-wrapper">
                         <div class="search-input-group">
                             <i data-lucide="search"></i>
-                            <input type="text" name="query" placeholder="Rechercher par nom...">
+                            <input id="directorySearch" type="text" name="query" placeholder="Rechercher par nom...">
                         </div>
                         <button type="submit" class="btn-publish">Rechercher</button>
                     </form>
@@ -48,6 +48,8 @@
                         <button class="chip">2024</button>
                         <button class="chip">2025</button>
                         <button class="chip">2026</button>
+                        <button class="chip">2027</button>
+                        <button class="chip">2028</button>
                     </div>
                 </div>
             </section>
@@ -70,23 +72,32 @@
                                  alt="Avatar">
                             <span class="online-badge"></span>
                         </div>
-                        <button class="btn-more-small"><i data-lucide="more-vertical"></i></button>
+                        <button class="btn-more-small">
+                            <a th:href="@{'/profil/' + ${u.id}}" style="color: inherit; text-decoration: none; display: flex;">
+                                <i data-lucide="more-vertical"></i>
+                            </a>
+                        </button>
                     </div>
 
                     <div class="user-card-body">
-                        <h3 th:text="${u.firstName} + ' ' + ${u.lastName}">Thomas Durant</h3>
-                        <span class="user-promo-label" th:text="'Promo ' + ${u.username}">Promo 2025</span> <p class="user-major-label">Ingénieur Logiciel</p>
+                        <h3 th:text="${u.firstName} + ' ' + ${u.lastName}"></h3>
+                        <span class="user-promo-label" th:text="'Promo ' + ${u.profile.promoYear}"> </span> <p class="user-major-label" th:text="${u.profile.isepSpecialization}"></p>
                     </div>
 
                     <div class="user-card-footer">
-                        <button class="btn-friend-request" th:data-id="${u.id}" th:data-action="send">
+                        <button th:if="${isConnect != null && u.id.toString() != isConnect.toString()}"
+                                class="btn-friend-request"
+                                th:data-id="${u.id}"
+                                th:data-action="send">
                             <i data-lucide="user-plus"></i> Ajouter
                         </button>
-                        <button class="btn-msg-small" th:data-id="${u.id}" 
-                                th:if="${isConnect != null && u.id.toString() != isConnect.toString()}"
-                                th:style="${isConnect != null && u.id.toString() == isConnect.toString()} ? 'display: none;' : ''">
+
+                        <button th:if="${isConnect != null && u.id.toString() != isConnect.toString()}"
+                                class="btn-msg-small"
+                                th:data-id="${u.id}">
                             <i data-lucide="message-square"></i>
                         </button>
+
                         <button class="user-view" th:data-id="${u.id}">
                             <i data-lucide="eye"></i>
                         </button>

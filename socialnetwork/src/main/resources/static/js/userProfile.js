@@ -64,7 +64,6 @@ document.querySelectorAll(".competence-container").forEach(compEl => {
 
 // Load user projects dynamically on page load
 document.addEventListener('DOMContentLoaded', function() {
-    loadUserProjects();
 
     // Add click handler for add project card
     const addProjectCard = document.getElementById('add-project-card');
@@ -77,58 +76,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof lucide !== 'undefined') lucide.createIcons();
 });
 
-async function loadUserProjects() {
-    // prefer viewedUserId if available, otherwise use currentUserId
-    const userId = window.viewedUserId || window.currentUserId;
-    if (!userId) return;
-    const projectsContainer = document.getElementById('user-projects-profile');
-    if (!projectsContainer) return;
-
-    try {
-        const response = await fetch(`/api/project/user/${userId}`, { method: 'GET', headers: { 'Accept': 'application/json' } });
-        if (!response.ok) { console.error('Failed to load projects'); return; }
-        const projects = await response.json();
-        displayProjectsOnProfile(projects);
-    } catch (error) {
-        console.error('Error loading projects:', error);
-    }
-}
-
-function displayProjectsOnProfile(projects) {
-    const projectsContainer = document.getElementById('user-projects-profile');
-    const addProjectCard = document.getElementById('add-project-card');
-    if (!projectsContainer) return;
-
-    // Remove existing project items
-    projectsContainer.querySelectorAll('.project-item').forEach(p => p.remove());
-
-    if (!projects || projects.length === 0) return;
-
-    const projectsToShow = projects.slice(0, 3);
-    projectsToShow.forEach(project => {
-        const projectCard = createProjectCardForProfile(project);
-        if (addProjectCard) projectsContainer.insertBefore(projectCard, addProjectCard);
-        else projectsContainer.appendChild(projectCard);
-    });
-
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-}
-
-function createProjectCardForProfile(project) {
-    const card = document.createElement('div');
-    card.className = 'card project-item';
-    const visibilityBadge = getVisibilityBadge(project.visibilityType);
-    const description = project.description || 'Aucune description';
-    const truncatedDesc = description.length > 80 ? description.substring(0, 80) + '...' : description;
-    card.innerHTML = `
-        <div class="project-info">
-            <h4>${escapeHtml(project.name)} <span class="type-tag">${visibilityBadge}</span></h4>
-            <p>${escapeHtml(truncatedDesc)}</p>
-            <a href="/projects" class="details-link">Gérer <i data-lucide="arrow-right"></i></a>
-        </div>
-    `;
-    return card;
-}
 
 function getVisibilityBadge(visibility) {
     switch(visibility) {

@@ -47,6 +47,7 @@ import com.socialnetwork.socialnetwork.entity.Recommendation;
 import com.socialnetwork.socialnetwork.entity.Event;
 import com.socialnetwork.socialnetwork.entity.Follow;
 import com.socialnetwork.socialnetwork.entity.Post;
+import com.socialnetwork.socialnetwork.entity.Project;
 
 import com.socialnetwork.socialnetwork.entity.Token;
 import com.socialnetwork.socialnetwork.entity.User;
@@ -608,7 +609,8 @@ public class UserController {
 		if(userIsConnect == null) {
 			return "accueil";
 		}
-		
+		UUID currentUserId = UUID.fromString(userIsConnect.toString());
+
 		ResponseEntity<User> user = this.userService.getUserById(UUID.fromString(userIsConnect.toString()));
 		ResponseEntity<Profile> userProfile = this.profileService.getUserProfileByUserID(user.getBody());
 		
@@ -618,7 +620,12 @@ public class UserController {
 
 		model.addAttribute("userProfile", userProfileDto);
 		model.addAttribute("event", new Event());
-		
+
+		ResponseEntity<List<Project>> userProjects = this.projectService.getUserProjects(currentUserId);
+            if(userProjects.getStatusCode() == HttpStatus.OK) {
+                model.addAttribute("myProjects", userProjects.getBody());
+            }
+
 		ResponseEntity<Event> event = this.eventService.getFirstEventByDate(UUID.fromString(userIsConnect.toString()));
 		
 		if(event.getStatusCode() == HttpStatusCode.valueOf(200)) {

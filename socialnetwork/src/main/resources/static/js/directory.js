@@ -73,6 +73,47 @@ document.addEventListener('DOMContentLoaded', function() {
         gridBtn.classList.add('active');
         listBtn.classList.remove('active');
     });
+
+    const searchInput = document.getElementById('directorySearch');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            // .normalize("NFD") permet de trouver "Marie" même si on tape "marie" sans accent
+            activeFilters.search = e.target.value
+                .toLowerCase()
+                .trim()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            applyFilters();
+        });
+    }
+
+    function applyFilters() {
+        userCards.forEach(card => {
+            const nameElement = card.querySelector('h3');
+            if (!nameElement) return;
+
+            const userName = nameElement.textContent
+                .toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            const matchesSearch = userName.includes(activeFilters.search);
+
+            const userMajorTech = card.querySelector('.user-major-label').textContent.trim();
+            const selectedFiliereTech = filiereMapping[activeFilters.filiere] || "Toutes";
+            const matchesFiliere = selectedFiliereTech === "Toutes" || userMajorTech === selectedFiliereTech;
+
+            const userPromo = card.querySelector('.user-promo-label').textContent;
+            const matchesPromo = activeFilters.promo === "Toutes" || userPromo.includes(activeFilters.promo);
+
+            if (matchesSearch && matchesFiliere && matchesPromo) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        handleEmptyResults();
+    }
 });
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -80,6 +121,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterButtons = document.querySelectorAll('.chip');
     const userCards = document.querySelectorAll('.user-grid article');
 
+    const filiereMapping = {
+        "Ingénieur Logiciel": "SOFTWARE_ENGINEERING",
+        "Data Science": "DATA_SCIENCE",
+        "Cybersécurité": "CYBERSECURITY",
+        "Systèmes Embarqués": "EMBEDDED_SYSTEMS",
+        "Toutes": "Toutes"
+    };
 
     const activeFilters = {
         search: "",
@@ -90,11 +138,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function applyFilters() {
         userCards.forEach(card => {
             const userName = card.querySelector('.user-card-body h3').textContent.toLowerCase();
-            const userMajor = card.querySelector('.user-major-label').textContent;
-            const userPromo = card.querySelector('.user-promo-label').textContent; // Ex: "Promo 2025"
+            const userMajorValue = card.querySelector('.user-major-label').textContent.trim();
+            const userPromo = card.querySelector('.user-promo-label').textContent;
 
             const matchesSearch = userName.includes(activeFilters.search);
-            const matchesFiliere = activeFilters.filiere === "Toutes" || userMajor === activeFilters.filiere;
+            const selectedFiliereTech = filiereMapping[activeFilters.filiere];
+
+            const matchesFiliere = activeFilters.filiere === "Toutes" || userMajorValue === selectedFiliereTech;
 
             const matchesPromo = activeFilters.promo === "Toutes" || userPromo.includes(activeFilters.promo);
 
