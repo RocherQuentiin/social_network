@@ -708,3 +708,26 @@
     overflow-y: auto;
     margin-top: 1rem;
 }
+
+/* Style pour le sélecteur de rôle dans la modale */
+.role-selector {
+    background-color: var(--bg-card); /* ou #2d2d2d */
+    color: var(--text-main);
+    border: 1px solid white;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 0.9rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.role-selector:focus {
+    border-color: var(--primary-color);
+}
+
+/* Style pour les options à l'intérieur (important pour certains navigateurs) */
+.role-selector option {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+}
