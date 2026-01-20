@@ -142,7 +142,10 @@ public class User {
     }
 
     public String getProfilePictureUrl() {
-        return profilePictureUrl;
+        if (this.profilePictureUrl == null || this.profilePictureUrl.trim().isEmpty()) {
+                return "/img/perso.png";
+            }
+        return this.profilePictureUrl;
     }
 
     public void setProfilePictureUrl(String profilePictureUrl) {
