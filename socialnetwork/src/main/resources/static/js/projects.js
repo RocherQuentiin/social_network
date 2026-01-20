@@ -103,12 +103,13 @@ async function loadUserProjects() {
         });
 
         if (!response.ok) {
-            if (response.status === 204) {
-                // No projects
-                displayNoProjects();
-                return;
-            }
             throw new Error('Failed to load projects');
+        }
+        
+        if (response.status === 204) {
+              // No projects
+              displayNoProjects();
+              return;
         }
 
         const projects = await response.json();

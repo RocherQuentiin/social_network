@@ -6,12 +6,15 @@ const friendRequestButtons = document.querySelectorAll(".btn-friend-request");
 
 if (friendRequestButtons.length > 0) {
 	friendRequestButtons.forEach(el => {
-		el.addEventListener('click', handleFriendRequest);
+		el.addEventListener('click', handleFriendRequest, el);
 	});
 }
 
 function handleFriendRequest(event) {
-	const button = event.currentTarget;
+	let button = event.currentTarget;
+	if(button == undefined){
+		button = event;
+	}
 	const userId = button.getAttribute('data-id');
 	const action = button.getAttribute('data-action') || 'send';
 
@@ -37,22 +40,22 @@ function handleFriendRequest(event) {
 			button.textContent = originalText;
 
 			if (response.status === 200) {
-				customAlert('Succès', 'Opération réussie! La page va se recharger...', 'success');
+				alert('Succès', 'Opération réussie! La page va se recharger...', 'success');
 				setTimeout(() => window.location.reload(), 1500);
 			} else if (response.status === 409) {
-				customAlert('Information', 'Cette demande existe déjà ou vous êtes déjà amis', 'info');
+				alert('Information', 'Cette demande existe déjà ou vous êtes déjà amis', 'info');
 				button.disabled = false;
 			} else if (response.status === 403) {
-				customAlert('Accès refusé', 'Cet utilisateur n\'autorise pas les demandes pour le moment.', 'error');
+				alert('Accès refusé', 'Cet utilisateur n\'autorise pas les demandes pour le moment.', 'error');
 				button.disabled = false;
 			} else {
-				customAlert('Erreur', 'Une erreur s\'est produite. Veuillez réessayer.', 'error');
+				alert('Erreur', 'Une erreur s\'est produite. Veuillez réessayer.', 'error');
 				button.disabled = false;
 			}
 		})
 		.catch(error => {
 			console.error('Erreur:', error);
-			customAlert('Erreur', 'Erreur de connexion. Veuillez réessayer.', 'error');
+			alert('Erreur', 'Erreur de connexion. Veuillez réessayer.', 'error');
 			button.disabled = false;
 			button.textContent = originalText;
 		});
@@ -164,10 +167,10 @@ function acceptRequest(requesterId) {
 	})
 		.then(response => {
 			if (response.status === 200) {
-				customAlert('Succès', 'Demande acceptée !', 'success');
+				alert('Succès', 'Demande acceptée !', 'success');
 				loadPendingRequests();
 			} else {
-				customAlert('Erreur', 'Impossible d\'accepter la demande.', 'error');
+				alert('Erreur', 'Impossible d\'accepter la demande.', 'error');
 			}
 		})
 		.catch(error => console.error('Error:', error));
@@ -181,10 +184,10 @@ function declineRequest(requesterId) {
 	})
 		.then(response => {
 			if (response.status === 200) {
-				customAlert('Refusé', 'Demande déclinée.', 'info');
+				alert('Refusé', 'Demande déclinée.', 'info');
 				loadPendingRequests();
 			} else {
-				customAlert('Erreur', 'Impossible de refuser la demande.', 'error');
+				alert('Erreur', 'Impossible de refuser la demande.', 'error');
 			}
 		})
 		.catch(error => console.error('Error:', error));

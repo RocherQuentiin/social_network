@@ -731,3 +731,11 @@
     background-color: var(--bg-dark);
     color: var(--text-main);
 }
+
+.transfer-actions .btn-delete {
+    flex: 1;
+    text-align: center;
+    border-color: var(--error);
+    color: var(--error);
+    background: transparent;
+}
