@@ -1309,6 +1309,9 @@
     margin-bottom: 4px;
 }
 
+
+
+
 /* Affiché uniquement sur mobile */
 @media (max-width: 992px) {
     .mobile-tabs-nav {
@@ -1322,6 +1325,15 @@
     .feed-main {
         width: 100% !important;
     }
+    #eventDate,
+    input[type="datetime-local"],
+    input[type="date"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+        min-width: 0;
+    }
+
 }
 
 @media (max-width: 992px) {

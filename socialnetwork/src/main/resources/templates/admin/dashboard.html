@@ -2,105 +2,105 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
-    <link rel="stylesheet" th:href="@{/css/index.css}">
-    <link rel="stylesheet" th:href="@{/css/profil.css}">
     <link rel="stylesheet" th:href="@{/css/admin.css}">
-    <style>
-        .admin-grid { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 360px; gap: 24px; }
-        .admin-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; }
-        .stats-row { display:flex; gap:12px; }
-        .stat { flex:1; padding:12px; background: linear-gradient(90deg, rgba(255,255,255,0.02), transparent); border-radius:8px; }
-        .stat .label { color:var(--text-dim); font-size:0.9rem }
-        .stat .value { font-size:1.6rem; font-weight:800; color:var(--primary) }
-        .actions input { width:100%; padding:8px; margin-bottom:8px; border-radius:6px; border:1px solid var(--border); }
-        .actions button { margin-right:8px; background:var(--primary); color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer }
-    </style>
 </head>
 <body>
-    <div th:replace="fragments/header :: header-fragment"></div>
+<div th:replace="fragments/header :: header-fragment"></div>
 
-    <main class="admin-grid">
-        <section class="admin-card" style="grid-column:1/ -1;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h2>Administration</h2>
-                <div>
-                    <button id="tabKpis" class="btn btn-outline">KPIs</button>
-                    <button id="tabUsers" class="btn btn-outline">Utilisateurs</button>
+<main class="admin-grid">
+    <section class="admin-card main-admin-section">
+        <div class="admin-header">
+            <h2>Administration</h2>
+            <div class="tab-controls">
+                <button id="tabKpis" class="btn btn-outline">KPIs</button>
+                <button id="tabUsers" class="btn btn-outline">Utilisateurs</button>
+            </div>
+        </div>
+
+        <div id="tabContent">
+            <div id="kpisTab">
+                <div class="stats-row">
+                    <div class="stat">
+                        <div class="label">Total users</div>
+                        <div id="totalUsers" class="value">...</div>
+                    </div>
+                    <div class="stat">
+                        <div class="label">Total posts</div>
+                        <div id="totalPosts" class="value">...</div>
+                    </div>
+                    <div class="stat">
+                        <div class="label">Active users</div>
+                        <div id="activeUsers" class="value">...</div>
+                    </div>
                 </div>
+
+                <h3 class="section-subtitle">Graphiques (30 derniers jours)</h3>
+                <div class="charts-row">
+                    <div class="admin-card chart-box"><canvas id="usersChart"></canvas></div>
+                    <div class="admin-card chart-box"><canvas id="postsChart"></canvas></div>
+                </div>
+
+                <div id="recentList" class="admin-card recent-activity">Chargement...</div>
             </div>
 
-            <div id="tabContent">
-                <div id="kpisTab">
-                    <div class="stats-row" style="margin-top:12px;">
-                        <div class="stat"><div class="label">Total users</div><div id="totalUsers" class="value">...</div></div>
-                        <div class="stat"><div class="label">Total posts</div><div id="totalPosts" class="value">...</div></div>
-                        <div class="stat"><div class="label">Active users</div><div id="activeUsers" class="value">...</div></div>
+            <div id="usersTab" style="display:none;">
+                <div class="admin-card">
+                    <div class="search-bar">
+                        <input id="searchInput" placeholder="Rechercher..." />
+                        <button id="searchBtn" class="btn btn-primary">Rechercher</button>
                     </div>
-
-                    <h3 style="margin-top:16px">Graphiques (30 derniers jours)</h3>
-                    <div style="display:flex; gap:12px; margin-top:8px;">
-                        <div style="flex:1" class="admin-card"><canvas id="usersChart" height="120"></canvas></div>
-                        <div style="flex:1" class="admin-card"><canvas id="postsChart" height="120"></canvas></div>
-                    </div>
-
-                    <div id="recentList" style="margin-top:12px;" class="admin-card">Chargement...</div>
-                </div>
-
-                <div id="usersTab" style="display:none; margin-top:12px;">
-                    <div class="admin-card">
-                        <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
-                            <input id="searchInput" placeholder="Rechercher utilisateur/email" style="flex:1; padding:8px; border-radius:6px; border:1px solid var(--border); background:transparent;" />
-                            <button id="searchBtn" class="btn btn-primary">Rechercher</button>
-                        </div>
-                        <div id="usersTableWrapper">
-                            <div class="table-responsive">
-                                <table class="admin-users-table" style="width:100%; border-collapse:collapse;">
+                    <div id="usersTableWrapper">
+                        <div class="table-responsive">
+                            <table class="admin-users-table">
                                 <thead>
-                                    <tr style="text-align:left; color:var(--text-dim); font-size:0.9rem;">
-                                        <th>Utilisateur</th><th>Email</th><th>Rôle</th><th>Statut</th><th>Suspension</th><th>Actions</th>
-                                    </tr>
+                                <tr>
+                                    <th>Utilisateur</th>
+                                    <th>Email</th>
+                                    <th>Rôle</th>
+                                    <th>Statut</th>
+                                    <th>Suspension</th>
+                                    <th>Actions</th>
+                                </tr>
                                 </thead>
                                 <tbody id="usersTableBody"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div style="margin-top:8px; display:flex; justify-content:space-between;">
-                            <div id="usersPager"></div>
+                            </table>
                         </div>
                     </div>
+                    <div id="usersPager" class="pagination-container"></div>
                 </div>
             </div>
-        </section>
-    </main>
-    <!-- Confirm modal -->
-    <div id="confirmModal" class="modal" style="display:none;">
-        <div class="modal-content">
-            <p id="confirmMessage">Confirmer l'action ?</p>
-            <div class="modal-actions">
-                <button id="confirmCancel" class="btn btn-outline">Annuler</button>
-                <button id="confirmOk" class="btn btn-primary">Confirmer</button>
-            </div>
+        </div>
+    </section>
+</main>
+
+<div id="confirmModal" class="modal">
+    <div class="modal-content">
+        <p id="confirmMessage">Confirmer l'action ?</p>
+        <div class="modal-actions">
+            <button id="confirmCancel" class="btn btn-outline">Annuler</button>
+            <button id="confirmOk" class="btn btn-primary">Confirmer</button>
         </div>
     </div>
+</div>
 
-    <!-- Suspend modal -->
-    <div id="suspendModal" class="modal" style="display:none;">
-        <div class="modal-content">
-            <p>Suspendre cet utilisateur pour (jours)</p>
-            <input id="suspendDays" type="number" min="1" value="7" style="width:80px; padding:6px; margin:8px 0;" />
-            <div class="modal-actions">
-                <button id="suspendCancel" class="btn btn-outline">Annuler</button>
-                <button id="suspendOk" class="btn btn-primary">Suspendre</button>
-            </div>
+<div id="suspendModal" class="modal">
+    <div class="modal-content">
+        <p>Suspendre cet utilisateur pour (jours)</p>
+        <input id="suspendDays" type="number" min="1" value="7" />
+        <div class="modal-actions">
+            <button id="suspendCancel" class="btn btn-outline">Annuler</button>
+            <button id="suspendOk" class="btn btn-primary">Suspendre</button>
         </div>
     </div>
+</div>
 
-    <div th:replace="fragments/footer :: footer-fragment"></div>
+<div th:replace="fragments/footer :: footer-fragment"></div>
 
-    <script th:src="@{/js/admin-dashboard.js}"></script>
-    <script th:src="@{/js/admin-users.js}"></script>
+<script th:src="@{/js/admin-dashboard.js}"></script>
+<script th:src="@{/js/admin-users.js}"></script>
 </body>
 </html>

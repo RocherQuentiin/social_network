@@ -1736,3 +1736,32 @@
         display: none !important;
     }
 }
+
+@media (max-width: 768px) {
+    /* On cible la zone de chat quand elle est ouverte sur mobile */
+    .messaging-container.chat-open .chat-area {
+        display: flex !important;
+        position: fixed;
+        top: 60px; /* Ajuste selon la hauteur de ton header */
+        left: 0;
+        width: 100%;
+        height: calc(100vh - 60px);
+
+        /* SOLUTION : Force un fond opaque */
+        background-color: var(--bg-card) !important;
+        /* Si var(--bg-card) est transparent, utilise une couleur solide : */
+        /* background-color: #ffffff !important; (ou #121212 si tu es en mode sombre) */
+
+        z-index: 9999; /* Passe au-dessus de la sidebar */
+        border: none;
+        border-radius: 0;
+    }
+
+    /* Optionnel : Assure-toi que le conteneur des messages est aussi opaque */
+    .messages-container {
+        background-color: var(--bg-card);
+    }
+    #sendMessageBtn{
+        padding: 2px;
+    }
+}
