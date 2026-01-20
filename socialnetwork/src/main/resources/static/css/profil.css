@@ -581,6 +581,42 @@
     transition: 0.2s;
 }
 
+/* Style pour le sélecteur de rôle dans la modale */
+.modal-body .member-item .member-actions select.role-selector {
+    background-color: #2d2d2d !important;
+    color: white !important;
+    border: 1px solid #444;
+}
+
+/* Force le style sur le sélecteur */
+select.role-selector {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none; /* Supprime le style Windows/macOS */
+
+    background-color: #1a1a1a !important; /* Ta couleur sombre */
+    background-image: none !important;    /* Supprime les dégradés par défaut */
+    color: #ffffff !important;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #333 !important;
+}
+
+/* Optionnel : Ajoute une petite flèche car appearance:none l'a enlevée */
+.member-actions {
+    position: relative;
+}
+
+.role-selector:focus {
+    border-color: var(--primary-color);
+}
+
+/* Style pour les options à l'intérieur (important pour certains navigateurs) */
+.role-selector option {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+}
+
 #saveEventEditBtn:hover {
     filter: brightness(1.1);
 }
