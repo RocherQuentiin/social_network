@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IPostRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IMediaService;
@@ -42,9 +41,6 @@ public class PostController {
     private final IPostRepository postRepository;
     private final IUserService userService;
     private final IMediaService mediaService;
-    
-    @Autowired
-    private UserController userController;
 
     public PostController(IPostRepository postRepository, IUserService userService, IMediaService mediaService) {
         this.postRepository = postRepository;
@@ -53,11 +49,11 @@ public class PostController {
     }
     
     @PostMapping("/post")
-	public String handleCreatePost(Model model, HttpServletRequest request, @RequestParam("content") String content, @RequestParam("postVideoUrl") MultipartFile postVideoUrl, @RequestParam("postImageUrl") MultipartFile postImageUrl, @RequestParam("postFileUrl") MultipartFile postFileUrl, @RequestParam(value = "visibilityType", required = false) String visibilityTypeStr, @RequestParam(value = "allowComments", required = false) String[] allowCommentsValues) {
+	public RedirectView handleCreatePost(Model model, HttpServletRequest request, @RequestParam("content") String content, @RequestParam("postVideoUrl") MultipartFile postVideoUrl, @RequestParam("postImageUrl") MultipartFile postImageUrl, @RequestParam("postFileUrl") MultipartFile postFileUrl, @RequestParam(value = "visibilityType", required = false) String visibilityTypeStr, @RequestParam(value = "allowComments", required = false) String[] allowCommentsValues) {
 		System.out.println("post" + postFileUrl);
     	HttpSession session = request.getSession(false);
 		if (session == null || session.getAttribute("userId") == null) {
-			return "login";
+			new RedirectView("/login");
 		}
 		try {
 			UUID userId = UUID.fromString(session.getAttribute("userId").toString());
@@ -140,9 +136,9 @@ public class PostController {
 			
 			
 		} catch (Exception e) {
-			return "accueil";
+			return new RedirectView("/");
 		}
-		return this.userController.showFeed(model, request);
+		return new RedirectView("/feed");
 	}
 
     @GetMapping("/post/{id}")
