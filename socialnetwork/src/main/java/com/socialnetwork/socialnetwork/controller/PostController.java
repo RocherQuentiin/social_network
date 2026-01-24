@@ -53,7 +53,7 @@ public class PostController {
 		System.out.println("post" + postFileUrl);
     	HttpSession session = request.getSession(false);
 		if (session == null || session.getAttribute("userId") == null) {
-			new RedirectView("/login");
+			return new RedirectView("/login");
 		}
 		try {
 			UUID userId = UUID.fromString(session.getAttribute("userId").toString());

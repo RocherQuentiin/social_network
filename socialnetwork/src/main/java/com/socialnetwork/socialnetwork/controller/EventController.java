@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.socialnetwork.socialnetwork.business.interfaces.service.IEventService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IUserService;
@@ -47,24 +48,24 @@ public class EventController {
 	}
 
 	@PostMapping("")
-	public String createEvent(HttpServletRequest request, Model model, Event event) {
+	public RedirectView createEvent(HttpServletRequest request, Model model, Event event) {
 		Object userIsConnect = Utils.validPage(request, true);
 		model.addAttribute("isConnect", userIsConnect);
 		if (userIsConnect == null) {
-			return "accueil";
+			return new RedirectView("/");
 		}
 
 		if (event.getName().trim().equals("") || event.getEventDate() == null || event.getLocation().trim().equals("")
 				|| event.getVisibilityType().equals("")) {
 			model.addAttribute("errorEvent", "Veuillez remplir l'ensemble des champs");
 			model.addAttribute("event", event);
-			return this.UserController.showUserProfil(request, model);
+			return new RedirectView("/feed");
 		}
 
 		if (event.getCapacity() <= 0) {
 			model.addAttribute("errorEvent", "Un événement doit avoir obligatoirement plus de 0 participants");
 			model.addAttribute("event", event);
-			return this.UserController.showUserProfil(request, model);
+			return new RedirectView("/feed");
 		}
 
 		ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Paris"));
@@ -74,7 +75,7 @@ public class EventController {
 			model.addAttribute("errorEvent",
 					"La date doit être supérieur a celle d'aujourd'hui pour la création de l'événement");
 			model.addAttribute("event", event);
-			return this.UserController.showUserProfil(request, model);
+			return new RedirectView("/feed");
 		}
 
 		ResponseEntity<User> user = this.userService.getUserById(UUID.fromString(userIsConnect.toString()));
@@ -86,7 +87,7 @@ public class EventController {
 		model.addAttribute("informationEvent", "L'événement a bien été crée");
 		model.addAttribute("event", saveEvent);
 
-		return this.UserController.showUserProfil(request, model);
+		return new RedirectView("/feed");
 	}
 
 	@PutMapping("{id}")
