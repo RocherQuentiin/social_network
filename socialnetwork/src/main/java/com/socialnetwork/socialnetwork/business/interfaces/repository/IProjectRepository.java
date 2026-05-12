@@ -30,11 +30,14 @@ public interface IProjectRepository extends JpaRepository<Project, UUID> {
     @Query(value = """
             SELECT p.* FROM project p
             WHERE p.visibility_type = 'PUBLIC'
-            OR (p.visibility_type = 'PRIVATE' AND p.creator_id = :userId)
-            OR (p.visibility_type = 'FRIENDS' AND p.creator_id = :userId)
+            OR (p.visibility_type = 'PRIVATE'
+                AND CAST(p.creator_id AS CHAR(36)) COLLATE utf8mb4_bin = CAST(:userId AS CHAR(36)) COLLATE utf8mb4_bin)
+            OR (p.visibility_type = 'FRIENDS'
+                AND CAST(p.creator_id AS CHAR(36)) COLLATE utf8mb4_bin = CAST(:userId AS CHAR(36)) COLLATE utf8mb4_bin)
             OR (p.visibility_type = 'FRIENDS' AND EXISTS (
-                SELECT 1 FROM project_member pm 
-                WHERE pm.project_id = p.id AND pm.user_id = :userId
+                SELECT 1 FROM project_member pm
+                WHERE CAST(pm.project_id AS CHAR(36)) COLLATE utf8mb4_bin = CAST(p.id AS CHAR(36)) COLLATE utf8mb4_bin
+                  AND CAST(pm.user_id AS CHAR(36)) COLLATE utf8mb4_bin = CAST(:userId AS CHAR(36)) COLLATE utf8mb4_bin
             ))
             """, nativeQuery = true)
     Optional<List<Project>> findProjectsVisibleToUser(@Param("userId") UUID userId);

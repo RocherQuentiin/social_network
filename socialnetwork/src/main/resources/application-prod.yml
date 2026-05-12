@@ -4,5 +4,7 @@ spring:
     username: 9edc3f001@smtp-brevo.com
     password:  ${PASSWORD_MAIL}
 
-front-base-url: https://socialnetworkisep.hangar.garageisep.com
+front:
+  base:
+    url: https://socialnetworkisep.hangar.garageisep.com
 file-directory: /app/upload/

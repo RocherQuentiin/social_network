@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initProjectPage() {
+    handlePaymentFeedback();
+    setupPaidProjectFields();
     setupEventListeners();
     loadUserProjects();
     loadPublicProjects();
@@ -57,6 +59,17 @@ function setupEventListeners() {
     const closeReq = document.getElementById('closeRequestsModal');
     if (closeReq) {
         closeReq.addEventListener('click', () => closeModal('projectRequestsModal'));
+    }
+
+    const closeTransferAlt = document.getElementById('closeTransferModalAlt');
+    if (closeTransferAlt) {
+        closeTransferAlt.addEventListener('click', () => closeModal('transferOwnershipModal'));
+    }
+
+    const editIsPaid = document.getElementById('editProjectIsPaid');
+    if (editIsPaid && !editIsPaid.dataset.bound) {
+        editIsPaid.dataset.bound = '1';
+        editIsPaid.addEventListener('change', toggleEditProjectPriceField);
     }
 }
 
@@ -149,57 +162,6 @@ function displayNoProjects() {
     `;
 }
 
-function createProjectCard(project, userRole = 'MEMBER') {
-    const card = document.createElement('div');
-    card.className = 'project-card';
-
-    let actionsHTML = '';
-
-    // Edit button (Owner only)
-    if (userRole === 'OWNER') {
-        actionsHTML += `<button class="btn-small btn-edit" onclick="editProject('${project.id}')">Éditer</button>`;
-    }
-
-    // Members button (Owner and Admin)
-    if (userRole === 'OWNER' || userRole === 'ADMIN') {
-        actionsHTML += `<button class="btn-small btn-members" onclick="showProjectMembers('${project.id}')">Membres</button>`;
-        actionsHTML += `<button class="btn-small" id="requests-btn-${project.id}" onclick="showProjectRequests('${project.id}')">Demandes</button>`;
-    }
-
-    // Leave button (Not owner)
-    if (userRole !== 'OWNER') {
-        actionsHTML += `<button class="btn-small btn-leave" onclick="leaveProject('${project.id}')">Quitter</button>`;
-    }
-
-    // Delete button (Owner only)
-    if (userRole === 'OWNER') {
-        actionsHTML += `<button class="btn-small btn-delete" onclick="showTransferOwnershipModal('${project.id}')">Supprimer / Transférer</button>`;
-    }
-
-    card.innerHTML = `
-        <h3>${escapeHtml(project.name)}</h3>
-        <p class="description">${escapeHtml(project.description || 'Pas de description')}</p>
-        <span class="visibility">${getVisibilityLabel(project.visibilityType)}</span>
-        <div id="skills-${project.id}" class="project-skills"></div>
-        <div class="metadata">
-            <p>Créé par: ${project.creator ? escapeHtml(project.creator.firstName + ' ' + project.creator.lastName) : 'Inconnu'}</p>
-            <p>Créé le: ${formatDate(project.createdAt)}</p>
-        </div>
-        <div class="actions">
-            ${actionsHTML}
-        </div>
-    `;
-
-    // Load skills asynchronously
-    loadProjectSkills(project.id);
-    // Load pending requests count asynchronously
-    if (userRole === 'OWNER' || userRole === 'ADMIN') {
-        updateProjectRequestsBadge(project.id);
-    }
-
-    return card;
-}
-
 // Load and render public projects (discover section)
 async function loadPublicProjects() {
     const container = document.getElementById('public-projects');
@@ -237,56 +199,6 @@ async function loadPublicProjects() {
         console.error('Error loading public projects:', e);
         container.innerHTML = `<div class="empty-state"><p>Erreur de chargement des projets publics.</p></div>`;
     }
-}
-
-function createPublicProjectCard(project, userRole = 'NONE', requestStatus = null) {
-    const card = document.createElement('div');
-    card.className = 'project-card';
-
-    let actionsHTML = '';
-    if (userRole === 'NONE') {
-        let disabledAttr = '';
-        let label = 'Rejoindre';
-        let extraAttrs = '';
-        if (requestStatus === 'PENDING') {
-            disabledAttr = 'disabled';
-            label = 'Demande en attente';
-        } else if (requestStatus === 'REJECTED') {
-            disabledAttr = 'disabled';
-            label = 'Demande refusée';
-        }
-        if (!disabledAttr) {
-            extraAttrs = 'aria-disabled="false"';
-        }
-        const safeName = escapeHtml(project.name || '');
-        const safeDesc = escapeHtml(project.description || '');
-        actionsHTML += `
-            <button type="button"
-                class="btn-small btn-members"
-                id="join-btn-${project.id}"
-                ${disabledAttr} ${extraAttrs}
-                data-project-id="${project.id}"
-                data-project-name="${safeName}"
-                data-project-desc="${safeDesc}"
-                onclick="openJoinModalFromButton(this)">
-                ${label}
-            </button>
-        `;
-    } else if (userRole === 'OWNER' || userRole === 'ADMIN' || userRole === 'MEMBER') {
-        actionsHTML += `<span class="visibility" style="border-color: transparent; background-color: rgba(29,155,240,0.08);">Déjà membre</span>`;
-    }
-
-    card.innerHTML = `
-        <h3>${escapeHtml(project.name)}</h3>
-        <p class="description">${escapeHtml(project.description || 'Pas de description')}</p>
-        <span class="visibility">${getVisibilityLabel(project.visibilityType)}</span>
-        <div class="metadata">
-            <p>Créé par: ${escapeHtml(project.creator.firstName + ' ' + project.creator.lastName)}</p>
-            <p>Créé le: ${formatDate(project.createdAt)}</p>
-        </div>
-        <div class="actions">${actionsHTML}</div>
-    `;
-    return card;
 }
 
 function openJoinModal(projectId, projectName, projectDescription) {
@@ -354,49 +266,6 @@ async function handleJoinProject(e) {
     }
 }
 
-async function handleCreateProject(e) {
-    e.preventDefault();
-
-    const skillsInput = document.getElementById('projectSkills').value.trim();
-    const skills = skillsInput ? skillsInput.split(',').map(s => s.trim()).filter(s => s.length > 0) : [];
-
-    const formData = {
-        name: document.getElementById('projectName').value.trim(),
-        description: document.getElementById('projectDescription').value.trim(),
-        visibility: document.getElementById('projectVisibility').value,
-        skills: skills
-    };
-
-    if (!formData.name) {
-        showAlert('Le nom du projet est requis', 'error');
-        return;
-    }
-
-    try {
-        const response = await fetch('/api/project/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        });
-
-        if (!response.ok) {
-            const errorData = await response.text();
-            throw new Error(errorData);
-        }
-
-        showAlert('Projet créé avec succès', 'success');
-        closeModal('createProjectModal');
-        document.getElementById('createProjectForm').reset();
-        loadUserProjects();
-    } catch (error) {
-        console.error('Error creating project:', error);
-        showAlert('Erreur lors de la création du projet: ' + error.message, 'error');
-    }
-}
-
 async function editProject(projectId) {
     try {
         const response = await fetch(`/api/project/${projectId}`, {
@@ -417,6 +286,16 @@ async function editProject(projectId) {
         document.getElementById('editProjectDescription').value = project.description || '';
         document.getElementById('editProjectVisibility').value = project.visibilityType;
 
+        const editIsPaid = document.getElementById('editProjectIsPaid');
+        const editPrice = document.getElementById('editProjectPrice');
+        if (editIsPaid) {
+            editIsPaid.value = isProjectPaid(project) ? 'true' : 'false';
+        }
+        if (editPrice) {
+            editPrice.value = project.price != null && project.price !== '' ? Number(project.price) : '';
+        }
+        toggleEditProjectPriceField();
+
         // Load members into edit modal
         await loadMembersForEdit(project.id);
         openModal('editProjectModal');
@@ -430,14 +309,28 @@ async function handleEditProject(e) {
     e.preventDefault();
 
     const projectId = document.getElementById('editProjectId').value;
+    const isPaid = document.getElementById('editProjectIsPaid')
+        ? document.getElementById('editProjectIsPaid').value === 'true'
+        : false;
+    const priceValue = document.getElementById('editProjectPrice')
+        ? document.getElementById('editProjectPrice').value.trim()
+        : '';
+
     const formData = {
         name: document.getElementById('editProjectName').value.trim(),
         description: document.getElementById('editProjectDescription').value.trim(),
-        visibility: document.getElementById('editProjectVisibility').value
+        visibility: document.getElementById('editProjectVisibility').value,
+        isPaid: isPaid,
+        price: isPaid && priceValue ? Number(priceValue) : null
     };
 
     if (!formData.name) {
         showAlert('Le nom du projet est requis', 'error');
+        return;
+    }
+
+    if (isPaid && (!formData.price || formData.price <= 0)) {
+        showAlert('Le prix doit être supérieur à 0 pour un projet payant', 'error');
         return;
     }
 
@@ -459,6 +352,7 @@ async function handleEditProject(e) {
         showAlert('Projet modifié avec succès', 'success');
         closeModal('editProjectModal');
         loadUserProjects();
+        loadPublicProjects();
     } catch (error) {
         console.error('Error updating project:', error);
         showAlert('Erreur lors de la modification du projet: ' + error.message, 'error');
@@ -1032,47 +926,6 @@ async function loadProjectSkills(projectId) {
 
 function displayProjectSkills(projectId, skills) {
     const skillsContainer = document.getElementById(`skills-${projectId}`);
-    if (!skillsContainer) return;
-
-    if (!skills || skills.length === 0) {
-        skillsContainer.innerHTML = '';
-        return;
-    }
-
-    const skillsHTML = skills.map(skill =>
-        `<span class="skill-badge">${escapeHtml(skill.skillName)}</span>`
-    ).join('');
-
-    skillsContainer.innerHTML = `
-        <div class="skills-section">
-            <strong>Compétences recherchées:</strong>
-            <div class="skills-list">${skillsHTML}</div>
-        </div>
-    `;
-}
-
-async function loadProjectSkills(projectId) {
-    try {
-        const response = await fetch(`/api/project/${projectId}/skills`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            return;
-        }
-
-        const skills = await response.json();
-        displayProjectSkills(projectId, skills);
-    } catch (error) {
-        console.error('Error loading skills:', error);
-    }
-}
-
-function displayProjectSkills(projectId, skills) {
-    const skillsContainer = document.getElementById(`skills-${projectId}`);
     if (!skillsContainer) {
         return;
     }
@@ -1214,4 +1067,247 @@ async function deleteProjectFromModal(projectId, modal) {
         console.error('Error deleting project:', error);
         showAlert('Erreur lors de la suppression: ' + error.message, 'error');
     }
+}
+
+let paidCreateFieldsBound = false;
+
+function setupPaidProjectFields() {
+    const isPaidSelect = document.getElementById('projectIsPaid');
+    if (!isPaidSelect || paidCreateFieldsBound) {
+        return;
+    }
+    paidCreateFieldsBound = true;
+    isPaidSelect.addEventListener('change', toggleProjectPriceField);
+    toggleProjectPriceField();
+}
+
+function toggleProjectPriceField() {
+    const isPaidSelect = document.getElementById('projectIsPaid');
+    const priceGroup = document.getElementById('projectPriceGroup');
+    const priceInput = document.getElementById('projectPrice');
+    if (!isPaidSelect || !priceGroup || !priceInput) {
+        return;
+    }
+    const isPaid = isPaidSelect.value === 'true';
+    priceGroup.style.display = isPaid ? 'block' : 'none';
+    priceInput.required = isPaid;
+    if (!isPaid) {
+        priceInput.value = '';
+    }
+}
+
+function toggleEditProjectPriceField() {
+    const isPaidSelect = document.getElementById('editProjectIsPaid');
+    const priceGroup = document.getElementById('editProjectPriceGroup');
+    const priceInput = document.getElementById('editProjectPrice');
+    if (!isPaidSelect || !priceGroup || !priceInput) {
+        return;
+    }
+    const isPaid = isPaidSelect.value === 'true';
+    priceGroup.style.display = isPaid ? 'block' : 'none';
+    priceInput.required = isPaid;
+    if (!isPaid) {
+        priceInput.value = '';
+    }
+}
+
+function handlePaymentFeedback() {
+    const url = new URL(window.location.href);
+    const paymentStatus = url.searchParams.get('payment');
+    if (!paymentStatus) {
+        return;
+    }
+
+    if (paymentStatus === 'success') {
+        showAlert('Paiement réussi, vous avez rejoint le projet.', 'success');
+    } else if (paymentStatus === 'failed') {
+        showAlert('Le paiement a échoué. Vérifiez les informations de carte de test.', 'error');
+    } else if (paymentStatus === 'unavailable') {
+        showAlert('Ce projet n\'est pas disponible au paiement.', 'error');
+    } else if (paymentStatus === 'own-project') {
+        showAlert('Vous ne pouvez pas payer votre propre projet.', 'info');
+    }
+
+    url.searchParams.delete('payment');
+    url.searchParams.delete('projectId');
+    const nextUrl = url.pathname + (url.search ? url.search : '');
+    window.history.replaceState({}, '', nextUrl);
+}
+
+function createProjectCard(project, userRole = 'MEMBER') {
+    const card = document.createElement('div');
+    card.className = 'project-card';
+
+    let actionsHTML = '';
+
+    if (userRole === 'OWNER') {
+        actionsHTML += `<button class="btn-small btn-edit" onclick="editProject('${project.id}')">Éditer</button>`;
+    }
+
+    if (userRole === 'OWNER' || userRole === 'ADMIN') {
+        actionsHTML += `<button class="btn-small btn-members" onclick="showProjectMembers('${project.id}')">Membres</button>`;
+        actionsHTML += `<button class="btn-small" id="requests-btn-${project.id}" onclick="showProjectRequests('${project.id}')">Demandes</button>`;
+    }
+
+    if (userRole !== 'OWNER') {
+        actionsHTML += `<button class="btn-small btn-leave" onclick="leaveProject('${project.id}')">Quitter</button>`;
+    }
+
+    if (userRole === 'OWNER') {
+        actionsHTML += `<button class="btn-small btn-delete" onclick="showTransferOwnershipModal('${project.id}')">Supprimer / Transférer</button>`;
+    }
+
+    card.innerHTML = `
+        <h3>${escapeHtml(project.name)}</h3>
+        <p class="description">${escapeHtml(project.description || 'Pas de description')}</p>
+        <span class="visibility">${getVisibilityLabel(project.visibilityType)}</span>
+        ${renderPaidBadge(project)}
+        <div id="skills-${project.id}" class="project-skills"></div>
+        <div class="metadata">
+            <p>Créé par: ${project.creator ? escapeHtml(project.creator.firstName + ' ' + project.creator.lastName) : 'Inconnu'}</p>
+            <p>Créé le: ${formatDate(project.createdAt)}</p>
+        </div>
+        <div class="actions">${actionsHTML}</div>
+    `;
+
+    loadProjectSkills(project.id);
+    if (userRole === 'OWNER' || userRole === 'ADMIN') {
+        updateProjectRequestsBadge(project.id);
+    }
+
+    return card;
+}
+
+function createPublicProjectCard(project, userRole = 'NONE', requestStatus = null) {
+    const card = document.createElement('div');
+    card.className = 'project-card';
+
+    let actionsHTML = '';
+    if (userRole === 'NONE') {
+        const paid = isProjectPaid(project);
+        let disabledAttr = '';
+        let label = 'Rejoindre';
+        if (!paid) {
+            if (requestStatus === 'PENDING') {
+                disabledAttr = 'disabled';
+                label = 'Demande en attente';
+            } else if (requestStatus === 'REJECTED') {
+                disabledAttr = 'disabled';
+                label = 'Demande refusée';
+            }
+        }
+
+        if (paid) {
+            const priceHint = formatPrice(project.price);
+            actionsHTML += `
+                <button type="button" class="btn-small btn-members" id="join-btn-${project.id}"
+                    title="Paiement requis : ${priceHint}"
+                    onclick="redirectToPaymentPage('${project.id}', '/projects')">
+                    Rejoindre
+                </button>
+            `;
+        } else {
+            const safeName = escapeHtml(project.name || '');
+            const safeDesc = escapeHtml(project.description || '');
+            actionsHTML += `
+                <button type="button" class="btn-small btn-members" id="join-btn-${project.id}" ${disabledAttr}
+                    data-project-id="${project.id}" data-project-name="${safeName}" data-project-desc="${safeDesc}"
+                    onclick="openJoinModalFromButton(this)">
+                    ${label}
+                </button>
+            `;
+        }
+    } else {
+        actionsHTML += `<span class="visibility" style="border-color: transparent; background-color: rgba(29,155,240,0.08);">Déjà membre</span>`;
+    }
+
+    card.innerHTML = `
+        <h3>${escapeHtml(project.name)}</h3>
+        <p class="description">${escapeHtml(project.description || 'Pas de description')}</p>
+        <span class="visibility">${getVisibilityLabel(project.visibilityType)}</span>
+        ${renderPaidBadge(project)}
+        <div class="metadata">
+            <p>Créé par: ${escapeHtml(project.creator.firstName + ' ' + project.creator.lastName)}</p>
+            <p>Créé le: ${formatDate(project.createdAt)}</p>
+        </div>
+        <div class="actions">${actionsHTML}</div>
+    `;
+    return card;
+}
+
+async function handleCreateProject(e) {
+    e.preventDefault();
+
+    const skillsInput = document.getElementById('projectSkills').value.trim();
+    const skills = skillsInput ? skillsInput.split(',').map(s => s.trim()).filter(s => s.length > 0) : [];
+    const isPaid = document.getElementById('projectIsPaid').value === 'true';
+    const priceValue = document.getElementById('projectPrice').value.trim();
+
+    const formData = {
+        name: document.getElementById('projectName').value.trim(),
+        description: document.getElementById('projectDescription').value.trim(),
+        visibility: document.getElementById('projectVisibility').value,
+        skills: skills,
+        isPaid: isPaid,
+        price: isPaid && priceValue ? Number(priceValue) : null
+    };
+
+    if (!formData.name) {
+        showAlert('Le nom du projet est requis', 'error');
+        return;
+    }
+
+    if (isPaid && (!formData.price || formData.price <= 0)) {
+        showAlert('Le prix doit être supérieur à 0 pour un projet payant', 'error');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/project/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.text();
+            throw new Error(errorData);
+        }
+
+        showAlert('Projet créé avec succès', 'success');
+        closeModal('createProjectModal');
+        document.getElementById('createProjectForm').reset();
+        toggleProjectPriceField();
+        loadUserProjects();
+        loadPublicProjects();
+    } catch (error) {
+        console.error('Error creating project:', error);
+        showAlert('Erreur lors de la création du projet: ' + error.message, 'error');
+    }
+}
+
+function isProjectPaid(project) {
+    if (!project) {
+        return false;
+    }
+    return project.isPaid === true || project.isPaid === 'true' || project.paid === true;
+}
+
+function renderPaidBadge(project) {
+    if (!isProjectPaid(project)) {
+        return '';
+    }
+    return `<span class="visibility paid-project-badge" title="Projet payant">Payant · ${formatPrice(project.price)}</span>`;
+}
+
+function formatPrice(price) {
+    const value = Number(price || 0);
+    return `${value.toFixed(2)} €`;
+}
+
+function redirectToPaymentPage(projectId, returnTo) {
+    window.location.href = `/projects/${projectId}/payment?returnTo=${encodeURIComponent(returnTo || '/projects')}`;
 }

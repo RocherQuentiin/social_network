@@ -2,6 +2,7 @@
 package com.socialnetwork.socialnetwork.entity;
 
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -82,6 +83,9 @@ public class User {
 
     @Column(name = "suspended_until")
     private LocalDateTime suspendedUntil;
+
+    @Column(name = "wallet_balance", nullable = false, precision = 10, scale = 2)
+    private BigDecimal walletBalance = BigDecimal.ZERO;
 
     // Getters and setters
 
@@ -206,6 +210,14 @@ public class User {
 
     public void setSuspendedUntil(LocalDateTime suspendedUntil) {
         this.suspendedUntil = suspendedUntil;
+    }
+
+    public BigDecimal getWalletBalance() {
+        return walletBalance != null ? walletBalance : BigDecimal.ZERO;
+    }
+
+    public void setWalletBalance(BigDecimal walletBalance) {
+        this.walletBalance = walletBalance != null ? walletBalance : BigDecimal.ZERO;
     }
 
 	public Profile getProfile() {

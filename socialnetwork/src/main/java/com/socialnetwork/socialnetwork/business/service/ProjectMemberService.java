@@ -7,11 +7,13 @@ import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IProjectMemberRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IProjectRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IUserRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IProjectMemberService;
+import com.socialnetwork.socialnetwork.business.interfaces.service.IProjectWalletService;
 import com.socialnetwork.socialnetwork.dto.ProjectMemberDto;
 import com.socialnetwork.socialnetwork.entity.Project;
 import com.socialnetwork.socialnetwork.entity.ProjectMember;
@@ -24,13 +26,16 @@ public class ProjectMemberService implements IProjectMemberService {
     private final IProjectMemberRepository projectMemberRepository;
     private final IProjectRepository projectRepository;
     private final IUserRepository userRepository;
+    private final IProjectWalletService projectWalletService;
 
     public ProjectMemberService(IProjectMemberRepository projectMemberRepository,
                               IProjectRepository projectRepository,
-                              IUserRepository userRepository) {
+                              IUserRepository userRepository,
+                              IProjectWalletService projectWalletService) {
         this.projectMemberRepository = projectMemberRepository;
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
+        this.projectWalletService = projectWalletService;
     }
 
     @Override
@@ -142,6 +147,7 @@ public class ProjectMemberService implements IProjectMemberService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<Void> leaveProject(UUID projectId, UUID userId) {
         Optional<Project> project = projectRepository.findById(projectId);
         if (!project.isPresent()) {
@@ -161,6 +167,10 @@ public class ProjectMemberService implements IProjectMemberService {
         // Prevent owner from leaving
         if (membership.get().getRole() == ProjectMemberRole.OWNER) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        if (Boolean.TRUE.equals(project.get().getIsPaid())) {
+            projectWalletService.refundSuccessfulPaymentsForLeavingMember(project.get(), user.get());
         }
 
         projectMemberRepository.delete(membership.get());

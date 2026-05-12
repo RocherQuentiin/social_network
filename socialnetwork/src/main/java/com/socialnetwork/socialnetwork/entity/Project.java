@@ -1,5 +1,6 @@
 package com.socialnetwork.socialnetwork.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -40,6 +41,12 @@ public class Project {
     @Enumerated(EnumType.STRING)
     @Column(name = "visibility_type")
     private VisibilityType visibilityType = VisibilityType.PRIVATE;
+
+    @Column(name = "is_paid", nullable = false)
+    private Boolean isPaid = false;
+
+    @Column(name = "price", precision = 10, scale = 2)
+    private BigDecimal price;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -105,5 +112,21 @@ public class Project {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Boolean getIsPaid() {
+        return isPaid;
+    }
+
+    public void setIsPaid(Boolean isPaid) {
+        this.isPaid = isPaid;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 }

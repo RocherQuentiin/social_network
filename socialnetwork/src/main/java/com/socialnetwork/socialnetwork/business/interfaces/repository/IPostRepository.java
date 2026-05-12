@@ -14,17 +14,19 @@ public interface IPostRepository extends JpaRepository<Post, UUID> {
 			  SELECT p.* FROM post p
 			  WHERE p.visibility_type = 'PUBLIC'
 			  OR (p.visibility_type = 'PRIVATE'
-					AND p.author_id = :userID)
+					AND CAST(p.author_id AS CHAR(36)) COLLATE utf8mb4_bin = CAST(:userID AS CHAR(36)) COLLATE utf8mb4_bin)
 			  OR (p.visibility_type = 'FRIENDS'
-					AND p.author_id = :userID)
+					AND CAST(p.author_id AS CHAR(36)) COLLATE utf8mb4_bin = CAST(:userID AS CHAR(36)) COLLATE utf8mb4_bin)
 			  OR (p.visibility_type = 'FRIENDS'
 					AND EXISTS (
 			        	SELECT 1
 			        	FROM connection c
-			        	WHERE c.connection_status = 'Accepted'
+			        	WHERE c.connection_status = 'ACCEPTED'
 			          	AND (
-			                (c.requester_id = p.author_id AND c.receiver_id = :userID)
-			             OR (c.receiver_id = p.author_id AND c.requester_id = :userID)
+			                (CAST(c.requester_id AS CHAR(36)) COLLATE utf8mb4_bin = CAST(p.author_id AS CHAR(36)) COLLATE utf8mb4_bin
+			                 AND CAST(c.receiver_id AS CHAR(36)) COLLATE utf8mb4_bin = CAST(:userID AS CHAR(36)) COLLATE utf8mb4_bin)
+			             OR (CAST(c.receiver_id AS CHAR(36)) COLLATE utf8mb4_bin = CAST(p.author_id AS CHAR(36)) COLLATE utf8mb4_bin
+			                 AND CAST(c.requester_id AS CHAR(36)) COLLATE utf8mb4_bin = CAST(:userID AS CHAR(36)) COLLATE utf8mb4_bin)
 			          	)
 			    )
 			   );

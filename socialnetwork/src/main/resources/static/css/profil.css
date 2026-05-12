@@ -507,7 +507,7 @@
     }
 }
 
-#editEventModal, #userRecommandationModal, #editHobbyModal, #editCompetenciesModal {
+#editEventModal, #userRecommandationModal, #editHobbyModal, #editCompetenciesModal, #paymentMethodsModal {
     display: none;
     position: fixed;
     inset: 0;
@@ -519,7 +519,7 @@
     padding: 20px;
 }
 
-#editEventModal .card, #userRecommandationModal .card, #editHobbyModal .card, #editCompetenciesModal .card {
+#editEventModal .card, #userRecommandationModal .card, #editHobbyModal .card, #editCompetenciesModal .card, #paymentMethodsModal .card {
     width: 100%;
     max-width: 550px;
     background: #1c2028;
@@ -723,4 +723,103 @@ textarea {
 
 .btn-change-password{
 	margin-top: 20px;
+}
+
+/* Moyens de paiement — fermeture & suppression */
+#paymentMethodsModal .pm-modal-close {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.35rem;
+	height: 2.35rem;
+	padding: 0;
+	border-radius: 50%;
+	border: 1px solid rgba(255, 255, 255, 0.14);
+	background: linear-gradient(165deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
+	color: var(--text-dim, #9ca3af);
+	cursor: pointer;
+	transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.15s, box-shadow 0.2s;
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+#paymentMethodsModal .pm-modal-close:hover {
+	color: #fff;
+	border-color: rgba(239, 68, 68, 0.55);
+	background: rgba(239, 68, 68, 0.12);
+	box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.15);
+	transform: scale(1.06);
+}
+
+#paymentMethodsModal .pm-modal-close:active {
+	transform: scale(0.96);
+}
+
+#paymentMethodsModal .pm-modal-close svg {
+	width: 1.1rem;
+	height: 1.1rem;
+	stroke-width: 2.25;
+}
+
+#paymentMethodsModal .payment-method-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	padding: 0.85rem 1rem;
+	border-radius: 10px;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	background: rgba(0, 0, 0, 0.2);
+}
+
+#paymentMethodsModal .payment-method-row-info {
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	min-width: 0;
+}
+
+#paymentMethodsModal .payment-method-row-info strong {
+	font-size: 0.95rem;
+	color: var(--text-main, #f3f4f6);
+}
+
+#paymentMethodsModal .payment-method-row-meta {
+	font-size: 0.78rem;
+	color: var(--text-dim, #9ca3af);
+	line-height: 1.35;
+}
+
+#paymentMethodsModal .btn-delete-payment-method {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.45rem;
+	flex-shrink: 0;
+	padding: 0.45rem 0.85rem;
+	font-size: 0.78rem;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	border-radius: 9px;
+	border: 1px solid rgba(248, 113, 113, 0.45);
+	background: rgba(248, 113, 113, 0.06);
+	color: #fca5a5;
+	cursor: pointer;
+	transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.12s, box-shadow 0.2s;
+}
+
+#paymentMethodsModal .btn-delete-payment-method svg {
+	width: 0.95rem;
+	height: 0.95rem;
+	stroke-width: 2.1;
+}
+
+#paymentMethodsModal .btn-delete-payment-method:hover {
+	background: rgba(239, 68, 68, 0.18);
+	border-color: rgba(248, 113, 113, 0.85);
+	color: #fecaca;
+	box-shadow: 0 4px 14px rgba(239, 68, 68, 0.18);
+}
+
+#paymentMethodsModal .btn-delete-payment-method:active {
+	transform: scale(0.97);
 }

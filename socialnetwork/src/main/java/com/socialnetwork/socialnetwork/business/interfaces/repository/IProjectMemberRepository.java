@@ -32,6 +32,11 @@ public interface IProjectMemberRepository extends JpaRepository<ProjectMember, U
      */
     Optional<List<ProjectMember>> findByUser(User user);
 
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM ProjectMember pm WHERE pm.project.id = :projectId")
+    void deleteByProjectId(@Param("projectId") UUID projectId);
+
     /**
      * Check if a user is member of a project
      */

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectRequestService implements IProjectRequestService {
@@ -112,7 +113,10 @@ public class ProjectRequestService implements IProjectRequestService {
         }
 
         Optional<List<ProjectRequest>> requests = projectRequestRepository.findByUser(userOpt.get());
-        return new ResponseEntity<>(requests.orElse(new ArrayList<>()), HttpStatus.OK);
+        List<ProjectRequest> list = requests.orElse(new ArrayList<>()).stream()
+                .filter(r -> r.getProject() != null)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @Override
