@@ -1,28 +1,26 @@
-// Load public projects of a specific user
+// Projets publics d'un utilisateur (page /projects/user/{id})
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     displayUserName();
+    handlePaymentFeedback();
     loadPublicProjects();
     setupEventListeners();
 });
 
 function setupEventListeners() {
-    // Close join modal
     const closeJoinModal = document.getElementById('closeJoinModal');
     if (closeJoinModal) {
         closeJoinModal.addEventListener('click', () => closeModal('joinProjectModal'));
     }
 
-    // Join project form submission
     const joinForm = document.getElementById('joinProjectForm');
     if (joinForm) {
         joinForm.addEventListener('submit', handleJoinProject);
     }
 
-    // Close modal when clicking outside
     window.addEventListener('click', (event) => {
         const modal = document.getElementById('joinProjectModal');
-        if (event.target == modal) {
+        if (modal && event.target === modal) {
             modal.classList.remove('active');
         }
     });
@@ -36,6 +34,12 @@ function displayUserName() {
     }
 }
 
+function isOwnPublicProfile() {
+    const cur = (window.currentUserId || '').toString().trim();
+    const viewed = (window.viewedUserId || '').toString().trim();
+    return cur.length > 0 && cur === viewed;
+}
+
 async function loadPublicProjects() {
     const userId = window.viewedUserId;
     if (!userId) {
@@ -44,14 +48,14 @@ async function loadPublicProjects() {
     }
 
     const projectsList = document.getElementById('user-public-projects');
-    if (!projectsList) return;
+    if (!projectsList) {
+        return;
+    }
 
     try {
-        const response = await fetch(`/api/project/creator/${userId}/public`, {
+        const response = await fetch(`/api/project/creator/${userId}/public?t=${Date.now()}`, {
             method: 'GET',
-            headers: {
-                'Accept': 'application/json'
-            }
+            headers: { 'Accept': 'application/json' }
         });
 
         if (!response.ok) {
@@ -75,12 +79,10 @@ function displayProjects(projects) {
         return;
     }
 
-    projects.forEach(project => {
-        const projectCard = createProjectCard(project);
-        projectsList.appendChild(projectCard);
+    projects.forEach((project) => {
+        projectsList.appendChild(createProjectCard(project));
     });
 
-    // Re-initialize lucide icons
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
     }
@@ -95,6 +97,29 @@ function displayNoProjects() {
     `;
 }
 
+function isProjectPaid(project) {
+    if (!project) {
+        return false;
+    }
+    return project.isPaid === true || project.isPaid === 'true' || project.paid === true;
+}
+
+function formatPrice(price) {
+    const value = Number(price || 0);
+    return `${value.toFixed(2)} €`;
+}
+
+function renderPaidBadge(project) {
+    if (!isProjectPaid(project)) {
+        return '';
+    }
+    return `<span class="visibility paid-project-badge" title="Projet payant">Payant · ${formatPrice(project.price)}</span>`;
+}
+
+function redirectToPaymentPage(projectId, returnTo) {
+    window.location.href = `/projects/${projectId}/payment?returnTo=${encodeURIComponent(returnTo || '/projects')}`;
+}
+
 function createProjectCard(project) {
     const card = document.createElement('div');
     card.className = 'project-card';
@@ -102,6 +127,7 @@ function createProjectCard(project) {
     const visibilityLabel = getVisibilityLabel(project.visibilityType);
     const description = project.description || 'Aucune description';
     const createdAt = formatDate(project.createdAt);
+    const returnTo = `/projects/user/${window.viewedUserId}`;
 
     let skillsHTML = '';
     if (project.skills && project.skills.length > 0) {
@@ -110,17 +136,44 @@ function createProjectCard(project) {
                 <div class="skills-section">
                     <strong>Compétences recherchées</strong>
                     <div class="skills-list">
-                        ${project.skills.map(skill => `<span class="skill-badge">${escapeHtml(skill.skillName)}</span>`).join('')}
+                        ${project.skills.map((skill) => `<span class="skill-badge">${escapeHtml(skill.skillName)}</span>`).join('')}
                     </div>
                 </div>
             </div>
         `;
     }
 
+    const actionsWrap = document.createElement('div');
+    actionsWrap.className = 'actions';
+
+    if (isOwnPublicProfile()) {
+        const span = document.createElement('span');
+        span.className = 'visibility';
+        span.style.cssText = 'border-color: transparent; background-color: rgba(29,155,240,0.08);';
+        span.textContent = 'Votre projet';
+        actionsWrap.appendChild(span);
+    } else if (isProjectPaid(project)) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn-small btn-members';
+        btn.textContent = 'Rejoindre';
+        btn.title = `Paiement requis : ${formatPrice(project.price)}`;
+        btn.addEventListener('click', () => redirectToPaymentPage(project.id, returnTo));
+        actionsWrap.appendChild(btn);
+    } else {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn-small btn-members';
+        btn.textContent = 'Rejoindre';
+        btn.addEventListener('click', () => openJoinModal(project.id, project.name, description));
+        actionsWrap.appendChild(btn);
+    }
+
     card.innerHTML = `
         <h3>${escapeHtml(project.name)}</h3>
         <p class="description">${escapeHtml(description)}</p>
         <span class="visibility">${visibilityLabel}</span>
+        ${renderPaidBadge(project)}
         ${skillsHTML}
         <div class="metadata">
             <span>
@@ -128,18 +181,16 @@ function createProjectCard(project) {
                 ${createdAt}
             </span>
         </div>
-        <div class="actions">
-            <button class="btn-small btn-members" onclick="openJoinModal('${project.id}', '${escapeHtml(project.name)}', '${escapeHtml(description)}')">Rejoindre</button>
-        </div>
     `;
 
+    card.appendChild(actionsWrap);
     return card;
 }
 
 function openJoinModal(projectId, projectName, projectDescription) {
     document.getElementById('joinProjectId').value = projectId;
     document.getElementById('joinProjectName').textContent = projectName;
-    document.getElementById('joinProjectDesc').textContent = projectDescription;
+    document.getElementById('joinProjectDesc').textContent = projectDescription || '';
     document.getElementById('joinMessage').value = '';
     document.getElementById('joinProjectModal').classList.add('active');
 }
@@ -150,7 +201,7 @@ function closeModal(modalId) {
 
 async function handleJoinProject(e) {
     e.preventDefault();
-    
+
     const projectId = document.getElementById('joinProjectId').value;
     const message = document.getElementById('joinMessage').value.trim();
 
@@ -184,11 +235,10 @@ async function handleJoinProject(e) {
 
         showAlert('Demande d\'adhésion envoyée avec succès!', 'success');
         closeModal('joinProjectModal');
-        
-        // Reload projects
+
         setTimeout(() => {
             loadPublicProjects();
-        }, 1500);
+        }, 800);
     } catch (error) {
         console.error('Error joining project:', error);
         showAlert('Erreur lors de l\'envoi de la demande', 'error');
@@ -196,21 +246,27 @@ async function handleJoinProject(e) {
 }
 
 function getVisibilityLabel(visibility) {
-    switch(visibility) {
-        case 'PUBLIC': return 'Public';
-        case 'FRIENDS': return 'Amis';
-        case 'PRIVATE': return 'Privé';
-        default: return visibility;
+    switch (visibility) {
+        case 'PUBLIC':
+            return 'Public';
+        case 'FRIENDS':
+            return 'Amis';
+        case 'PRIVATE':
+            return 'Privé';
+        default:
+            return visibility;
     }
 }
 
 function formatDate(dateString) {
-    if (!dateString) return '';
+    if (!dateString) {
+        return '';
+    }
     const date = new Date(dateString);
-    return date.toLocaleDateString('fr-FR', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
+    return date.toLocaleDateString('fr-FR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
     });
 }
 
@@ -222,19 +278,42 @@ function escapeHtml(text) {
         '"': '&quot;',
         "'": '&#039;'
     };
-    return text.replace(/[&<>"']/g, m => map[m]);
+    return String(text).replace(/[&<>"']/g, (m) => map[m]);
 }
 
 function showAlert(message, type) {
-    // Simple alert implementation
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type}`;
     alertDiv.textContent = message;
-    alertDiv.style.cssText = 'position: fixed; top: 20px; right: 20px; padding: 15px 20px; background: #1d9bf0; color: white; border-radius: 8px; z-index: 1000;';
-    
+    alertDiv.style.cssText =
+        'position: fixed; top: 20px; right: 20px; padding: 15px 20px; background: #1d9bf0; color: white; border-radius: 8px; z-index: 1000;';
+
     document.body.appendChild(alertDiv);
-    
+
     setTimeout(() => {
         alertDiv.remove();
-    }, 3000);
+    }, 3500);
+}
+
+function handlePaymentFeedback() {
+    const url = new URL(window.location.href);
+    const paymentStatus = url.searchParams.get('payment');
+    if (!paymentStatus) {
+        return;
+    }
+
+    if (paymentStatus === 'success') {
+        showAlert('Paiement réussi, vous avez rejoint le projet.', 'success');
+    } else if (paymentStatus === 'failed') {
+        showAlert('Le paiement a échoué. Vérifiez les informations de carte de test.', 'error');
+    } else if (paymentStatus === 'unavailable') {
+        showAlert('Ce projet n\'est pas disponible au paiement.', 'error');
+    } else if (paymentStatus === 'own-project') {
+        showAlert('Vous ne pouvez pas payer votre propre projet.', 'info');
+    }
+
+    url.searchParams.delete('payment');
+    url.searchParams.delete('projectId');
+    const nextUrl = url.pathname + (url.search ? url.search : '');
+    window.history.replaceState({}, '', nextUrl);
 }

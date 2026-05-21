@@ -3,6 +3,8 @@ package com.socialnetwork.socialnetwork.entity;
 import com.socialnetwork.socialnetwork.enums.ProjectRequestStatus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -17,7 +19,8 @@ public class ProjectRequest {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
+    @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 

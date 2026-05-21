@@ -18,12 +18,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.socialnetwork.socialnetwork.business.interfaces.service.IProjectMemberService;
+import com.socialnetwork.socialnetwork.business.interfaces.service.IProjectPaymentService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IProjectService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IProjectSkillService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IProjectRequestService;
 import com.socialnetwork.socialnetwork.business.utils.Utils;
 import com.socialnetwork.socialnetwork.dto.ProjectDto;
 import com.socialnetwork.socialnetwork.dto.ProjectMemberDto;
+import com.socialnetwork.socialnetwork.dto.ProjectPaymentRequestDto;
+import com.socialnetwork.socialnetwork.dto.ProjectPaymentResponseDto;
 import com.socialnetwork.socialnetwork.dto.ProjectRequestDto;
 import com.socialnetwork.socialnetwork.entity.Project;
 import com.socialnetwork.socialnetwork.entity.ProjectMember;
@@ -42,15 +45,18 @@ public class ProjectController {
     private final IProjectMemberService projectMemberService;
     private final IProjectSkillService projectSkillService;
     private final IProjectRequestService projectRequestService;
+    private final IProjectPaymentService projectPaymentService;
 
     public ProjectController(IProjectService projectService, 
                            IProjectMemberService projectMemberService,
                            IProjectSkillService projectSkillService,
-                           IProjectRequestService projectRequestService) {
+                           IProjectRequestService projectRequestService,
+                           IProjectPaymentService projectPaymentService) {
         this.projectService = projectService;
         this.projectMemberService = projectMemberService;
         this.projectSkillService = projectSkillService;
         this.projectRequestService = projectRequestService;
+        this.projectPaymentService = projectPaymentService;
     }
 
     /**
@@ -73,7 +79,12 @@ public class ProjectController {
         }
 
         // Create the project
-        ResponseEntity<Project> response = projectService.createProject(projectDto, userId);
+        ResponseEntity<Project> response;
+        try {
+            response = projectService.createProject(projectDto, userId);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
 
         // If project was created, add creator as OWNER member
         if (response.getStatusCode() == HttpStatusCode.valueOf(201)) {
@@ -107,7 +118,12 @@ public class ProjectController {
         }
 
         // Update the project
-        ResponseEntity<Project> response = projectService.updateProject(projectId, projectDto, userId);
+        ResponseEntity<Project> response;
+        try {
+            response = projectService.updateProject(projectId, projectDto, userId);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
 
         if (response.getStatusCode() == HttpStatusCode.valueOf(403)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only project owner or admins can modify the project");
@@ -605,5 +621,23 @@ public class ProjectController {
         }
 
         return response;
+    }
+
+    /**
+     * Process payment for a paid project
+     * POST /api/project/{projectId}/payment
+     */
+    @PostMapping("/{projectId}/payment")
+    public ResponseEntity<ProjectPaymentResponseDto> processProjectPayment(@PathVariable UUID projectId,
+                                                                           @RequestBody ProjectPaymentRequestDto paymentRequestDto,
+                                                                           HttpServletRequest request) {
+        Object userIsConnected = Utils.validPage(request, true);
+        if (userIsConnected == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ProjectPaymentResponseDto(false, "Authentication required", null));
+        }
+
+        UUID userId = UUID.fromString(userIsConnected.toString());
+        return projectPaymentService.processProjectPayment(projectId, userId, paymentRequestDto);
     }
 }

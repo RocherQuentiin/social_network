@@ -1,5 +1,7 @@
 package com.socialnetwork.socialnetwork.business.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -7,12 +9,18 @@ import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IProjectMemberRepository;
+import com.socialnetwork.socialnetwork.business.interfaces.repository.IProjectMessageGroupRepository;
+import com.socialnetwork.socialnetwork.business.interfaces.repository.IProjectMessageRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IProjectRepository;
+import com.socialnetwork.socialnetwork.business.interfaces.repository.IProjectRequestRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IUserRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IProjectService;
+import com.socialnetwork.socialnetwork.business.interfaces.service.IProjectPaymentService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IProjectSkillService;
+import com.socialnetwork.socialnetwork.business.interfaces.service.IProjectWalletService;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IPostService;
 import com.socialnetwork.socialnetwork.dto.ProjectDto;
 import com.socialnetwork.socialnetwork.entity.Project;
@@ -30,17 +38,32 @@ public class ProjectService implements IProjectService {
     private final IUserRepository userRepository;
     private final IProjectSkillService projectSkillService;
     private final IPostService postService;
+    private final IProjectPaymentService projectPaymentService;
+    private final IProjectWalletService projectWalletService;
+    private final IProjectMessageRepository projectMessageRepository;
+    private final IProjectMessageGroupRepository projectMessageGroupRepository;
+    private final IProjectRequestRepository projectRequestRepository;
 
     public ProjectService(IProjectRepository projectRepository, 
                          IProjectMemberRepository projectMemberRepository,
                          IUserRepository userRepository,
                          IProjectSkillService projectSkillService,
-                         IPostService postService) {
+                         IPostService postService,
+                         IProjectPaymentService projectPaymentService,
+                         IProjectWalletService projectWalletService,
+                         IProjectMessageRepository projectMessageRepository,
+                         IProjectMessageGroupRepository projectMessageGroupRepository,
+                         IProjectRequestRepository projectRequestRepository) {
         this.projectRepository = projectRepository;
         this.projectMemberRepository = projectMemberRepository;
         this.userRepository = userRepository;
         this.projectSkillService = projectSkillService;
         this.postService = postService;
+        this.projectPaymentService = projectPaymentService;
+        this.projectWalletService = projectWalletService;
+        this.projectMessageRepository = projectMessageRepository;
+        this.projectMessageGroupRepository = projectMessageGroupRepository;
+        this.projectRequestRepository = projectRequestRepository;
     }
 
     @Override
@@ -57,6 +80,7 @@ public class ProjectService implements IProjectService {
         project.setDescription(projectDto.getDescription());
         project.setVisibilityType(projectDto.getVisibility() != null ? projectDto.getVisibility() : VisibilityType.PRIVATE);
         project.setCreator(creator.get());
+        applyPaymentConfiguration(project, projectDto);
 
         // Save the project
         Project savedProject = projectRepository.save(project);
@@ -98,6 +122,9 @@ public class ProjectService implements IProjectService {
         project.get().setName(projectDto.getName());
         project.get().setDescription(projectDto.getDescription());
         project.get().setVisibilityType(projectDto.getVisibility() != null ? projectDto.getVisibility() : VisibilityType.PRIVATE);
+        if (projectDto.getIsPaid() != null) {
+            applyPaymentConfiguration(project.get(), projectDto);
+        }
 
         // Save the updated project
         Project updatedProject = projectRepository.save(project.get());
@@ -150,10 +177,12 @@ public class ProjectService implements IProjectService {
         }
         
         if (memberProjects.isPresent()) {
-            // Add member projects that are not already added (to avoid duplicates)
+            // Add member projects that are not already added (to avoid duplicates).
+            // Skip rows whose project was removed (orphan project_member) — @NotFound yields null project.
             for (ProjectMember member : memberProjects.get()) {
-                if (member.getProject() != null && !allProjects.contains(member.getProject())) {
-                    allProjects.add(member.getProject());
+                Project p = member.getProject();
+                if (p != null && !allProjects.contains(p)) {
+                    allProjects.add(p);
                 }
             }
         }
@@ -198,6 +227,7 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<Void> deleteProject(UUID projectId, UUID userId) {
         Optional<Project> project = projectRepository.findById(projectId);
         if (!project.isPresent()) {
@@ -208,6 +238,17 @@ public class ProjectService implements IProjectService {
         if (!project.get().getCreator().getId().equals(userId)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
+
+        if (Boolean.TRUE.equals(project.get().getIsPaid())) {
+            projectWalletService.refundAllSuccessfulPaymentsForProject(project.get());
+        }
+
+        UUID pid = project.get().getId();
+        projectMessageRepository.deleteByProjectId(pid);
+        projectMessageGroupRepository.deleteByProjectId(pid);
+        projectSkillService.removeAllSkills(pid);
+        projectRequestRepository.deleteByProject(project.get());
+        projectMemberRepository.deleteByProjectId(pid);
 
         projectRepository.delete(project.get());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -302,5 +343,26 @@ public class ProjectService implements IProjectService {
         projectMemberRepository.save(newOwnerMembership);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Override
+    public BigDecimal getCreatorRevenue(UUID creatorId) {
+        return projectPaymentService.getTotalRevenueForCreator(creatorId);
+    }
+
+    private void applyPaymentConfiguration(Project project, ProjectDto projectDto) {
+        boolean isPaid = Boolean.TRUE.equals(projectDto.getIsPaid());
+        project.setIsPaid(isPaid);
+        if (!isPaid) {
+            project.setPrice(BigDecimal.ZERO);
+            return;
+        }
+
+        BigDecimal price = projectDto.getPrice();
+        if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Le prix doit être supérieur à 0 pour un projet payant");
+        }
+
+        project.setPrice(price.setScale(2, RoundingMode.HALF_UP));
     }
 }

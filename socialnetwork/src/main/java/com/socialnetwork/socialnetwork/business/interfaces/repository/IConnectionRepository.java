@@ -24,12 +24,13 @@ public interface IConnectionRepository extends JpaRepository<Connection, UUID> {
 
     @Query(value = """
             SELECT CASE
-                WHEN requester_id = :userID THEN receiver_id
+                WHEN CAST(requester_id AS CHAR(36)) COLLATE utf8mb4_bin = CAST(:userID AS CHAR(36)) COLLATE utf8mb4_bin THEN receiver_id
                 ELSE requester_id
             END
             FROM connection
-            WHERE connection_status = 'Accepted'
-            AND (requester_id = :userID OR receiver_id = :userID)
+            WHERE connection_status = 'ACCEPTED'
+            AND (CAST(requester_id AS CHAR(36)) COLLATE utf8mb4_bin = CAST(:userID AS CHAR(36)) COLLATE utf8mb4_bin
+                 OR CAST(receiver_id AS CHAR(36)) COLLATE utf8mb4_bin = CAST(:userID AS CHAR(36)) COLLATE utf8mb4_bin)
             """, nativeQuery = true)
     List<UUID> findAllFriendsId(@Param("userID") UUID userID);
     

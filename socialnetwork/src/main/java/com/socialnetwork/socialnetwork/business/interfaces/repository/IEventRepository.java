@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.socialnetwork.socialnetwork.entity.Event;
-import com.socialnetwork.socialnetwork.entity.Post;
 import com.socialnetwork.socialnetwork.enums.VisibilityType;
 
 
@@ -28,17 +27,19 @@ public interface IEventRepository extends JpaRepository<Event, UUID> {
 			  SELECT e.* FROM event e
 			  WHERE e.visibility_type = 'PUBLIC' and e.event_date >= :eventDate
 			  OR (e.visibility_type = 'PRIVATE'
-					AND e.creator_id = :userID and e.event_date >= :eventDate)
+					AND CAST(e.creator_id AS CHAR(36)) COLLATE utf8mb4_bin = CAST(:userID AS CHAR(36)) COLLATE utf8mb4_bin and e.event_date >= :eventDate)
 			  OR (e.visibility_type = 'FRIENDS'
-					AND e.creator_id = :userID and e.event_date >= :eventDate)
+					AND CAST(e.creator_id AS CHAR(36)) COLLATE utf8mb4_bin = CAST(:userID AS CHAR(36)) COLLATE utf8mb4_bin and e.event_date >= :eventDate)
 			  OR (e.visibility_type = 'FRIENDS' and e.event_date >= :eventDate
 					AND EXISTS (
 			        	SELECT 1
 			        	FROM connection c
-			        	WHERE c.connection_status = 'Accepted'
+			        	WHERE c.connection_status = 'ACCEPTED'
 			          	AND (
-			                (c.requester_id = e.creator_id AND c.receiver_id = :userID)
-			             OR (c.receiver_id = e.creator_id AND c.requester_id = :userID)
+			                (CAST(c.requester_id AS CHAR(36)) COLLATE utf8mb4_bin = CAST(e.creator_id AS CHAR(36)) COLLATE utf8mb4_bin
+			                 AND CAST(c.receiver_id AS CHAR(36)) COLLATE utf8mb4_bin = CAST(:userID AS CHAR(36)) COLLATE utf8mb4_bin)
+			             OR (CAST(c.receiver_id AS CHAR(36)) COLLATE utf8mb4_bin = CAST(e.creator_id AS CHAR(36)) COLLATE utf8mb4_bin
+			                 AND CAST(c.requester_id AS CHAR(36)) COLLATE utf8mb4_bin = CAST(:userID AS CHAR(36)) COLLATE utf8mb4_bin)
 			          	)
 			    )
 			   );

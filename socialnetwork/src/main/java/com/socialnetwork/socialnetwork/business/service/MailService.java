@@ -1,6 +1,7 @@
 package com.socialnetwork.socialnetwork.business.service;
 
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,16 +20,24 @@ import com.socialnetwork.socialnetwork.business.interfaces.service.IMailService;
 @Service
 public class MailService implements IMailService {
 
+	private static final Logger LOGGER = Logger.getLogger(MailService.class.getName());
 	private String from;
 	private Session session;
+	private boolean mailEnabled;
 
-	@Value("${frontbaseurl}")
 	private String frontBaseUrl;
 
 	public MailService(@Value("${spring.mail.host}") String host, @Value("${spring.mail.username}") String username,
-			@Value("${spring.mail.password}") String password, @Value("${frontbaseurl}") String frontBaseUrl) {
+			@Value("${spring.mail.password}") String password, @Value("${front.base.url}") String frontBaseUrl) {
 
 		this.from = "isepsocial@outlook.fr";
+		this.frontBaseUrl = frontBaseUrl;
+
+		if (username == null || username.isBlank() || password == null || password.isBlank()) {
+			this.mailEnabled = false;
+			LOGGER.warning("Mail service is disabled because SMTP credentials are not configured.");
+			return;
+		}
 
 		Properties props = new Properties();
 		props.put("mail.smtp.auth", "true");
@@ -36,17 +45,20 @@ public class MailService implements IMailService {
 		props.put("mail.smtp.host", host);
 		props.put("mail.smtp.port", "587");
 
-		this.frontBaseUrl = frontBaseUrl;
-
 		session = Session.getInstance(props, new jakarta.mail.Authenticator() {
 			protected jakarta.mail.PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication(username, password);
 			}
 		});
+		this.mailEnabled = true;
 	}
 
 	@Override
 	public void sendConfirmationAccountMail(String emailToSend, String code, String firstName) {
+		if (!mailEnabled) {
+			LOGGER.warning("Skipping confirmation email because mail service is disabled.");
+			return;
+		}
 		try {
 			String confirmationLink = this.frontBaseUrl + "/user/" + code + "/confirm";
 
@@ -110,6 +122,10 @@ public class MailService implements IMailService {
 
 	@Override
 	public void sendForgotPassword(String emailToSend, String code, String firstName) {
+		if (!mailEnabled) {
+			LOGGER.warning("Skipping forgot-password email because mail service is disabled.");
+			return;
+		}
 		try {
 			String confirmationLink = this.frontBaseUrl + "/user/" + code + "/forgotpassword";
 

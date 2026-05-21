@@ -130,7 +130,7 @@
 				</div>
 				<div class="post-content">
 					<p th:text="${post.content}">Contenu...</p>
-					<div class="post-media-container" th:if="${not #lists.isEmpty(post.medias)}">
+					<div class="post-media-container" th:if="${post.medias != null and !post.medias.isEmpty()}">
 						<div th:each="pm : ${post.medias}" class="media-item">
 							<img th:if="${pm.mediaType.toString().equals('IMAGE')}" th:src="@{${pm.fileUrl}}" class="img-fluid rounded">
 							<video th:if="${pm.mediaType.toString().equals('VIDEO')}" controls class="video-fluid rounded"><source th:src="@{${pm.fileUrl}}" type="video/mp4"></video>

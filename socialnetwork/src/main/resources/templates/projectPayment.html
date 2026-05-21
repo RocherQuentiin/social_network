@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement du projet</title>
+    <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/project.css}">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header-fragment}"></div>
+
+    <main class="projects-container" style="max-width: 880px;">
+        <input type="hidden" id="metaWalletBalance" th:value="${currentUserWalletBalance}">
+        <input type="hidden" id="metaProjectPrice" th:value="${project.price}">
+        <section class="projects-section">
+            <div class="project-card" style="display: grid; gap: 1.25rem;">
+                <div>
+                    <span class="visibility" style="background-color: rgba(234, 179, 8, 0.12); border-color: rgba(234, 179, 8, 0.35); color: #b45309;">Projet payant</span>
+                    <h1 style="margin-top: 1rem;" th:text="${project.name}">Nom du projet</h1>
+                    <p class="description" th:text="${project.description}">Description</p>
+                </div>
+
+                <div class="metadata" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+                    <div class="card" style="padding: 1rem;">
+                        <p style="margin: 0; color: var(--text-dim);">Montant à payer</p>
+                        <strong style="font-size: 1.5rem;" th:text="${#numbers.formatDecimal(project.price, 1, 2)} + ' EUR'">12.00 EUR</strong>
+                    </div>
+                    <div class="card" style="padding: 1rem;">
+                        <p style="margin: 0; color: var(--text-dim);">Votre solde projet</p>
+                        <strong style="font-size: 1.5rem;" th:text="${#numbers.formatDecimal(currentUserWalletBalance, 1, 2)} + ' EUR'">0.00 EUR</strong>
+                    </div>
+                    <div class="card" style="padding: 1rem;">
+                        <p style="margin: 0; color: var(--text-dim);">Créé par</p>
+                        <strong th:text="${project.creator.firstName + ' ' + project.creator.lastName}">Créateur</strong>
+                    </div>
+                </div>
+
+                <form id="projectPaymentForm" class="modal-card card project-payment-form" novalidate>
+                    <input type="hidden" id="paymentProjectId" th:value="${project.id}">
+                    <input type="hidden" id="paymentReturnTo" th:value="${returnTo}">
+
+                    <div class="modal-header project-payment-form-header">
+                        <h3>Règlement</h3>
+                        <a class="project-payment-cancel" th:href="${returnTo}">Annuler</a>
+                    </div>
+
+                    <div class="payment-mode-block">
+                        <p class="payment-mode-heading">Mode de paiement</p>
+                        <div class="payment-mode-grid">
+                            <label class="payment-mode-tile">
+                                <input type="radio" name="paymentMode" value="new" checked>
+                                <span class="payment-mode-tile-inner">
+                                    <span class="payment-mode-indicator" aria-hidden="true"></span>
+                                    <span class="payment-mode-label">Nouvelle carte</span>
+                                </span>
+                            </label>
+                            <label class="payment-mode-tile">
+                                <input type="radio" name="paymentMode" value="saved" id="modeSavedRadio">
+                                <span class="payment-mode-tile-inner">
+                                    <span class="payment-mode-indicator" aria-hidden="true"></span>
+                                    <span class="payment-mode-label">Carte enregistrée</span>
+                                </span>
+                            </label>
+                            <label class="payment-mode-tile">
+                                <input type="radio" name="paymentMode" value="wallet" id="modeWalletRadio">
+                                <span class="payment-mode-tile-inner">
+                                    <span class="payment-mode-indicator" aria-hidden="true"></span>
+                                    <span class="payment-mode-label">Payer avec mon solde projet</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="walletPaySection" class="payment-wallet-notice" style="display:none;">
+                        <p id="walletPayHint">Le montant sera débité de votre portefeuille virtuel.</p>
+                    </div>
+
+                    <div id="savedCardSection" class="payment-saved-section" style="display:none;">
+                        <div class="form-group">
+                            <label for="savedMethodSelect">Carte</label>
+                            <select id="savedMethodSelect"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="savedCvv">CVV</label>
+                            <input type="password" id="savedCvv" maxlength="4" inputmode="numeric">
+                        </div>
+                    </div>
+
+                    <div id="newCardSection" class="payment-new-card-section">
+                        <div class="form-group">
+                            <label for="cardholderName">Nom du titulaire</label>
+                            <input type="text" id="cardholderName">
+                        </div>
+                        <div class="form-group">
+                            <label for="cardNumber">Numéro de carte</label>
+                            <input type="text" id="cardNumber" inputmode="numeric">
+                        </div>
+                        <div class="payment-expiry-row">
+                            <div class="form-group">
+                                <label for="expiryMonth">Mois</label>
+                                <input type="number" id="expiryMonth" min="1" max="12">
+                            </div>
+                            <div class="form-group">
+                                <label for="expiryYear">Année</label>
+                                <input type="number" id="expiryYear" min="2026">
+                            </div>
+                            <div class="form-group">
+                                <label for="cvv">CVV</label>
+                                <input type="password" id="cvv" inputmode="numeric" maxlength="4">
+                            </div>
+                        </div>
+                        <div class="form-group payment-save-card-row">
+                            <label class="payment-checkbox-label">
+                                <input type="checkbox" id="savePaymentMethod">
+                                <span>Enregistrer cette carte dans mon profil</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="actions project-payment-actions">
+                        <button type="submit" class="btn-primary" id="paySubmitBtn" th:text="'Payer ' + ${#numbers.formatDecimal(project.price, 1, 2)} + ' EUR'">Payer</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <script th:src="@{/js/projectPayment.js}"></script>
+    <div th:replace="~{fragments/footer :: footer-fragment}"></div>
+</body>
+</html>

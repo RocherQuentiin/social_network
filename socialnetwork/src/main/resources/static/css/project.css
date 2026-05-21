@@ -739,3 +739,223 @@
     color: var(--error);
     background: transparent;
 }
+
+.paid-project-badge {
+    background-color: rgba(234, 179, 8, 0.12);
+    border-color: rgba(234, 179, 8, 0.35);
+    color: #b45309;
+}
+
+/* Page paiement projet */
+.project-payment-form.modal-card {
+    max-width: none;
+    width: 100%;
+    padding: 1.75rem 1.85rem 1.65rem;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(165deg, rgba(32, 38, 48, 0.92), rgba(18, 22, 28, 0.98));
+    box-shadow: 0 14px 48px rgba(0, 0, 0, 0.38);
+}
+
+.project-payment-form .project-payment-form-header {
+    margin-bottom: 1.35rem;
+    padding-bottom: 1rem;
+    align-items: center;
+}
+
+.project-payment-form .project-payment-form-header h3 {
+    margin: 0;
+}
+
+.project-payment-cancel {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    color: var(--text-dim, #94a3b8);
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+    transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.12s, box-shadow 0.2s;
+    white-space: nowrap;
+}
+
+.project-payment-cancel:hover {
+    color: #fecaca;
+    border-color: rgba(248, 113, 113, 0.55);
+    background: rgba(239, 68, 68, 0.12);
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.12);
+}
+
+.project-payment-cancel:active {
+    transform: scale(0.97);
+}
+
+.project-payment-cancel:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.payment-mode-block {
+    margin-bottom: 1.25rem;
+}
+
+.payment-mode-heading {
+    margin: 0 0 0.75rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim, #94a3b8);
+}
+
+.payment-mode-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.payment-mode-tile {
+    display: block;
+    cursor: pointer;
+    margin: 0;
+    position: relative;
+}
+
+.payment-mode-tile input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    clip: rect(0, 0, 0, 0);
+}
+
+.payment-mode-tile-inner {
+    display: flex;
+    align-items: center;
+    padding: 0.95rem 1.1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.18);
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+
+.payment-mode-tile:hover .payment-mode-tile-inner {
+    border-color: rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.payment-mode-tile input:focus-visible + .payment-mode-tile-inner {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.payment-mode-tile input:checked + .payment-mode-tile-inner {
+    border-color: rgba(29, 155, 240, 0.55);
+    background: rgba(29, 155, 240, 0.1);
+    box-shadow: 0 0 0 1px rgba(29, 155, 240, 0.2), 0 8px 24px rgba(29, 155, 240, 0.08);
+}
+
+.payment-mode-indicator {
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.28);
+    margin-right: 0.85rem;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.payment-mode-tile input:checked + .payment-mode-tile-inner .payment-mode-indicator {
+    border-color: var(--primary);
+    background: var(--primary);
+    box-shadow: inset 0 0 0 3px rgba(15, 20, 25, 0.95);
+}
+
+.payment-mode-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-main, #f1f5f9);
+    line-height: 1.35;
+}
+
+.payment-wallet-notice {
+    padding: 1rem 1.1rem;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(34, 197, 94, 0.28);
+    background: rgba(34, 197, 94, 0.09);
+}
+
+.payment-wallet-notice p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #86efac;
+    line-height: 1.45;
+}
+
+.payment-saved-section {
+    margin-top: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.payment-new-card-section {
+    margin-top: 0.35rem;
+}
+
+.payment-expiry-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+}
+
+.payment-expiry-row .form-group {
+    margin-bottom: 1rem;
+}
+
+.payment-save-card-row {
+    margin-bottom: 0.25rem;
+}
+
+.payment-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-main, #e2e8f0);
+}
+
+.payment-checkbox-label input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
+.project-payment-actions {
+    margin-top: 1.35rem;
+    padding-top: 1.15rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+@media (max-width: 520px) {
+    .payment-expiry-row {
+        grid-template-columns: 1fr;
+    }
+
+    .project-payment-form.modal-card {
+        padding: 1.35rem 1.1rem;
+    }
+}

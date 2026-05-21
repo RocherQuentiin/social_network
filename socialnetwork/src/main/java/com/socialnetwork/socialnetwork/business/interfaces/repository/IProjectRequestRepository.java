@@ -36,4 +36,6 @@ public interface IProjectRequestRepository extends JpaRepository<ProjectRequest,
      * Check if user already has a request for this project
      */
     boolean existsByProjectAndUser(Project project, User user);
+
+    void deleteByProject(Project project);
 }
