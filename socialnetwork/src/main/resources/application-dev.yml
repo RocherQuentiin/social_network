@@ -2,7 +2,7 @@ spring:
   mail:
     host: smtp-relay.brevo.com
     username: 9edc3f001@smtp-brevo.com
-    password: ${PASSWORD_MAIL:}
+    password: ${PASSWORD_MAIL}
 
 front:
   base:
