@@ -651,6 +651,32 @@ input:focus, select:focus, textarea:focus {
     background: rgba(29, 155, 240, 0.05);
 }
 
+#editEventModal select,
+#editEventModal .custom-select {
+    background: #1c2028;
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    border-radius: 8px;
+    padding: 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    outline: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+#editEventModal select option,
+#editEventModal .custom-select option {
+    background: #1c2028;
+    color: white;
+}
+
+#editEventModal select:focus,
+#editEventModal .custom-select:focus {
+    border-color: var(--primary);
+    background: #1c2028;
+}
+
 .alert-error {
     background: rgba(255, 68, 68, 0.1);
     color: #ff4444;

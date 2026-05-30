@@ -42,8 +42,7 @@ public class ProjectWalletService implements IProjectWalletService {
             return;
         }
         BigDecimal next = creator.getWalletBalance().add(amount).setScale(SCALE, RoundingMode.HALF_UP);
-        creator.setWalletBalance(next);
-        userRepository.save(creator);
+        userRepository.updateWalletBalance(creatorId, next);
     }
 
     @Override
@@ -66,10 +65,8 @@ public class ProjectWalletService implements IProjectWalletService {
         }
         BigDecimal payerNext = payerBal.subtract(amount).setScale(SCALE, RoundingMode.HALF_UP);
         BigDecimal creatorNext = creator.getWalletBalance().add(amount).setScale(SCALE, RoundingMode.HALF_UP);
-        payer.setWalletBalance(payerNext);
-        creator.setWalletBalance(creatorNext);
-        userRepository.save(payer);
-        userRepository.save(creator);
+        userRepository.updateWalletBalance(payerId, payerNext);
+        userRepository.updateWalletBalance(creatorId, creatorNext);
         return true;
     }
 
@@ -120,19 +117,16 @@ public class ProjectWalletService implements IProjectWalletService {
         }
 
         BigDecimal payerNext = payerFresh.getWalletBalance().add(amt).setScale(SCALE, RoundingMode.HALF_UP);
-        payerFresh.setWalletBalance(payerNext);
-
         BigDecimal creatorNext = creator.getWalletBalance().subtract(amt).setScale(SCALE, RoundingMode.HALF_UP);
         if (creatorNext.compareTo(BigDecimal.ZERO) < 0) {
             creatorNext = BigDecimal.ZERO.setScale(SCALE, RoundingMode.HALF_UP);
         }
-        creator.setWalletBalance(creatorNext);
 
         payment.setRefunded(true);
         payment.setRefundedAt(LocalDateTime.now());
 
-        userRepository.save(payerFresh);
-        userRepository.save(creator);
+        userRepository.updateWalletBalance(payerFresh.getId(), payerNext);
+        userRepository.updateWalletBalance(creator.getId(), creatorNext);
         projectPaymentRepository.save(payment);
     }
 }

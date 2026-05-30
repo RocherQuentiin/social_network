@@ -1027,6 +1027,10 @@
 }
 
 .participant-tag {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
     background: rgba(var(--primary-rgb), 0.1);
     color: var(--primary);
     padding: 4px 12px;
@@ -1064,6 +1068,123 @@
 
 .btn-quit { background: rgba(255, 59, 48, 0.1); color: #ff3b30; border: 1px solid rgba(255, 59, 48, 0.2); }
 .btn-quit:hover { background: #ff3b30; color: white; }
+
+.btn-event-requests {
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+}
+
+.btn-event-requests.btn-event-requests-notice {
+    border-color: #f5a623;
+    color: #f5a623;
+    background: rgba(245, 166, 35, 0.08);
+}
+
+.btn-event-delete {
+    background: rgba(255, 59, 48, 0.1);
+    color: #ff3b30;
+    border: 1px solid rgba(255, 59, 48, 0.25);
+}
+
+.btn-event-delete:hover {
+    background: #ff3b30;
+    color: white;
+}
+
+.event-paid-badge {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(234, 179, 8, 0.12);
+    border: 1px solid rgba(234, 179, 8, 0.35);
+    color: #b45309;
+}
+
+.btn-join-paid {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.participant-status-pending {
+    font-size: 0.75rem;
+    font-style: italic;
+    opacity: 0.85;
+}
+
+.participant-actions {
+    display: inline-flex;
+    gap: 4px;
+    margin-left: 4px;
+}
+
+.btn-event-action {
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.btn-event-accept {
+    background: rgba(52, 199, 89, 0.15);
+    color: #34c759;
+    border-color: rgba(52, 199, 89, 0.35);
+}
+
+.btn-event-accept:hover {
+    background: #34c759;
+    color: white;
+}
+
+.btn-event-decline {
+    background: rgba(255, 59, 48, 0.1);
+    color: #ff3b30;
+    border-color: rgba(255, 59, 48, 0.25);
+}
+
+.btn-event-decline:hover {
+    background: #ff3b30;
+    color: white;
+}
+
+.event-requests-list {
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+.event-request-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.event-request-item:last-child {
+    border-bottom: none;
+}
+
+.event-request-name {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.event-request-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
 
 .status-badge {
     padding: 4px 10px;

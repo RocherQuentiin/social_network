@@ -69,6 +69,11 @@ public class EventAttendeeController {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Creator can't join his own event");
 		}
 
+		if (Boolean.TRUE.equals(event.getBody().getIsPaid())) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN)
+					.body("Cet événement est payant. Utilisez la page de paiement pour participer.");
+		}
+
 		ResponseEntity<User> user = this.userService.getUserById(UUID.fromString(userIsConnect.toString()));
 
 		EventAttendee eventAttendee = new EventAttendee();
@@ -90,6 +95,26 @@ public class EventAttendeeController {
 
 		UUID receiverId = UUID.fromString(userIsConnect.toString());
 		return this.eventAttendeeservice.getPendingFor(receiverId);
+	}
+
+	@GetMapping("/event/{eventId}/pending")
+	public ResponseEntity<?> getPendingRequestsForEvent(@PathVariable UUID eventId, HttpServletRequest request) {
+		Object userIsConnect = Utils.validPage(request, true);
+		if (userIsConnect == null) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
+
+		ResponseEntity<Event> event = this.eventservice.getEventByID(eventId);
+		if (event.getStatusCode() != HttpStatus.OK || event.getBody() == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+
+		UUID userId = UUID.fromString(userIsConnect.toString());
+		if (!event.getBody().getCreator().getId().equals(userId)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only the event creator can view requests");
+		}
+
+		return this.eventAttendeeservice.getPendingByEventId(eventId);
 	}
 
 	@GetMapping("/sent")
@@ -133,6 +158,15 @@ public class EventAttendeeController {
 
 		UUID reqId = UUID.fromString(requesterId);
 		UUID eventUUId = UUID.fromString(eventId);
+		UUID responderId = UUID.fromString(userIsConnect.toString());
+
+		ResponseEntity<Event> eventResponse = this.eventservice.getEventByID(eventUUId);
+		if (eventResponse.getStatusCode() != HttpStatus.OK || eventResponse.getBody() == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Event not found");
+		}
+		if (!eventResponse.getBody().getCreator().getId().equals(responderId)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only the event creator can accept requests");
+		}
 		
 		ResponseEntity<EventAttendee> eventAttendeeExist = this.eventAttendeeservice.getEventAttendeeByEventIDAndUserID(
 				eventUUId, reqId);
@@ -140,11 +174,15 @@ public class EventAttendeeController {
 		if (eventAttendeeExist.getStatusCode() == HttpStatusCode.valueOf(404)) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not exist in this event");
 		}
+
+		if (eventAttendeeExist.getBody().getStatus() != EventAttendanceStatus.PENDING) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Request is no longer pending");
+		}
 		
 		ResponseEntity<List<EventAttendee>> listEventAttendee = this.eventAttendeeservice.getEventAttendeeByEventID(eventUUId);
 	
 		if(listEventAttendee.getBody().size() >= eventAttendeeExist.getBody().getEvent().getCapacity()) {
-			System.out.println(listEventAttendee.getBody().size());	return ResponseEntity.status(HttpStatus.FORBIDDEN).body("The capacity maximum");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("The capacity maximum");
 		}
 		
 		eventAttendeeExist.getBody().setStatus(EventAttendanceStatus.ACCEPTED);
@@ -168,6 +206,15 @@ public class EventAttendeeController {
 
 		UUID reqId = UUID.fromString(requesterId);
 		UUID eventUUId = UUID.fromString(eventId);
+		UUID responderId = UUID.fromString(userIsConnect.toString());
+
+		ResponseEntity<Event> eventResponse = this.eventservice.getEventByID(eventUUId);
+		if (eventResponse.getStatusCode() != HttpStatus.OK || eventResponse.getBody() == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Event not found");
+		}
+		if (!eventResponse.getBody().getCreator().getId().equals(responderId)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only the event creator can decline requests");
+		}
 		
 		ResponseEntity<EventAttendee> eventAttendeeExist = this.eventAttendeeservice.getEventAttendeeByEventIDAndUserID(
 				eventUUId, reqId);
@@ -175,14 +222,18 @@ public class EventAttendeeController {
 		if (eventAttendeeExist.getStatusCode() == HttpStatusCode.valueOf(404)) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not exist in this event");
 		}
+
+		if (eventAttendeeExist.getBody().getStatus() != EventAttendanceStatus.PENDING) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Request is no longer pending");
+		}
 		
 		eventAttendeeExist.getBody().setStatus(EventAttendanceStatus.DECLINED);
 		
 		ResponseEntity<EventAttendee> resp = this.eventAttendeeservice.Update(eventAttendeeExist.getBody());
 		if (resp.getStatusCode().is2xxSuccessful()) {
-			return ResponseEntity.status(HttpStatus.OK).body("Event request accepted");
+			return ResponseEntity.status(HttpStatus.OK).body("Event request declined");
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to accept event request");
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to decline event request");
 	}
 	
 }

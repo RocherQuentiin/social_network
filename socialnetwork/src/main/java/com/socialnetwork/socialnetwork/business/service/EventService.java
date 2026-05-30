@@ -1,5 +1,7 @@
 package com.socialnetwork.socialnetwork.business.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -7,13 +9,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IEventRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IEventService;
+import com.socialnetwork.socialnetwork.business.interfaces.service.IEventWalletService;
 import com.socialnetwork.socialnetwork.entity.Event;
 import com.socialnetwork.socialnetwork.entity.User;
 import com.socialnetwork.socialnetwork.enums.VisibilityType;
@@ -21,13 +24,16 @@ import com.socialnetwork.socialnetwork.enums.VisibilityType;
 @Service
 public class EventService implements IEventService{
 private IEventRepository repository;
+private IEventWalletService eventWalletService;
 
-public EventService(IEventRepository repository) {
+public EventService(IEventRepository repository, IEventWalletService eventWalletService) {
 	this.repository = repository;
+	this.eventWalletService = eventWalletService;
 }
 
 @Override
 public ResponseEntity<Event> save(Event event) {
+	applyPaymentConfiguration(event);
 	Event saveEvent = this.repository.save(event);
 	
 	return new ResponseEntity<>(
@@ -95,5 +101,36 @@ public ResponseEntity<List<Event>> getAllEventForConnectedUser(UUID userID, Loca
 	return new ResponseEntity<>(
 			listEvent.get(), 
 		      HttpStatus.OK);
+}
+
+@Override
+@Transactional
+public ResponseEntity<Void> deleteById(UUID eventId) {
+	Optional<Event> eventOpt = this.repository.findById(eventId);
+	if (eventOpt.isEmpty()) {
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+	Event event = eventOpt.get();
+	if (Boolean.TRUE.equals(event.getIsPaid())) {
+		eventWalletService.refundAllSuccessfulPaymentsForEvent(event);
+	}
+	this.repository.deleteById(eventId);
+	return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+}
+
+public void applyPaymentConfiguration(Event event) {
+	boolean isPaid = Boolean.TRUE.equals(event.getIsPaid());
+	event.setIsPaid(isPaid);
+	if (!isPaid) {
+		event.setPrice(BigDecimal.ZERO);
+		return;
+	}
+
+	BigDecimal price = event.getPrice();
+	if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) {
+		throw new IllegalArgumentException("Le prix doit être supérieur à 0 pour un événement payant");
+	}
+
+	event.setPrice(price.setScale(2, RoundingMode.HALF_UP));
 }
 }

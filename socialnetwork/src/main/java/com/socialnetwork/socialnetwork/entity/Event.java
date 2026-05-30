@@ -1,5 +1,6 @@
 package com.socialnetwork.socialnetwork.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -55,6 +56,12 @@ public class Event {
     
     @Column(name = "capacity")
     private Integer capacity = 0;
+
+    @Column(name = "is_paid", nullable = false)
+    private Boolean isPaid = false;
+
+    @Column(name = "price", precision = 10, scale = 2)
+    private BigDecimal price;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -131,6 +138,22 @@ public class Event {
 
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
+    }
+
+    public Boolean getIsPaid() {
+        return isPaid;
+    }
+
+    public void setIsPaid(Boolean isPaid) {
+        this.isPaid = isPaid;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public LocalDateTime getCreatedAt() {

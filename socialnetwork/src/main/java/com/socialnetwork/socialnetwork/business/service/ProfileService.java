@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.socialnetwork.socialnetwork.business.interfaces.repository.IProfileRepository;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IProfileService;
@@ -47,6 +48,19 @@ public class ProfileService implements IProfileService{
 		return new ResponseEntity<>(
 				profile.get(), 
 			      HttpStatus.OK);
+	}
+
+	@Override
+	@Transactional
+	public ResponseEntity<Profile> getOrCreateProfile(User user) {
+		if (user == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		Optional<Profile> profile = this.repository.findByUser(user);
+		if (profile.isPresent()) {
+			return new ResponseEntity<>(profile.get(), HttpStatus.OK);
+		}
+		return create(user);
 	}
 	
 	@Override

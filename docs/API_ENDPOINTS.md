@@ -136,11 +136,13 @@ Base routes: `/admin` (page) and API under `/admin/api`
 Base: `/event` and `/eventattendee`
 - POST `/event` — Create event. Auth: required
 - GET `/event/{id}` — Get event details. Auth: required
-- PUT `/event/{id}` — Update event. Auth: required
+- PUT `/event/{id}` — Update event. Auth: required (creator only)
+- DELETE `/event/{id}` — Delete event. Auth: required (creator only)
 
 Event attendees `/eventattendee`:
 - POST `/eventattendee` — Register as attendee. Auth: required
-- GET `/eventattendee/pending` — Get pending attendee requests (HTML/API). Auth: required
+- GET `/eventattendee/pending` — Get pending attendee requests for all events created by user (HTML/API). Auth: required
+- GET `/eventattendee/event/{eventId}/pending` — Get pending attendee requests for one event (creator only). Auth: required
 - GET `/eventattendee/sent` — Get sent requests. Auth: required
 - DELETE `/eventattendee/{id}` — Cancel attendance/request. Auth: required
 - PUT `/eventattendee/accept` — Accept attendee. Auth: required

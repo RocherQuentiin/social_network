@@ -23,4 +23,6 @@ public interface IEventService {
 
 	ResponseEntity<List<Event>> getAllEventForConnectedUser(UUID userID, LocalDateTime localDateTime);
 
+	ResponseEntity<Void> deleteById(UUID eventId);
+
 }

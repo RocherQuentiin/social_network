@@ -24,4 +24,6 @@ public interface IEventAttendeeService {
 
 	ResponseEntity<List<EventAttendee>> getEventAttendeeByEventID(UUID eventID);
 
+	ResponseEntity<List<EventAttendee>> getPendingByEventId(UUID eventId);
+
 }

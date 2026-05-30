@@ -10,6 +10,21 @@ function closeModal(){ if(editModal) editModal.style.display = 'none'; }
 if(closeEventEditModal) closeEventEditModal.addEventListener('click', closeModal);
 if(addEventBtn) addEventBtn.addEventListener('click', openModal);
 
+var profileEventIsPaid = byId('profileEventIsPaid');
+var profileEventPriceGroup = byId('profileEventPriceGroup');
+var profileEventPrice = byId('profileEventPrice');
+function toggleProfileEventPriceField() {
+    if (!profileEventIsPaid || !profileEventPriceGroup) return;
+    const paid = profileEventIsPaid.value === 'true';
+    profileEventPriceGroup.style.display = paid ? 'block' : 'none';
+    if (profileEventPrice) profileEventPrice.required = paid;
+    if (!paid && profileEventPrice) profileEventPrice.value = '';
+}
+if (profileEventIsPaid) {
+    profileEventIsPaid.addEventListener('change', toggleProfileEventPriceField);
+    toggleProfileEventPriceField();
+}
+
 var editEvent = byId('edit-event');
 if(editEvent) editEvent.addEventListener('click', function(e){
     let eventId = e.currentTarget.getAttribute('data-id');

@@ -1,3 +1,11 @@
+Compte de test
+Numéro: 4242 4242 4242 4242
+
+CVV: 123
+
+Date: future
+
+
 # ISEP Social Network
 
 ISEP Social Network is an internal social networking application built for members of ISEP (students, staff and collaborators) to share posts, messages, projects and collaborate within a closed environment.

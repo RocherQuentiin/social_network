@@ -612,7 +612,7 @@ public class UserController {
 		UUID currentUserId = UUID.fromString(userIsConnect.toString());
 
 		ResponseEntity<User> user = this.userService.getUserById(UUID.fromString(userIsConnect.toString()));
-		ResponseEntity<Profile> userProfile = this.profileService.getUserProfileByUserID(user.getBody());
+		ResponseEntity<Profile> userProfile = this.profileService.getOrCreateProfile(user.getBody());
 		
 		UserProfileDto userProfileDto = new UserProfileDto();
 		userProfileDto.setUser(user.getBody());
@@ -647,7 +647,7 @@ public class UserController {
 		}
 		
 		ResponseEntity<User> user = this.userService.getUserById(UUID.fromString(userIsConnect.toString()));
-		ResponseEntity<Profile> userProfile = this.profileService.getUserProfileByUserID(user.getBody());
+		ResponseEntity<Profile> userProfile = this.profileService.getOrCreateProfile(user.getBody());
 		
 		UserProfileDto userProfileDto = new UserProfileDto();
 		userProfileDto.setUser(user.getBody());
@@ -708,7 +708,7 @@ public class UserController {
 		
 		
 		ResponseEntity<User> user = this.userService.getUserById(UUID.fromString(id));
-		ResponseEntity<Profile> userProfile = this.profileService.getUserProfileByUserID(user.getBody());
+		ResponseEntity<Profile> userProfile = this.profileService.getOrCreateProfile(user.getBody());
 		ResponseEntity<PrivacySettings> privacySettings = this.privacySettingsService.getPrivacySettingsByUser(user.getBody());
 		
 		UserOtherProfileDto userOtherProfileDto = new UserOtherProfileDto();
