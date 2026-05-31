@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Fil d'actualité - ISEP Connect</title>
+	<title>Fil d'actualité - Mobilitous</title>
 	<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
 	<link rel="stylesheet" th:href="@{/css/header.css}">
 	<link rel="stylesheet" th:href="@{/css/feed.css}">
@@ -14,10 +14,11 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/fr.min.js"></script>
 </head>
-<body class="bg-dark">
+<body>
 
 <div th:replace="~{fragments/header :: header-fragment}"></div>
 
+<!-- Navigation mobile -->
 <div class="mobile-tabs-nav">
 	<button class="mobile-tab-btn active" id="mobileShowPosts">
 		<i data-lucide="home"></i>
@@ -31,21 +32,23 @@
 
 <div class="container blog-layout">
 
+	<!-- ===== SIDEBAR GAUCHE ===== -->
 	<aside class="sidebar-left">
+
 		<div class="user-profile-card card">
 			<div class="profile-header">
 				<img th:src="@{${userAvatar}}" alt="Avatar" class="avatar-large">
 				<div class="profile-info">
 					<h4 th:text="${name}">Utilisateur</h4>
-					<span>Cycle Ingénieur • ISEP</span>
+					<span>Mobilitous</span>
 				</div>
 			</div>
 			<div class="visibility-filters card-sub-section">
 				<p class="section-label">Affichage</p>
 				<div class="filter-group">
 					<label><input id="publicCheckbox" type="checkbox" checked> <span class="dot public"></span> PUBLIC</label>
-					<label><input id="friendsCheckbox" type="checkbox" checked> <span class="dot friends"></span> FRIENDS</label>
-					<label><input id="privateCheckbox" type="checkbox" checked> <span class="dot private"></span> PRIVATE</label>
+					<label><input id="friendsCheckbox" type="checkbox" checked> <span class="dot friends"></span> AMIS</label>
+					<label><input id="privateCheckbox" type="checkbox" checked> <span class="dot private"></span> PRIVÉ</label>
 				</div>
 			</div>
 		</div>
@@ -56,91 +59,124 @@
 			<hr>
 			<a href="/privacy" class="nav-item"><i data-lucide="settings"></i> Paramètres</a>
 		</nav>
+
 	</aside>
 
+	<!-- ===== FEED PRINCIPAL ===== -->
 	<main class="feed-main">
+
+		<!-- Zone de publication -->
 		<div th:if="${session.userId != null}" class="publish-card card" id="publishArea">
 			<form th:action="@{/post}" method="post" enctype="multipart/form-data">
 				<div class="publish-top">
-					<img th:src="@{${userAvatar}}" class="avatar-small">
+					<img th:src="@{${userAvatar}}" class="avatar-small" alt="Votre avatar">
 					<div class="publish-input-area">
-						<textarea name="content" placeholder="Quoi de neuf ?" required></textarea>
+						<textarea name="content" placeholder="Partagez avec la communauté..." required></textarea>
 					</div>
 				</div>
 				<div class="publish-bottom">
 					<div class="media-inputs">
-						<button id="postImage" type="button" class="btn-icon-upload" title="Image"><i data-lucide="image"></i></button>
-						<button id="postVideo" type="button" class="btn-icon-upload" onclick="document.getElementById('postVideoUrl').click()" title="Vidéo"><i data-lucide="video"></i></button>
+						<button id="postImage" type="button" class="btn-icon-upload" title="Image">
+							<i data-lucide="image"></i>
+						</button>
+						<button id="postVideo" type="button" class="btn-icon-upload"
+						        onclick="document.getElementById('postVideoUrl').click()" title="Vidéo">
+							<i data-lucide="video"></i>
+						</button>
 						<button id="postFile" type="button" class="btn-icon-upload"
-								onclick="document.getElementById('postFileUrl').click()"
-								title="Fichier">
-								<i data-lucide="file"></i>
-							</button>
-						<input
-								type="file" id="postFileUrl" name="postFileUrl"
-								accept=".pdf,.html,.htm,.doc,.docx,.xls,.xlsx" style="display: none;">
-						
-						<input type="file" id="postImageUrl" name="postImageUrl" accept="image/*" style="display: none;">
-						<input type="file" id="postVideoUrl" name="postVideoUrl" accept=".mp4, .avi" style="display: none;">
+						        onclick="document.getElementById('postFileUrl').click()" title="Fichier">
+							<i data-lucide="file"></i>
+						</button>
+						<input type="file" id="postFileUrl" name="postFileUrl"
+						       accept=".pdf,.html,.htm,.doc,.docx,.xls,.xlsx" style="display:none;">
+						<input type="file" id="postImageUrl" name="postImageUrl" accept="image/*" style="display:none;">
+						<input type="file" id="postVideoUrl" name="postVideoUrl" accept=".mp4,.avi" style="display:none;">
+
 						<div class="vertical-divider"></div>
+
 						<div class="publish-options">
 							<select name="visibilityType" class="custom-select">
 								<option value="PUBLIC">Public</option>
 								<option value="FRIENDS">Amis</option>
 								<option value="PRIVATE">Privé</option>
 							</select>
-							<label class="checkbox-label"> <input type="checkbox" name="allowComments" value="true" checked /> <span>Commentaires</span></label>
+							<label class="checkbox-label">
+								<input type="checkbox" name="allowComments" value="true" checked />
+								<span>Commentaires</span>
+							</label>
 						</div>
 					</div>
-					<button type="submit" class="btn-primary">Publier</button>
+					<button type="submit" class="btn-publish">Publier</button>
 				</div>
 			</form>
 		</div>
-		
-			<div class="publish-options">
-				<select id="preferences" name="preferences" class="custom-select">
-					<option value="Date">Date</option>
-					<option value="Popularité">Popularité</option>
-					<option value="Commentaires">Commentaires</option>
-				</select>
 
-			</div>
+		<!-- Tri + Recherche -->
+		<div class="feed-controls">
+			<select id="preferences" name="preferences" class="custom-select">
+				<option value="Date">Date</option>
+				<option value="Popularité">Popularité</option>
+				<option value="Commentaires">Commentaires</option>
+			</select>
 
 			<div class="search-bar-wrapper">
 				<div class="search-input-group">
-					<i data-lucide="search"></i> <input id="post-search" type="text"
-						name="query" placeholder="Rechercher post">
+					<i data-lucide="search"></i>
+					<input id="post-search" type="text" name="query" placeholder="Rechercher un post...">
 				</div>
 			</div>
+		</div>
 
+		<!-- Liste des posts -->
 		<div class="posts-list" id="postsContainer">
-			<article th:each="post : ${posts}" class="post-card card" th:attr="data-post-card-id=${post.id}, data-post-visibility=${post.visibilityType}, data-post-createdAt=${post.createdAt}, data-auhtor-lastname=${post.author.lastName}, data-author-firstName=${post.author.firstName}, data-post-content=${post.content}"> 
+			<article th:each="post : ${posts}" class="post-card card"
+			         th:attr="data-post-card-id=${post.id},
+					          data-post-visibility=${post.visibilityType},
+					          data-post-createdAt=${post.createdAt},
+					          data-author-lastname=${post.author.lastName},
+					          data-author-firstName=${post.author.firstName},
+					          data-post-content=${post.content}">
+
 				<div class="post-header">
-					<img th:src="@{${post.author.profilePictureUrl}}" class="avatar-small">
+					<img th:src="@{${post.author.profilePictureUrl}}" class="avatar-small" alt="Avatar">
 					<div class="post-meta">
 						<strong th:text="${post.author.username}">Auteur</strong>
 						<div class="post-sub-meta">
-							<span class="post-date" th:attr="data-timestamp=${post.createdAt}"></span> <span class="vis-badge" th:text="${post.visibilityType}"></span>
+							<span class="post-date" th:attr="data-timestamp=${post.createdAt}"></span>
+							<span class="vis-badge" th:text="${post.visibilityType}"></span>
 						</div>
 					</div>
-					<div class="post-actions" th:if="${isConnect != null and isConnect.toString() == post.author.id.toString()}">
-						<button type="button" class="btn-icon" th:attr="data-post-id=${post.id}" onclick="openEditModalFromButton(this)"><i data-lucide="edit-2"></i></button>
-						<button type="button" class="btn-icon btn-delete" th:attr="data-post-id=${post.id}"><i data-lucide="trash-2"></i></button>
+					<div class="post-actions"
+					     th:if="${isConnect != null and isConnect.toString() == post.author.id.toString()}">
+						<button type="button" class="btn-icon"
+						        th:attr="data-post-id=${post.id}"
+						        onclick="openEditModalFromButton(this)">
+							<i data-lucide="edit-2"></i>
+						</button>
+						<button type="button" class="btn-icon btn-delete"
+						        th:attr="data-post-id=${post.id}">
+							<i data-lucide="trash-2"></i>
+						</button>
 					</div>
 				</div>
+
 				<div class="post-content">
 					<p th:text="${post.content}">Contenu...</p>
-					<div class="post-media-container" th:if="${post.medias != null and !post.medias.isEmpty()}">
+					<div class="post-media-container"
+					     th:if="${post.medias != null and !post.medias.isEmpty()}">
 						<div th:each="pm : ${post.medias}" class="media-item">
-							<img th:if="${pm.mediaType.toString().equals('IMAGE')}" th:src="@{${pm.fileUrl}}" class="img-fluid rounded">
-							<video th:if="${pm.mediaType.toString().equals('VIDEO')}" controls class="video-fluid rounded"><source th:src="@{${pm.fileUrl}}" type="video/mp4"></video>
+							<img th:if="${pm.mediaType.toString().equals('IMAGE')}"
+							     th:src="@{${pm.fileUrl}}" class="img-fluid rounded" alt="Image du post">
+							<video th:if="${pm.mediaType.toString().equals('VIDEO')}"
+							       controls class="video-fluid rounded">
+								<source th:src="@{${pm.fileUrl}}" type="video/mp4">
+							</video>
 							<a th:if="${pm.mediaType.toString().equals('DOCUMENT')}"
-									th:href="@{${pm.fileUrl}}" >Télécharger</a>
-									
-								
+							   th:href="@{${pm.fileUrl}}">Télécharger le document</a>
 						</div>
 					</div>
 				</div>
+
 				<div class="post-footer">
 					<div class="reactions-bar" th:attr="data-post-id=${post.id}">
 						<button class="reaction-btn" data-type="LIKE"><span class="emoji">👍</span><span class="count">0</span></button>
@@ -151,14 +187,22 @@
 						<button class="reaction-btn" data-type="ANGRY"><span class="emoji">😠</span><span class="count">0</span></button>
 						<span class="reaction-total">0 réactions</span>
 					</div>
-					<button class="action-btn btn-toggle-comments" th:if="${post.allowComments}" th:attr="data-post-id=${post.id}">
-						<i data-lucide="message-circle"></i> <span class="comment-count">0</span>
+					<button class="action-btn btn-toggle-comments"
+					        th:if="${post.allowComments}"
+					        th:attr="data-post-id=${post.id}">
+						<i data-lucide="message-circle"></i>
+						<span class="comment-count">0</span>
 					</button>
 					<button class="action-btn btn-share"><i data-lucide="share-2"></i></button>
 				</div>
-				<div class="comments-section" th:if="${post.allowComments}" th:attr="data-post-id=${post.id}" style="display: none;">
+
+				<div class="comments-section"
+				     th:if="${post.allowComments}"
+				     th:attr="data-post-id=${post.id}"
+				     style="display:none;">
 					<div class="comment-form">
-						<img th:src="@{${session.userId != null ? userAvatar : '/img/default-avatar.png'}}" class="avatar-tiny">
+						<img th:src="@{${session.userId != null ? userAvatar : '/img/default-avatar.png'}}"
+						     class="avatar-tiny" alt="Votre avatar">
 						<div class="comment-input-wrapper">
 							<textarea class="comment-input" placeholder="Ajouter un commentaire..." rows="1"></textarea>
 							<button class="btn-send-comment"><i data-lucide="send"></i></button>
@@ -166,38 +210,45 @@
 					</div>
 					<div class="comments-list"></div>
 				</div>
+
 			</article>
 		</div>
 
-		<div id="eventsContainer" style="display: none;">
+		<!-- Conteneur Événements -->
+		<div id="eventsContainer" style="display:none;">
 			<div th:replace="~{events :: events-fragment}"></div>
 		</div>
 
 	</main>
 
+	<!-- ===== SIDEBAR DROITE ===== -->
 	<aside class="sidebar-right">
+
+		<!-- Annonces -->
 		<div class="announcement-part card" id="announcementsSideList">
 			<div class="announcement-title">
-				<h5><i data-lucide="megaphone" style="color: var(--primary)"></i> Annonces</h5>
+				<h5><i data-lucide="megaphone" style="color:var(--primary);"></i> Annonces</h5>
 			</div>
-			<div class="announcement-item" th:each="event : ${events}" th:event-id="${event.id}">
-				<h6 th:text="${event.name}"></h6>
-				<p><span class="event-date-period" th:attr="data-timestamp=${event.eventDate}"></span></p>
+			<div class="announcement-stats">
+				<div class="announcement-item"
+				     th:each="event : ${events}"
+				     th:attr="data-event-id=${event.id}">
+					<h6 th:text="${event.name}"></h6>
+					<p><span class="event-date-period" th:attr="data-timestamp=${event.eventDate}"></span></p>
+				</div>
 			</div>
 		</div>
 
-		<div id="createEventArea" class="card" style="display: none; padding: 15px;">
-			<h3 style="font-size: 1.1rem; margin-bottom: 15px; color: white;">Créer une annonce</h3>
-
+		<!-- Formulaire création événement -->
+		<div id="createEventArea" class="card" style="display:none; padding:15px;">
+			<h3 style="font-size:1.1rem; margin-bottom:15px; color:var(--secondary);">Créer une annonce</h3>
 			<form th:action="@{/event}" method="post" class="event-form-compact">
 				<div class="input-group">
 					<input name="name" type="text" placeholder="Nom de l'événement" required />
 				</div>
-
 				<div class="input-group">
 					<input name="eventDate" type="datetime-local" required />
 				</div>
-
 				<div class="form-row">
 					<input name="capacity" type="number" min="1" placeholder="Places" required />
 					<select name="visibilityType" class="custom-select">
@@ -206,98 +257,81 @@
 						<option value="PRIVATE">Privé</option>
 					</select>
 				</div>
-
 				<div class="input-group">
 					<input name="location" type="text" placeholder="Lieu" required />
 				</div>
-
 				<div class="input-group">
 					<textarea name="description" placeholder="Description courte..." rows="2" required></textarea>
 				</div>
-
 				<div class="input-group">
-					<label for="feedEventIsPaid" style="font-size: 0.85rem; color: var(--text-dim);">Événement payant (optionnel)</label>
+					<label for="feedEventIsPaid" class="form-label-small">Événement payant (optionnel)</label>
 					<select id="feedEventIsPaid" name="isPaid" class="custom-select">
 						<option value="false" selected>Non — gratuit</option>
 						<option value="true">Oui — participation payante</option>
 					</select>
 				</div>
-				<div class="input-group" id="feedEventPriceGroup" style="display: none;">
-					<label for="feedEventPrice" style="font-size: 0.85rem; color: var(--text-dim);">Montant par participant (EUR)</label>
+				<div class="input-group" id="feedEventPriceGroup" style="display:none;">
+					<label for="feedEventPrice" class="form-label-small">Montant par participant (EUR)</label>
 					<input type="number" id="feedEventPrice" name="price" min="0.01" step="0.01" placeholder="Ex: 15.00">
 				</div>
-
 				<input type="hidden" name="returnTo" value="/feed">
-				<button type="submit" class="btn-primary-compact">Publier</button>
+				<button type="submit" class="btn-primary-compact">Publier l'annonce</button>
 			</form>
 		</div>
+
 	</aside>
 </div>
 
-<div id="editModal"><div class="modal-card card"><div class="modal-header"><h3>Modifier la publication</h3><button id="closeEditModal">✕</button></div><div class="modal-body"><textarea id="editContent" rows="5"></textarea><div class="modal-controls"><select id="editVisibility" class="custom-select"><option value="PUBLIC">Public</option><option value="FRIENDS">Amis</option><option value="PRIVATE">Privé</option></select> <label class="checkbox-label"><input id="editAllowComments" type="checkbox" /> <span>Commentaires</span></label></div></div><div class="modal-footer"><button id="saveEditBtn" class="btn-primary">Enregistrer</button></div></div></div>
-
-<div id="editEventModal" style="display:none; position: fixed; z-index: 9999; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
+<!-- ===== MODAL ÉDITION POST ===== -->
+<div id="editModal">
 	<div class="modal-card card">
 		<div class="modal-header">
-			<h3>Modifier l'événement</h3>
-			<button id="closeEventEditModal">✕</button>
+			<h3>Modifier la publication</h3>
+			<button id="closeEditModal" aria-label="Fermer">✕</button>
 		</div>
 		<div class="modal-body">
-			<input id="eventId" type="hidden" />
-
-			<div class="input-group">
-				<label for="eventName">Nom de l'événement</label>
-				<div class="input-wrapper">
-					<input id="eventName" type="text" placeholder="Nom de l'événement" required />
-				</div>
-			</div>
-
-			<div class="input-group">
-				<label for="eventDate">Date de l'événement</label>
-				<div class="input-wrapper">
-					<input id="eventDate" type="datetime-local" required />
-				</div>
-			</div>
-
-			<div class="input-group">
-				<label for="eventCapacity">Capacité</label>
-				<div class="input-wrapper">
-					<input id="eventCapacity" type="number" placeholder="Capacité" required />
-				</div>
-			</div>
-
-			<div class="input-group">
-				<label for="eventLocation">Lieu</label>
-				<div class="input-wrapper">
-					<input id="eventLocation" type="text" placeholder="Lieu" required />
-				</div>
-			</div>
-
-			<div class="input-group">
-				<label for="eventVisibility">Visibilité</label>
-				<select id="eventVisibility" class="custom-select">
+			<textarea id="editContent" rows="5"></textarea>
+			<div class="modal-controls">
+				<select id="editVisibility" class="custom-select">
 					<option value="PUBLIC">Public</option>
 					<option value="FRIENDS">Amis</option>
 					<option value="PRIVATE">Privé</option>
 				</select>
+				<label class="checkbox-label">
+					<input id="editAllowComments" type="checkbox" />
+					<span>Commentaires</span>
+				</label>
 			</div>
-
-			<div class="input-group">
-				<label for="eventDescription">Description</label>
-				<div class="input-wrapper">
-					<input id="eventDescription" type="text" placeholder="Description" required />
-				</div>
-			</div>
-
-			<div class="modal-footer">
-				<button id="btn-event-submit" class="btn-primary" style="width:100%">Sauvegarder</button>
-			</div>
+		</div>
+		<div class="modal-footer">
+			<button id="saveEditBtn" class="btn-publish">Enregistrer</button>
 		</div>
 	</div>
 </div>
 
-<div id="eventRequestsModal" style="display:none; position: fixed; z-index: 9999; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
-	<div class="modal-card card" style="width: 100%; max-width: 520px;">
+<!-- ===== MODAL ÉDITION ÉVÉNEMENT ===== -->
+<div id="editEventModal" style="display:none; position:fixed; z-index:9999; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); justify-content:center; align-items:center;">
+	<div class="modal-card card">
+		<div class="modal-header">
+			<h3>Modifier l'événement</h3>
+			<button id="closeEventEditModal" aria-label="Fermer">✕</button>
+		</div>
+		<div class="modal-body">
+			<input id="eventId" type="hidden" />
+			<div class="input-group"><label for="eventName">Nom</label><div class="input-wrapper"><input id="eventName" type="text" placeholder="Nom de l'événement" required /></div></div>
+			<div class="input-group"><label for="eventDate">Date</label><div class="input-wrapper"><input id="eventDate" type="datetime-local" required /></div></div>
+			<div class="input-group"><label for="eventCapacity">Capacité</label><div class="input-wrapper"><input id="eventCapacity" type="number" placeholder="Capacité" required /></div></div>
+			<div class="input-group"><label for="eventLocation">Lieu</label><div class="input-wrapper"><input id="eventLocation" type="text" placeholder="Lieu" required /></div></div>
+			<div class="input-group"><label for="eventVisibility">Visibilité</label><select id="eventVisibility" class="custom-select"><option value="PUBLIC">Public</option><option value="FRIENDS">Amis</option><option value="PRIVATE">Privé</option></select></div>
+			<div class="input-group"><label for="eventDescription">Description</label><div class="input-wrapper"><input id="eventDescription" type="text" placeholder="Description" required /></div></div>
+			<div class="modal-footer"><button id="btn-event-submit" class="btn-publish" style="width:100%">Sauvegarder</button></div>
+		</div>
+	</div>
+</div>
+
+<!-- ===== MODAL DEMANDES ÉVÉNEMENT ===== -->
+<div id="eventRequestsModal" style="display:none; position:fixed; z-index:9999; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); justify-content:center; align-items:center;">
+	<div class="modal-card card" style="width:100%; max-width:520px;">
 		<div class="modal-header">
 			<h3>Demandes pour rejoindre</h3>
 			<button type="button" id="closeEventRequestsModal" aria-label="Fermer">✕</button>
@@ -314,102 +348,69 @@
 <script th:src="@{/js/comments.js}"></script>
 <script th:src="@{/js/event.js}"></script>
 <script>
-	// Initialisation globale
 	lucide.createIcons();
 
 	document.addEventListener("DOMContentLoaded", function() {
 		moment.locale('fr');
 
-		// 1. Formatage des dates
 		const formatDate = () => {
 			document.querySelectorAll('.post-date, .event-date-period').forEach(el => {
 				const raw = el.getAttribute('data-timestamp');
 				if (raw) {
 					const m = moment(raw);
-					el.innerText = el.classList.contains('post-date') && moment().diff(m, 'hours') < 24 ? m.fromNow() : m.format('D MMMM YYYY');
+					el.innerText = el.classList.contains('post-date') && moment().diff(m, 'hours') < 24
+							? m.fromNow()
+							: m.format('D MMMM YYYY');
 				}
 			});
 		};
 		formatDate();
 
-		// 2. Définition des éléments (Accessibles dans toute la fonction DOMContentLoaded)
 		const tabs = {
-			posts: {
-				btn: document.getElementById('showPosts'),
-				cont: document.getElementById('postsContainer')
-			},
-			events: {
-				btn: document.getElementById('showEvents'),
-				cont: document.getElementById('eventsContainer')
-			},
+			posts: { btn: document.getElementById('showPosts'), cont: document.getElementById('postsContainer') },
+			events: { btn: document.getElementById('showEvents'), cont: document.getElementById('eventsContainer') }
 		};
-
-		const sideList = document.getElementById('announcementsSideList');
-		const sideForm = document.getElementById('createEventArea');
-		const pubArea = document.getElementById('publishArea');
-		const mobileBtnPosts = document.getElementById('mobileShowPosts');
+		const sideList  = document.getElementById('announcementsSideList');
+		const sideForm  = document.getElementById('createEventArea');
+		const pubArea   = document.getElementById('publishArea');
+		const mobileBtnPosts  = document.getElementById('mobileShowPosts');
 		const mobileBtnEvents = document.getElementById('mobileShowEvents');
 
-		// 3. LA fonction de basculement (Unique et complète)
 		window.switchTab = function(mode) {
-			console.log("Basculement vers : " + mode);
-
-			// Gérer l'affichage des sections principales
 			Object.keys(tabs).forEach(key => {
 				if (tabs[key].cont) tabs[key].cont.style.display = (key === mode) ? 'block' : 'none';
-				if (tabs[key].btn) {
-					if (key === mode) tabs[key].btn.classList.add('active');
-					else tabs[key].btn.classList.remove('active');
-				}
+				if (tabs[key].btn) tabs[key].btn.classList.toggle('active', key === mode);
 			});
-
-			// Gérer les boutons mobiles
-			if(mobileBtnPosts && mobileBtnEvents) {
-				if(mode === 'posts') {
-					mobileBtnPosts.classList.add('active');
-					mobileBtnEvents.classList.remove('active');
-				} else {
-					mobileBtnEvents.classList.add('active');
-					mobileBtnPosts.classList.remove('active');
-				}
+			if (mobileBtnPosts && mobileBtnEvents) {
+				mobileBtnPosts.classList.toggle('active', mode === 'posts');
+				mobileBtnEvents.classList.toggle('active', mode === 'events');
 			}
-
-			// Gérer le formulaire de création d'événement (Le déplacement mobile)
 			if (mode === 'events') {
-				if (window.innerWidth <= 992) {
-					// MOBILE : On déplace le formulaire dans le flux principal
-					if (sideForm && tabs.events.cont) {
-						tabs.events.cont.prepend(sideForm);
-						sideForm.style.display = 'block';
-					}
-				} else {
-					// DESKTOP : Il reste dans la sidebar (assurez-vous que sidebar-right est visible en CSS)
-					if (sideForm) sideForm.style.display = 'block';
+				if (window.innerWidth <= 992 && sideForm && tabs.events.cont) {
+					tabs.events.cont.prepend(sideForm);
+					sideForm.style.display = 'block';
+				} else if (sideForm) {
+					sideForm.style.display = 'block';
 				}
 			} else {
 				if (sideForm) sideForm.style.display = 'none';
 			}
-
-			// Gestion des autres éléments
-			if (pubArea) pubArea.style.display = (mode === 'posts') ? 'block' : 'none';
+			if (pubArea)  pubArea.style.display  = (mode === 'posts') ? 'block' : 'none';
 			if (sideList) sideList.style.display = (mode === 'posts') ? 'block' : 'none';
-
 			lucide.createIcons();
 		};
 
-		// 4. Assignation des événements
-		if (tabs.posts.btn) tabs.posts.btn.onclick = (e) => { e.preventDefault(); switchTab('posts'); };
-		if (tabs.events.btn) tabs.events.btn.onclick = (e) => { e.preventDefault(); switchTab('events'); };
-		if (mobileBtnPosts) mobileBtnPosts.onclick = () => switchTab('posts');
-		if (mobileBtnEvents) mobileBtnEvents.onclick = () => switchTab('events');
+		if (tabs.posts.btn)   tabs.posts.btn.onclick   = (e) => { e.preventDefault(); switchTab('posts'); };
+		if (tabs.events.btn)  tabs.events.btn.onclick  = (e) => { e.preventDefault(); switchTab('events'); };
+		if (mobileBtnPosts)   mobileBtnPosts.onclick   = () => switchTab('posts');
+		if (mobileBtnEvents)  mobileBtnEvents.onclick  = () => switchTab('events');
 
-		// Affichage par défaut
 		switchTab('posts');
 
-		// Événement payant — formulaire feed
-		const feedEventIsPaid = document.getElementById('feedEventIsPaid');
+		// Événement payant
+		const feedEventIsPaid     = document.getElementById('feedEventIsPaid');
 		const feedEventPriceGroup = document.getElementById('feedEventPriceGroup');
-		const feedEventPrice = document.getElementById('feedEventPrice');
+		const feedEventPrice      = document.getElementById('feedEventPrice');
 		function toggleFeedEventPriceField() {
 			if (!feedEventIsPaid || !feedEventPriceGroup) return;
 			const paid = feedEventIsPaid.value === 'true';
@@ -422,8 +423,8 @@
 			toggleFeedEventPriceField();
 		}
 
-		// Retour paiement événement
-		const urlParams = new URLSearchParams(window.location.search);
+		// Retour paiement
+		const urlParams     = new URLSearchParams(window.location.search);
 		const paymentStatus = urlParams.get('payment');
 		if (paymentStatus === 'success') {
 			const alertDiv = document.createElement('div');
@@ -431,10 +432,8 @@
 			alertDiv.textContent = 'Paiement réussi, vous participez à l\'événement.';
 			document.body.insertBefore(alertDiv, document.body.firstChild);
 			setTimeout(() => alertDiv.remove(), 4000);
-			urlParams.delete('payment');
-			urlParams.delete('eventId');
-			const next = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
-			window.history.replaceState({}, '', next);
+			urlParams.delete('payment'); urlParams.delete('eventId');
+			window.history.replaceState({}, '', window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : ''));
 		} else if (paymentStatus === 'unavailable') {
 			alert('Cet événement n\'est pas disponible au paiement.');
 		} else if (paymentStatus === 'own-event') {
@@ -442,13 +441,12 @@
 		}
 	});
 
-	// Logique des Modaux
-	const modal = document.getElementById('editModal');
+	const modal   = document.getElementById('editModal');
 	const closeBtn = document.getElementById('closeEditModal');
-	if(closeBtn) closeBtn.onclick = () => modal.style.display = "none";
+	if (closeBtn) closeBtn.onclick = () => modal.style.display = 'none';
 
 	function openEditModalFromButton(btn) {
-		if(modal) modal.style.display = "flex";
+		if (modal) modal.style.display = 'flex';
 	}
 </script>
 </body>

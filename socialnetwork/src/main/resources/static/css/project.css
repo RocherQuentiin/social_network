@@ -1,6 +1,5 @@
 /* ========================================================================== */
-/* PROJECTS PAGE - DARK THEME STYLING                                       */
-/* Aligned with ISEP Connect Design System                                  */
+/* PROJECTS PAGE - MOBILITOUS STYLING (Design d'origine, Couleurs Modifiées)  */
 /* ========================================================================== */
 
 /* MAIN CONTAINER */
@@ -8,11 +7,11 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
-    background: linear-gradient(180deg, rgba(15, 20, 25, 0.95) 0%, rgba(28, 32, 40, 0.95) 100%);
+    background: var(--bg-dark); /* #F7F9F7 */
 }
 
 .projects-container h1 {
-    color: var(--text-main);
+    color: var(--secondary); /* #14532d */
     margin-bottom: 2rem;
     font-size: 2rem;
     font-weight: 700;
@@ -20,10 +19,10 @@
 }
 
 .projects-container h2 {
-    color: var(--text-main);
+    color: var(--secondary);
     margin-top: 2rem;
     margin-bottom: 1.5rem;
-    border-bottom: 2px solid var(--primary);
+    border-bottom: 2px solid var(--primary); /* #166534 */
     padding-bottom: 0.75rem;
     font-size: 1.3rem;
     font-weight: 600;
@@ -31,7 +30,7 @@
 
 /* CREATE PROJECT BUTTON */
 #btn-create-project {
-    background: linear-gradient(135deg, var(--primary), rgba(29, 155, 240, 0.8));
+    background: var(--primary);
     color: white;
     padding: 0.75rem 1.5rem;
     border: none;
@@ -41,12 +40,13 @@
     font-weight: 600;
     margin-bottom: 1.5rem;
     transition: var(--transition);
-    box-shadow: 0 4px 15px rgba(29, 155, 240, 0.3);
+    box-shadow: var(--shadow);
 }
 
 #btn-create-project:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(29, 155, 240, 0.4);
+    background: var(--secondary);
+    box-shadow: var(--shadow-md);
 }
 
 #btn-create-project:active {
@@ -62,11 +62,11 @@
 }
 
 .project-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
+    background: var(--bg-card); /* #ffffff */
+    border: 1.5px solid var(--border-solid); /* #dce8dc */
     border-radius: var(--radius);
     padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow);
     transition: var(--transition);
     position: relative;
     overflow: hidden;
@@ -79,19 +79,19 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--primary), var(--isep));
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
 }
 
 /* Effet au survol identique */
 .project-card:hover {
     transform: translateY(-8px);
     border-color: var(--primary);
-    box-shadow: 0 12px 24px rgba(29, 155, 240, 0.15);
+    box-shadow: var(--shadow-md);
 }
 
-/* Style du titre (équivalent au event-header h3) */
+/* Style du titre */
 .project-card h3 {
-    color: var(--text-main);
+    color: var(--secondary);
     margin-top: 0;
     margin-bottom: 0.75rem;
     font-size: 1.2rem;
@@ -101,18 +101,18 @@
 
 /* Style de la description */
 .project-card .description {
-    color: var(--text-dim);
+    color: var(--text-main); /* #111827 */
     font-size: 0.9rem;
     margin-bottom: 1rem;
     line-height: 1.5;
     margin-bottom: 15px;
 }
 
-/* Badge de visibilité (optionnel) */
+/* Badge de visibilité */
 .project-card .visibility {
     display: inline-block;
     padding: 0.35rem 0.75rem;
-    background-color: rgba(29, 155, 240, 0.15);
+    background-color: var(--primary-light); /* #d1fae5 */
     border: 1px solid var(--primary);
     border-radius: 4px;
     font-size: 0.75rem;
@@ -125,7 +125,7 @@
 
 .project-card .metadata {
     font-size: 0.8rem;
-    color: var(--text-dim);
+    color: var(--text-dim); /* #4a7c59 */
     margin-bottom: 1.25rem;
     display: flex;
     gap: 1rem;
@@ -141,18 +141,18 @@
 /* SMALL BUTTONS */
 .btn-small {
     padding: 0.5rem 1rem;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-solid);
     background: transparent;
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.8rem;
     font-weight: 600;
     transition: var(--transition);
-    color: var(--text-dim);
+    color: var(--text-main);
 }
 
 .btn-small:hover {
-    background: var(--border);
+    background: var(--bg-muted);
 }
 
 .btn-edit {
@@ -161,21 +161,21 @@
 }
 
 .btn-edit:hover {
-    background: rgba(16, 185, 129, 0.1);
+    background: rgba(21, 128, 61, 0.1);
 }
 
 .btn-members {
     border-color: var(--primary);
-
-.btn-notice {
-    border-color: var(--accent-primary);
-    color: var(--accent-primary);
-}
     color: var(--primary);
 }
 
+.btn-notice {
+    border-color: var(--warning);
+    color: var(--warning);
+}
+
 .btn-members:hover {
-    background: rgba(29, 155, 240, 0.1);
+    background: var(--primary-light);
 }
 
 .btn-delete {
@@ -184,22 +184,22 @@
 }
 
 .btn-ghost {
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-solid);
     background: transparent;
     color: var(--text-main);
 }
 
 .btn-delete:hover {
-    background: rgba(239, 68, 68, 0.1);
+    background: rgba(220, 38, 38, 0.1);
 }
 
 .btn-leave {
-    border-color: var(--gold);
-    color: var(--gold);
+    border-color: var(--warning);
+    color: var(--warning);
 }
 
 .btn-leave:hover {
-    background: rgba(255, 215, 0, 0.1);
+    background: #fffbeb;
 }
 
 /* MODAL STYLES */
@@ -211,7 +211,7 @@
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(17, 24, 39, 0.7);
     backdrop-filter: blur(4px);
     animation: fadeIn 0.3s ease;
 }
@@ -230,11 +230,11 @@
 .modal-card {
     background-color: var(--bg-card);
     padding: 2rem;
-    border: 1px solid var(--border);
+    border: 1.5px solid var(--border-solid);
     border-radius: var(--radius);
     width: 90%;
     max-width: 550px;
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-md);
     animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -254,13 +254,13 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--border-solid);
     padding-bottom: 1rem;
 }
 
 .modal-header h3 {
     margin: 0;
-    color: var(--text-main);
+    color: var(--secondary);
     font-size: 1.3rem;
     font-weight: 700;
 }
@@ -281,7 +281,7 @@
 }
 
 .modal-header button:hover {
-    background: var(--border);
+    background: var(--bg-muted);
     color: var(--text-main);
 }
 
@@ -303,8 +303,8 @@
 .form-group select {
     width: 100%;
     padding: 0.75rem 1rem;
-    border: 1px solid var(--border);
-    background-color: rgba(15, 20, 25, 0.5);
+    border: 1px solid var(--border-solid);
+    background-color: var(--bg-muted);
     color: var(--text-main);
     border-radius: 6px;
     font-size: 0.95rem;
@@ -315,7 +315,7 @@
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-    color: var(--text-dim);
+    color: var(--text-muted);
 }
 
 .form-group input:focus,
@@ -323,8 +323,8 @@
 .form-group select:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(29, 155, 240, 0.1);
-    background-color: rgba(15, 20, 25, 0.8);
+    box-shadow: 0 0 0 3px rgba(22, 101, 52, 0.12);
+    background-color: #ffffff;
 }
 
 .form-group textarea {
@@ -333,7 +333,7 @@
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--primary), rgba(29, 155, 240, 0.8));
+    background: var(--primary);
     color: white;
     padding: 0.875rem 1.5rem;
     border: none;
@@ -343,12 +343,12 @@
     font-weight: 600;
     transition: var(--transition);
     width: 100%;
-    box-shadow: 0 4px 12px rgba(29, 155, 240, 0.25);
 }
 
 .btn-primary:hover {
+    background: var(--secondary);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(29, 155, 240, 0.35);
+    box-shadow: var(--shadow-md);
 }
 
 .btn-primary:active {
@@ -360,7 +360,7 @@
     max-height: 350px;
     overflow-y: auto;
     margin-bottom: 1.5rem;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-solid);
     border-radius: 6px;
 }
 
@@ -369,12 +369,12 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--border-solid);
     transition: var(--transition);
 }
 
 .member-item:hover {
-    background: rgba(29, 155, 240, 0.05);
+    background: var(--primary-light);
 }
 
 .member-item:last-child {
@@ -414,11 +414,11 @@
 }
 
 .btn-remove-member:hover {
-    background: rgba(239, 68, 68, 0.1);
+    background: #fef2f2;
 }
 
 .add-member-section {
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--border-solid);
     padding-top: 1.25rem;
     margin-top: 1.25rem;
 }
@@ -456,19 +456,19 @@
 }
 
 .alert-success {
-    background-color: rgba(16, 185, 129, 0.1);
+    background-color: var(--primary-light);
     color: var(--success);
     border-left-color: var(--success);
 }
 
 .alert-error {
-    background-color: rgba(239, 68, 68, 0.1);
+    background-color: #fee2e2;
     color: var(--error);
     border-left-color: var(--error);
 }
 
 .alert-info {
-    background-color: rgba(29, 155, 240, 0.1);
+    background-color: var(--primary-light);
     color: var(--primary);
     border-left-color: var(--primary);
 }
@@ -479,7 +479,7 @@
     padding: 3rem 2rem;
     color: var(--text-dim);
     background: var(--bg-card);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-solid);
     border-radius: var(--radius);
     margin: 2rem 0;
 }
@@ -516,7 +516,7 @@
 
 .skill-badge {
     display: inline-block;
-    background: linear-gradient(135deg, rgba(29, 155, 240, 0.2), rgba(0, 102, 204, 0.2));
+    background: var(--primary-light);
     color: var(--primary);
     padding: 0.35rem 0.85rem;
     border: 1px solid var(--primary);
@@ -527,14 +527,15 @@
 }
 
 .skill-badge:hover {
-    background: linear-gradient(135deg, rgba(29, 155, 240, 0.3), rgba(0, 102, 204, 0.3));
+    background: var(--primary-light);
+    border-color: var(--secondary);
     transform: translateY(-2px);
 }
 
 .form-group small {
     display: block;
     margin-top: 0.35rem;
-    color: var(--text-dim);
+    color: var(--text-muted);
     font-size: 0.8rem;
 }
 
@@ -551,17 +552,17 @@
 }
 
 .modal-body div[style*="padding: 12px"] {
-    background: rgba(29, 155, 240, 0.05);
-    border: 1px solid var(--border);
+    background: var(--bg-muted);
+    border: 1px solid var(--border-solid);
     border-radius: 6px;
     transition: var(--transition);
     padding: 1rem !important;
 }
 
 .modal-body div[style*="padding: 12px"]:hover {
-    box-shadow: 0 2px 12px rgba(29, 155, 240, 0.2);
+    box-shadow: var(--shadow);
     border-color: var(--primary) !important;
-    background: rgba(29, 155, 240, 0.1) !important;
+    background: var(--primary-light) !important;
 }
 
 /* RESPONSIVE DESIGN */
@@ -625,34 +626,34 @@
 .leave-project-option {
     margin-bottom: 1.5rem;
     padding: 1.25rem;
-    background: rgba(29, 155, 240, 0.05);
-    border: 1px solid var(--border);
+    background: var(--bg-muted);
+    border: 1px solid var(--border-solid);
     border-radius: var(--radius);
     transition: var(--transition);
 }
 
 .leave-project-option:hover {
-    background: rgba(29, 155, 240, 0.1);
+    background: var(--primary-light);
     border-color: var(--primary);
 }
 
 .leave-project-option h4 {
     margin-top: 0;
     margin-bottom: 0.75rem;
-    color: var(--text-main);
+    color: var(--secondary);
     font-size: 1rem;
     font-weight: 700;
 }
 
 .leave-project-option p {
     margin: 0.5rem 0;
-    color: var(--text-dim);
+    color: var(--text-main);
     font-size: 0.9rem;
     line-height: 1.5;
 }
 
 .leave-project-delete {
-    background: rgba(239, 68, 68, 0.05);
+    background: #fef2f2;
     border-color: var(--error);
 }
 
@@ -670,14 +671,14 @@
 .transfer-actions .btn-ghost {
     flex: 1;
     text-align: center;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-solid);
     background: transparent;
     color: var(--text-main);
 }
 
 .transfer-member-card {
     padding: 12px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-solid);
     border-radius: 8px;
     margin-bottom: 10px;
     cursor: pointer;
@@ -685,8 +686,8 @@
 }
 
 .transfer-member-card:hover {
-    background: rgba(255, 255, 255, 0.04);
-    border-color: var(--accent-primary);
+    background: var(--primary-light);
+    border-color: var(--primary);
 }
 
 .transfer-member-name {
@@ -696,11 +697,11 @@
 
 .transfer-member-email, .transfer-member-role {
     font-size: 0.9rem;
-    color: var(--text-dim);
+    color: var(--text-muted);
 }
 
 .leave-project-delete:hover {
-    background: rgba(239, 68, 68, 0.1);
+    background: #fee2e2;
 }
 
 .leave-project-members-list {
@@ -711,9 +712,9 @@
 
 /* Style pour le sélecteur de rôle dans la modale */
 .role-selector {
-    background-color: var(--bg-card); /* ou #2d2d2d */
+    background-color: #ffffff;
     color: var(--text-main);
-    border: 1px solid white;
+    border: 1px solid var(--border-solid);
     border-radius: 6px;
     padding: 4px 8px;
     font-size: 0.9rem;
@@ -723,12 +724,12 @@
 }
 
 .role-selector:focus {
-    border-color: var(--primary-color);
+    border-color: var(--primary);
 }
 
-/* Style pour les options à l'intérieur (important pour certains navigateurs) */
+/* Style pour les options à l'intérieur */
 .role-selector option {
-    background-color: var(--bg-dark);
+    background-color: #ffffff;
     color: var(--text-main);
 }
 
@@ -738,12 +739,21 @@
     border-color: var(--error);
     color: var(--error);
     background: transparent;
+    padding: 10px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.transfer-actions .btn-delete:hover {
+    background: var(--error);
+    color: white;
 }
 
 .paid-project-badge {
-    background-color: rgba(234, 179, 8, 0.12);
-    border-color: rgba(234, 179, 8, 0.35);
-    color: #b45309;
+    background-color: #fffbeb;
+    border-color: #fde68a;
+    color: #92400e;
 }
 
 /* Page paiement projet */
@@ -752,9 +762,9 @@
     width: 100%;
     padding: 1.75rem 1.85rem 1.65rem;
     border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: linear-gradient(165deg, rgba(32, 38, 48, 0.92), rgba(18, 22, 28, 0.98));
-    box-shadow: 0 14px 48px rgba(0, 0, 0, 0.38);
+    border: 1px solid var(--border-solid);
+    background: #ffffff;
+    box-shadow: var(--shadow-md);
 }
 
 .project-payment-form .project-payment-form-header {
@@ -777,28 +787,22 @@
     font-weight: 600;
     letter-spacing: 0.03em;
     text-decoration: none;
-    color: var(--text-dim, #94a3b8);
+    color: var(--text-muted);
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.04);
-    transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.12s, box-shadow 0.2s;
+    border: 1px solid var(--border-solid);
+    background: var(--bg-muted);
+    transition: var(--transition);
     white-space: nowrap;
 }
 
 .project-payment-cancel:hover {
-    color: #fecaca;
-    border-color: rgba(248, 113, 113, 0.55);
-    background: rgba(239, 68, 68, 0.12);
-    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.12);
+    color: #991b1b;
+    border-color: #fca5a5;
+    background: #fef2f2;
 }
 
 .project-payment-cancel:active {
     transform: scale(0.97);
-}
-
-.project-payment-cancel:focus-visible {
-    outline: 2px solid var(--primary);
-    outline-offset: 2px;
 }
 
 .payment-mode-block {
@@ -811,7 +815,7 @@
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--text-dim, #94a3b8);
+    color: var(--text-dim);
 }
 
 .payment-mode-grid {
@@ -841,48 +845,43 @@
     align-items: center;
     padding: 0.95rem 1.1rem;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.18);
-    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, transform 0.15s;
+    border: 1px solid var(--border-solid);
+    background: var(--bg-muted);
+    transition: var(--transition);
 }
 
 .payment-mode-tile:hover .payment-mode-tile-inner {
-    border-color: rgba(255, 255, 255, 0.18);
-    background: rgba(255, 255, 255, 0.04);
-}
-
-.payment-mode-tile input:focus-visible + .payment-mode-tile-inner {
-    outline: 2px solid var(--primary);
-    outline-offset: 2px;
+    border-color: var(--text-dim);
+    background: var(--primary-light);
 }
 
 .payment-mode-tile input:checked + .payment-mode-tile-inner {
-    border-color: rgba(29, 155, 240, 0.55);
-    background: rgba(29, 155, 240, 0.1);
-    box-shadow: 0 0 0 1px rgba(29, 155, 240, 0.2), 0 8px 24px rgba(29, 155, 240, 0.08);
+    border-color: var(--primary);
+    background: var(--primary-light);
+    box-shadow: 0 0 0 1px var(--primary-mid);
 }
 
 .payment-mode-indicator {
     width: 1.125rem;
     height: 1.125rem;
     border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.28);
+    border: 2px solid var(--text-muted);
     margin-right: 0.85rem;
     flex-shrink: 0;
     box-sizing: border-box;
-    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    transition: var(--transition);
 }
 
 .payment-mode-tile input:checked + .payment-mode-tile-inner .payment-mode-indicator {
     border-color: var(--primary);
     background: var(--primary);
-    box-shadow: inset 0 0 0 3px rgba(15, 20, 25, 0.95);
+    box-shadow: inset 0 0 0 3px #ffffff;
 }
 
 .payment-mode-label {
     font-size: 0.95rem;
     font-weight: 600;
-    color: var(--text-main, #f1f5f9);
+    color: var(--text-main);
     line-height: 1.35;
 }
 
@@ -890,14 +889,14 @@
     padding: 1rem 1.1rem;
     margin-bottom: 1rem;
     border-radius: 12px;
-    border: 1px solid rgba(34, 197, 94, 0.28);
-    background: rgba(34, 197, 94, 0.09);
+    border: 1px solid #bbf7d0;
+    background: #f0fdf4;
 }
 
 .payment-wallet-notice p {
     margin: 0;
     font-size: 0.9rem;
-    color: #86efac;
+    color: #166534;
     line-height: 1.45;
 }
 
@@ -931,7 +930,7 @@
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500;
-    color: var(--text-main, #e2e8f0);
+    color: var(--text-main);
 }
 
 .payment-checkbox-label input[type="checkbox"] {
@@ -944,7 +943,7 @@
 .project-payment-actions {
     margin-top: 1.35rem;
     padding-top: 1.15rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--border-solid);
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;

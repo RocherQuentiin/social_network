@@ -1,66 +1,74 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demandes de connexion</title>
+    <title>Demandes de connexion - Mobilitous</title>
     <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/friendRequest.css}">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body>
-    <div th:replace="~{fragments/header :: header-fragment}"></div>
+<body class="bg-dark">
+<div th:replace="~{fragments/header :: header-fragment}"></div>
 
-    <main style="max-width: 800px; margin: 40px auto; padding: 0 20px;">
-        <h1>Demandes de connexion</h1>
-        
-        <div id="received-requests-container">
+<main class="directory-container" style="max-width: 800px; margin: 40px auto; padding: 0 20px;">
+    <h1 style="color: var(--secondary); font-weight: 800; margin-bottom: 2rem;">Demandes de connexion</h1>
+
+    <!-- Demandes reçues -->
+    <section class="request-section-block" aria-labelledby="title-received">
+        <h2 id="title-received" class="section-title">Demandes reçues</h2>
+        <div id="received-requests-container" aria-live="polite">
             <p>Chargement des demandes reçues...</p>
         </div>
+    </section>
 
-        <br>
-        <hr>
-        <br>
+    <hr class="section-divider" aria-hidden="true">
 
-        <div id="sent-requests-container">
+    <!-- Demandes envoyées -->
+    <section class="request-section-block" aria-labelledby="title-sent">
+        <h2 id="title-sent" class="section-title">Demandes envoyées</h2>
+        <div id="sent-requests-container" aria-live="polite">
             <p>Chargement des demandes envoyées...</p>
         </div>
-        
-        <br>
-        <hr>
-        <br>
-        
-        <div id="suggestions-container">
+    </section>
+
+    <hr class="section-divider" aria-hidden="true">
+
+    <!-- Suggestions de membres -->
+    <section class="request-section-block" aria-labelledby="title-suggestions">
+        <h2 id="title-suggestions" class="section-title">Suggestions de membres</h2>
+        <div id="suggestions-container" aria-live="polite">
             <p>Chargement des suggestions...</p>
         </div>
-    </main>
+    </section>
+</main>
 
-    <div th:replace="~{fragments/footer :: footer-fragment}"></div>
-    
-    
-    <div id="editEventModal">
-		<div class="modal-card card">
-		 	<div class="modal-header">
-                    <h3>Information</h3>
-                    <button id="closeEditModal" aria-label="Fermer">✕</button>
+<div th:replace="~{fragments/footer :: footer-fragment}"></div>
+
+<!-- MODALE D'INFORMATION SUR LES SUGGESTIONS ACCESSIBLE -->
+<div id="editEventModal" role="dialog" aria-modal="true" aria-labelledby="modalInfoTitle">
+    <div class="modal-card card">
+        <div class="modal-header">
+            <h3 id="modalInfoTitle">Information</h3>
+            <button id="closeEditModal" aria-label="Fermer la boîte de dialogue">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="input-wrapper">
+                <p id="whysuggestion" style="color: var(--text-main); line-height: 1.5;"></p>
             </div>
-			<div class="modal-body">
-				<div class="input-wrapper">
-						<p id="whysuggestion"></p>
-				</div>
-			</div>
-		</div>
-	</div>
+        </div>
+    </div>
+</div>
 
-    <script th:src="@{/js/header.js}"></script>
-    <script th:src="@{/js/friendRequest.js}"></script>
-    <script>
-        lucide.createIcons();
-        // Load pending requests when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            loadPendingRequests();
-        });
-    </script>
+<script th:src="@{/js/header.js}"></script>
+<script th:src="@{/js/friendRequest.js}"></script>
+<script>
+    lucide.createIcons();
+    // Load pending requests when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        loadPendingRequests();
+    });
+</script>
 </body>
 </html>

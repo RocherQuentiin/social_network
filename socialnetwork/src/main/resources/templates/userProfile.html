@@ -1,388 +1,384 @@
 ﻿<!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Profil - ISEP Connect</title>
-<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
-<link rel="stylesheet" th:href="@{/css/header.css}">
-<link rel="stylesheet" th:href="@{/css/profil.css}">
-<script src="https://unpkg.com/lucide@latest"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Profil - Mobilitous</title>
+	<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+	<link rel="stylesheet" th:href="@{/css/header.css}">
+	<link rel="stylesheet" th:href="@{/css/profil.css}">
+	<script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-dark">
 
-	<div th:replace="~{fragments/header :: header-fragment}"></div>
+<div th:replace="~{fragments/header :: header-fragment}"></div>
 
-	<main class="profil-layout">
-		<aside class="sidebar-left">
-			<div class="card profile-card">
-				<div class="avatar-section">
-					<div class="avatar-wrapper">
-						<img th:src="@{${userProfile.user.profilePictureUrl}}" alt="Avatar">
-					</div>
-				</div>
-
-				<h2 class="user-fullname" th:text="${userProfile.user.firstName + ' ' + userProfile.user.lastName}">Alexandre Dupont</h2>
-				<p class="user-studies" th:text="${userProfile.profile.profession}">Etudiant Ingenieur - ISEP</p>
-
-				<div class="location-tag">
-					<i data-lucide="map-pin"></i> <span th:text="${userProfile.profile.location}">Paris, France</span>
-				</div>
-
-				<div class="stats-row">
-					<div class="stat-box">
-						<span class="label">PROMO</span> <span class="value text-primary" th:text="${userProfile.profile.promoYear}">2024</span>
-					</div>
-					<div class="stat-box">
-						<span class="label">FILIERE</span> <span class="value text-primary" th:text="${userProfile.profile.isepSpecialization}">Logiciel</span>
-					</div>
-				</div>
-				<div class="btn-infos">
-					<a th:href="@{/editProfil}" class="btn-primary-header">Modifier Profil</a>
-					<a th:href="@{/privacy}" class="btn-primary-header">Donnees privee</a>
-				</div>
-				<div class="btn-infos btn-change-password">
-					<a th:href="@{/changePassword}" class="btn-primary-header">Mot de passe</a>
+<main class="profil-layout">
+	<aside class="sidebar-left" aria-label="Informations du profil">
+		<div class="card profile-card">
+			<div class="avatar-section">
+				<div class="avatar-wrapper">
+					<img th:src="@{${userProfile.user.profilePictureUrl}}" alt="Photo de profil">
 				</div>
 			</div>
 
-			<div class="card networks-card">
-				<h3 class="sidebar-title">Compte</h3>
-				<div class="network-links">
-					<div class="network-item" style="cursor: default;">
-						<div class="item-left">
-							<i data-lucide="wallet"></i> <span>Solde projets</span>
-						</div>
-						<strong th:text="${#numbers.formatDecimal(userProfile.user.walletBalance, 1, 2)} + ' €'">0,00 €</strong>
-					</div>
-					<p class="sidebar-hint" style="margin: 0.35rem 0 0; font-size: 0.8rem; color: var(--text-dim, #888); line-height: 1.35;">
-						Portefeuille virtuel projets (entrées lors des paiements réussis vers vos projets, débits lors des remboursements / sorties).
-					</p>
-					<button type="button" class="btn-primary-header" id="btn-manage-payment-methods" style="width:100%; margin-top:0.75rem;">Gérer mes moyens de paiement</button>
-				</div>
+			<h2 class="user-fullname" th:text="${userProfile.user.firstName + ' ' + userProfile.user.lastName}">Alexandre Dupont</h2>
+			<p class="user-studies" th:text="${userProfile.profile.profession}">Etudiant Ingenieur - ISEP</p>
+
+			<div class="location-tag">
+				<i data-lucide="map-pin" aria-hidden="true"></i> <span th:text="${userProfile.profile.location}">Paris, France</span>
 			</div>
 
-			<div class="card networks-card">
-				<h3 class="sidebar-title">Reseaux</h3>
-				<div class="network-links">
-					<a th:if="${userProfile.profile.linkedin}" th:href="${userProfile.profile.linkedin}" class="network-item">
-						<div class="item-left">
-							<i data-lucide="linkedin"></i> <span>LinkedIn</span>
-						</div> <i data-lucide="external-link" class="arrow-right"></i>
-					</a>
-					<a th:if="${userProfile.profile.github}" th:href="${userProfile.profile.github}" class="network-item">
-						<div class="item-left">
-							<i data-lucide="github"></i> <span>GitHub</span>
-						</div> <i data-lucide="external-link" class="arrow-right"></i>
-					</a>
-					<a th:if="${userProfile.profile.website}" th:href="${userProfile.profile.website}" class="network-item">
-						<div class="item-left">
-							<i data-lucide="globe"></i> <span>Portfolio</span>
-						</div> <i data-lucide="external-link" class="arrow-right"></i>
-					</a>
+			<div class="stats-row">
+				<div class="stat-box">
+					<span class="label">PROMO</span> <span class="value text-primary" th:text="${userProfile.profile.promoYear}">2024</span>
+				</div>
+				<div class="stat-box">
+					<span class="label">FILIERE</span> <span class="value text-primary" th:text="${userProfile.profile.isepSpecialization}">Logiciel</span>
 				</div>
 			</div>
-
-			<div class="card cv-card">
-				<div class="cv-content">
-					<i data-lucide="file-text" class="cv-icon"></i>
-					<div class="cv-details">
-						<strong>Mon CV</strong> <span>PDF, 2.4 MB</span>
-					</div>
-					<a href="#" class="download-link"><i data-lucide="download"></i></a>
-				</div>
+			<div class="btn-infos">
+				<a th:href="@{/editProfil}" class="btn-primary-header">Modifier Profil</a>
+				<a th:href="@{/privacy}" class="btn-primary-header">Donnees privee</a>
 			</div>
-		</aside>
-
-		<section class="main-content">
-			<div class="alert-error" th:if="${errorEvent}">
-				<i data-lucide="alert-circle"></i> <span th:text="${errorEvent}"></span>
-			</div>
-
-			<div class="alert-information" th:if="${informationEvent}">
-				<i data-lucide="alert-circle"></i> <span th:text="${informationEvent}"></span>
-			</div>
-			<div class="section-container">
-				<div class="section-header">
-					<h3><i data-lucide="user" class="icon-blue"></i> A propos</h3>
-					<a th:href="@{/editProfil}" class="modifier-btn">Modifier</a>
-				</div>
-				<div class="card box-content">
-					<p th:text="${userProfile.user.bio}">Passionne par le developpement web...</p>
-				</div>
-			</div>
-
-			<div class="section-container">
-				<div class="section-header">
-					<h3><i data-lucide="settings" class="icon-blue"></i> Competences</h3>
-				</div>
-				<div class="card box-content">
-					<div class="tags-container">
-						<div th:data-value="${competence.value}" class="competence-container" th:each="competence : ${userProfile.profile.competencies}">
-							<span class="tag"><span th:text="${competence.value}"></span> <i data-lucide="x"></i> </span>
-						</div>
-						<button id="competencies" class="add-tag-btn">+ Ajouter</button>
-					</div>
-				</div>
-			</div>
-
-			<div class="section-container">
-				<div class="section-header">
-					<h3><i data-lucide="rocket" class="icon-blue"></i> Projets</h3>
-					<a th:href="@{/projects}" class="modifier-btn">Voir tout</a>
-				</div>
-				<div id="user-projects-profile" class="projects-grid">
-					<div th:each="project : ${myProjects}" class="card project-item">
-						<div class="project-info">
-							<h4>
-								<span th:text="${project.name}">Nom Projet</span>
-								<span class="type-tag" th:text="${project.visibilityType}">Public</span>
-								<span class="type-tag" th:if="${project.isPaid}" th:text="${#numbers.formatDecimal(project.price, 1, 2)} + ' EUR'">12.00 EUR</span>
-							</h4>
-							<p th:text="${#strings.abbreviate(project.description, 80)}">Description...</p>
-							<a th:href="@{/projects}" class="details-link">Gerer <i data-lucide="arrow-right"></i></a>
-						</div>
-					</div>
-
-					<div class="card add-project-placeholder" id="add-project-card" onclick="window.location.href='/projects'">
-						<div class="plus-circle"><i data-lucide="plus"></i></div>
-						<strong>Ajouter un projet</strong>
-						<span>Montrez vos realisations academiques</span>
-					</div>
-				</div>
-			</div>
-
-			<div class="section-container">
-				<div class="section-header">
-					<h3><i data-lucide="rocket" class="icon-blue"></i> Evenements</h3>
-					<a th:href="@{/feed}" class="view-all-events-btn">Voir tout</a>
-				</div>
-				<div class="events-grid">
-					<div class="card event-item" th:if='${eventFirst != null}'>
-						<div class="event-info">
-							<h4>
-								<span th:text='${eventFirst.name}'></span>
-								<span class="type-tag" th:if="${eventFirst.isPaid}" th:text="${#numbers.formatDecimal(eventFirst.price, 1, 2)} + ' EUR'">15.00 EUR</span>
-							</h4>
-							<p th:text='${eventFirst.description}'></p>
-						</div>
-					</div>
-					<div id="add-event-btn" class="card add-event-placeholder">
-						<div class="plus-circle"><i data-lucide="plus"></i></div>
-						<strong>Ajouter un evenement</strong>
-						<span>Montrez vos evenement</span>
-					</div>
-				</div>
-			</div>
-			<div class="section-container">
-				<div class="section-header">
-					<h3><i data-lucide="heart" class="icon-blue"></i> Centres d'interet</h3>
-				</div>
-				<div class="card box-content">
-					<div class="interests-container">
-						<div th:data-value="${hobby.value}" class="interest-item" th:each="hobby : ${userProfile.profile.interests}">
-							 <span th:text="${hobby.value}"></span><i class="delete-hobby" data-lucide="x"></i>
-						</div>
-						<button id="loisir" class="add-tag-btn">+ Ajouter</button>
-					</div>
-				</div>
-			</div>
-			
-			<div class="section-container">
-				<div class="section-header">
-					<h3><i data-lucide="star" class="icon-blue"></i> Recommandation</h3>
-				</div>
-				<div th:each="recommandations : ${listRecommandation}" class="recommandation-grid">
-					<div class="card recommandation-item" style="display: flex; align-items: center; padding: 20px; gap: 20px;">
-						<div class="plus-circle"><i data-lucide="star"></i></div>
-						<div class="project-info" style="padding: 0;">
-							<h4><span th:text="${recommandations.score}"></span> / 5.0 par <span th:text="${recommandations.user.firstName}"></span> <span th:text="${recommandations.user.lastName}"></span></h4>
-							<p th:text="${recommandations.reason}"></p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-	</main>
-	
-	<div id="editHobbyModal">
-		<div class="modal-card card">
-			<div class="modal-header">
-				<h3>Ajouter un loisir</h3>
-				<button id=closeHobbyEditModal aria-label="Fermer">x</button>
-			</div>
-			<div class="modal-body">
-				<form th:action="@{/user/hobby}" method="post" class="event-form">
-					<div class="input-group">
-						<label for="hobbiesName">Nom du loisir</label>
-						<div class="input-wrapper">
-							<input id="hobbiesName" type="text" name="hobbiesName" placeholder="Nom du loisir" required />
-						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="submit" class="btn-event-submit">Ajouter</button>
-					</div>
-				</form>
-
-			</div>
-
-		</div>
-	</div>
-	
-	<div id="editCompetenciesModal">
-		<div class="modal-card card">
-			<div class="modal-header">
-				<h3>Ajouter une competence</h3>
-				<button id="closeCompetenciesEditModal" aria-label="Fermer">x</button>
-			</div>
-			<div class="modal-body">
-				<form th:action="@{/user/competencies}" method="post" class="event-form">
-					<div class="input-group">
-						<label for="competenceName">Nom de competence</label>
-						<div class="input-wrapper">
-							<input id="competenceName" type="text" name="competenceName" placeholder="Competence" required />
-						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="submit" class="btn-competence-submit">Ajouter</button>
-					</div>
-				</form>
-
-			</div>
-
-		</div>
-	</div>
-
-	<div id="paymentMethodsModal">
-		<div class="modal-card card">
-			<div class="modal-header">
-				<h3>Moyens de paiement</h3>
-				<button type="button" id="closePaymentMethodsModal" class="pm-modal-close" aria-label="Fermer">
-					<i data-lucide="x"></i>
-				</button>
-			</div>
-			<div class="modal-body">
-				<div id="payment-methods-list" style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem;"></div>
-				<h4 style="margin:0 0 0.5rem;font-size:0.95rem;">Ajouter une carte</h4>
-				<form id="addPaymentMethodForm" class="event-form">
-					<div class="input-group">
-						<label for="pmCardholder">Titulaire</label>
-						<input id="pmCardholder" type="text" required />
-					</div>
-					<div class="input-group">
-						<label for="pmCardNumber">Numéro de carte</label>
-						<input id="pmCardNumber" type="text" inputmode="numeric" required />
-					</div>
-					<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;">
-						<div class="input-group">
-							<label for="pmMonth">Mois</label>
-							<input id="pmMonth" type="number" min="1" max="12" required />
-						</div>
-						<div class="input-group">
-							<label for="pmYear">Année</label>
-							<input id="pmYear" type="number" min="2026" required />
-						</div>
-						<div class="input-group">
-							<label for="pmCvv">CVV</label>
-							<input id="pmCvv" type="password" maxlength="4" required />
-						</div>
-					</div>
-					<div class="input-group">
-						<label for="pmLabel">Libellé (optionnel)</label>
-						<input id="pmLabel" type="text" placeholder="Ex. Carte perso" />
-					</div>
-					<div class="modal-footer">
-						<button type="submit" class="btn-event-submit">Enregistrer la carte</button>
-					</div>
-				</form>
+			<div class="btn-infos btn-change-password">
+				<a th:href="@{/changePassword}" class="btn-primary-header">Mot de passe</a>
 			</div>
 		</div>
-	</div>
-	
-	<div id="editEventModal">
-		<div class="modal-card card">
-			<div class="modal-header">
-				<h3>Creer un evenement</h3>
-				<button id=closeEventEditModal aria-label="Fermer">x</button>
+
+		<div class="card networks-card">
+			<h3 class="sidebar-title">Compte</h3>
+			<div class="network-links">
+				<div class="network-item" style="cursor: default;">
+					<div class="item-left">
+						<i data-lucide="wallet" aria-hidden="true"></i> <span>Solde projets</span>
+					</div>
+					<strong th:text="${#numbers.formatDecimal(userProfile.user.walletBalance, 1, 2)} + ' €'">0,00 €</strong>
+				</div>
+				<p class="sidebar-hint" style="margin: 0.35rem 0 0; font-size: 0.8rem; color: var(--text-dim, #888); line-height: 1.35;">
+					Portefeuille virtuel projets (entrées lors des paiements réussis vers vos projets, débits lors des remboursements / sorties).
+				</p>
+				<button type="button" class="btn-primary-header" id="btn-manage-payment-methods" style="width:100%; margin-top:0.75rem;">Gérer mes moyens de paiement</button>
 			</div>
-			<div class="modal-body">
+		</div>
 
-				<form th:action="@{/event}" th:object="${event}" method="post" class="event-form">
-					<div class="input-group">
-						<label for="eventName">Nom evenement</label>
-						<div class="input-wrapper">
-							<input id="eventName" th:field="*{name}" type="text" placeholder="Nom de l'evenement" required />
-						</div>
-					</div>
-					<div class="input-group">
-						<label for="eventDate">Date de l'evenement</label>
-						<div class="input-wrapper">
-							<input id="eventDate" type="datetime-local" th:field="*{eventDate}" placeholder="Date de l'evenement" required />
-						</div>
-					</div>
-					<div class="input-group">
-						<label for="eventCapacity">Capacite de l'evenement</label>
-						<div class="input-wrapper">
-							<input id="eventCapacity" type="number" th:field="*{capacity}" placeholder="Capacite de l'evenement" min="1" required />
-						</div>
-					</div>
-					<div class="input-group">
-						<label for="eventLocation">Emplacement de l'evenement</label>
-						<div class="input-wrapper">
-							<input id="eventLocation" type="text" th:field="*{location}" placeholder="Emplacement de l'evenement" required />
-						</div>
-					</div>
+		<div class="card networks-card">
+			<h3 class="sidebar-title">Reseaux</h3>
+			<nav class="network-links" aria-label="Réseaux sociaux et liens externes">
+				<a th:if="${userProfile.profile.linkedin}" th:href="${userProfile.profile.linkedin}" class="network-item" target="_blank" aria-label="Visiter le profil LinkedIn (s'ouvre dans un nouvel onglet)">
+					<div class="item-left">
+						<i data-lucide="linkedin" aria-hidden="true"></i> <span>LinkedIn</span>
+					</div> <i data-lucide="external-link" class="arrow-right" aria-hidden="true"></i>
+				</a>
+				<a th:if="${userProfile.profile.github}" th:href="${userProfile.profile.github}" class="network-item" target="_blank" aria-label="Visiter le profil GitHub (s'ouvre dans un nouvel onglet)">
+					<div class="item-left">
+						<i data-lucide="github" aria-hidden="true"></i> <span>GitHub</span>
+					</div> <i data-lucide="external-link" class="arrow-right" aria-hidden="true"></i>
+				</a>
+				<a th:if="${userProfile.profile.website}" th:href="${userProfile.profile.website}" class="network-item" target="_blank" aria-label="Visiter le site web Portfolio (s'ouvre dans un nouvel onglet)">
+					<div class="item-left">
+						<i data-lucide="globe" aria-hidden="true"></i> <span>Portfolio</span>
+					</div> <i data-lucide="external-link" class="arrow-right" aria-hidden="true"></i>
+				</a>
+			</nav>
+		</div>
 
-					<div class="input-group">
-						<label for="editVisibility">Visibilite</label> <select id="editVisibility" class="custom-select" th:field="*{visibilityType}">
-							<option value="PUBLIC">Public</option>
-							<option value="FRIENDS">Amis</option>
-							<option value="PRIVATE">Prive</option>
-						</select>
-					</div>
-
-					<div class="input-group">
-						<label for="eventDescription">Description de l'evenement</label>
-						<div class="input-wrapper">
-							<input id="eventDescription" type="text" placeholder="Description de l'evenement" th:field="*{description}" required />
-						</div>
-					</div>
-
-					<div class="input-group">
-						<label for="profileEventIsPaid">Evenement payant (optionnel)</label>
-						<select id="profileEventIsPaid" name="isPaid" class="custom-select">
-							<option value="false" selected>Non — gratuit</option>
-							<option value="true">Oui — participation payante</option>
-						</select>
-						<small style="color: var(--text-dim);">Par defaut l'evenement est gratuit.</small>
-					</div>
-					<div class="input-group" id="profileEventPriceGroup" style="display: none;">
-						<label for="profileEventPrice">Montant par participant (EUR)</label>
-						<input id="profileEventPrice" type="number" name="price" min="0.01" step="0.01" placeholder="Ex: 15.00">
-						<small style="color: var(--text-dim);">Ce montant sera facture a chaque participant.</small>
-					</div>
-
-					<input type="hidden" name="returnTo" value="/profil">
-
-					<div class="modal-footer">
-						<button type="submit" class="btn-event-submit">Creer</button>
-					</div>
-				</form>
-
+		<div class="card cv-card">
+			<div class="cv-content">
+				<i data-lucide="file-text" class="cv-icon" aria-hidden="true"></i>
+				<div class="cv-details">
+					<strong>Mon CV</strong> <span>PDF, 2.4 MB</span>
+				</div>
+				<a href="#" class="download-link" aria-label="Télécharger le CV au format PDF"><i data-lucide="download" aria-hidden="true"></i></a>
 			</div>
+		</div>
+	</aside>
 
+	<section class="main-content" aria-label="Contenu principal du profil">
+		<div class="alert-error" th:if="${errorEvent}" role="alert">
+			<i data-lucide="alert-circle" aria-hidden="true"></i> <span th:text="${errorEvent}"></span>
+		</div>
+
+		<div class="alert-information" th:if="${informationEvent}" role="status">
+			<i data-lucide="alert-circle" aria-hidden="true"></i> <span th:text="${informationEvent}"></span>
+		</div>
+
+		<div class="section-container">
+			<div class="section-header">
+				<h3><i data-lucide="user" class="icon-blue" aria-hidden="true"></i> A propos</h3>
+				<a th:href="@{/editProfil}" class="modifier-btn" aria-label="Modifier la section à propos">Modifier</a>
+			</div>
+			<div class="card box-content">
+				<p th:text="${userProfile.user.bio}">Passionne par le developpement web...</p>
+			</div>
+		</div>
+
+		<div class="section-container">
+			<div class="section-header">
+				<h3><i data-lucide="settings" class="icon-blue" aria-hidden="true"></i> Competences</h3>
+			</div>
+			<div class="card box-content">
+				<div class="tags-container">
+					<div th:data-value="${competence.value}" class="competence-container" th:each="competence : ${userProfile.profile.competencies}">
+						<span class="tag"><span th:text="${competence.value}"></span> <i data-lucide="x" aria-label="Supprimer cette compétence" role="button"></i> </span>
+					</div>
+					<button id="competencies" class="add-tag-btn">+ Ajouter <span class="sr-only">une compétence</span></button>
+				</div>
+			</div>
+		</div>
+
+		<div class="section-container">
+			<div class="section-header">
+				<h3><i data-lucide="rocket" class="icon-blue" aria-hidden="true"></i> Projets</h3>
+				<a th:href="@{/projects}" class="modifier-btn">Voir tout <span class="sr-only">mes projets</span></a>
+			</div>
+			<div id="user-projects-profile" class="projects-grid">
+				<div th:each="project : ${myProjects}" class="card project-item">
+					<div class="project-info">
+						<h4>
+							<span th:text="${project.name}">Nom Projet</span>
+							<span class="type-tag" th:text="${project.visibilityType}">Public</span>
+							<span class="type-tag" th:if="${project.isPaid}" th:text="${#numbers.formatDecimal(project.price, 1, 2)} + ' EUR'">12.00 EUR</span>
+						</h4>
+						<p th:text="${#strings.abbreviate(project.description, 80)}">Description...</p>
+						<a th:href="@{/projects}" class="details-link" th:aria-label="'Gérer le projet ' + ${project.name}">Gerer <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+					</div>
+				</div>
+
+				<div class="card add-project-placeholder" id="add-project-card" onclick="window.location.href='/projects'" role="button" tabindex="0" aria-label="Ajouter un nouveau projet">
+					<div class="plus-circle"><i data-lucide="plus" aria-hidden="true"></i></div>
+					<strong>Ajouter un projet</strong>
+					<span>Montrez vos realisations academiques</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="section-container">
+			<div class="section-header">
+				<h3><i data-lucide="rocket" class="icon-blue" aria-hidden="true"></i> Evenements</h3>
+				<a th:href="@{/feed}" class="view-all-events-btn">Voir tout <span class="sr-only">les événements</span></a>
+			</div>
+			<div class="events-grid">
+				<div class="card event-item" th:if='${eventFirst != null}'>
+					<div class="event-info">
+						<h4>
+							<span th:text='${eventFirst.name}'></span>
+							<span class="type-tag" th:if="${eventFirst.isPaid}" th:text="${#numbers.formatDecimal(eventFirst.price, 1, 2)} + ' EUR'">15.00 EUR</span>
+						</h4>
+						<p th:text='${eventFirst.description}'></p>
+					</div>
+				</div>
+				<div id="add-event-btn" class="card add-event-placeholder" role="button" tabindex="0" aria-label="Ajouter un nouvel événement">
+					<div class="plus-circle"><i data-lucide="plus" aria-hidden="true"></i></div>
+					<strong>Ajouter un evenement</strong>
+					<span>Montrez vos evenement</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="section-container">
+			<div class="section-header">
+				<h3><i data-lucide="heart" class="icon-blue" aria-hidden="true"></i> Centres d'interet</h3>
+			</div>
+			<div class="card box-content">
+				<div class="interests-container">
+					<div th:data-value="${hobby.value}" class="interest-item" th:each="hobby : ${userProfile.profile.interests}">
+						<span th:text="${hobby.value}"></span><i class="delete-hobby" data-lucide="x" aria-label="Supprimer ce centre d'intérêt" role="button"></i>
+					</div>
+					<button id="loisir" class="add-tag-btn">+ Ajouter <span class="sr-only">un centre d'intérêt</span></button>
+				</div>
+			</div>
+		</div>
+
+		<div class="section-container">
+			<div class="section-header">
+				<h3><i data-lucide="star" class="icon-blue" aria-hidden="true"></i> Recommandation</h3>
+			</div>
+			<div th:each="recommandations : ${listRecommandation}" class="recommandation-grid">
+				<div class="card recommandation-item" style="display: flex; align-items: center; padding: 20px; gap: 20px;">
+					<div class="plus-circle"><i data-lucide="star" aria-hidden="true"></i></div>
+					<div class="project-info" style="padding: 0;">
+						<h4><span th:text="${recommandations.score}"></span> / 5.0 par <span th:text="${recommandations.user.firstName}"></span> <span th:text="${recommandations.user.lastName}"></span></h4>
+						<p th:text="${recommandations.reason}"></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</main>
+
+<div id="editHobbyModal" role="dialog" aria-modal="true" aria-labelledby="hobbyModalTitle">
+	<div class="modal-card card">
+		<div class="modal-header">
+			<h3 id="hobbyModalTitle">Ajouter un loisir</h3>
+			<button id="closeHobbyEditModal" aria-label="Fermer la boîte de dialogue">x</button>
+		</div>
+		<div class="modal-body">
+			<form th:action="@{/user/hobby}" method="post" class="event-form">
+				<div class="input-group">
+					<label for="hobbiesName">Nom du loisir</label>
+					<div class="input-wrapper">
+						<input id="hobbiesName" type="text" name="hobbiesName" placeholder="Nom du loisir" required />
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn-event-submit">Ajouter</button>
+				</div>
+			</form>
 		</div>
 	</div>
-	<script th:src="@{/js/userProfile.js}"></script>
-	<script th:src="@{/js/profilePaymentMethods.js}"></script>
-	<script>
-		window.currentUserId = '[[${isConnect}]]';
-		window.viewedUserId = '[[${userProfile.user.id}]]';
-		if (typeof lucide !== 'undefined') {
-			lucide.createIcons();
-		}
-	</script>
-	<div th:replace="~{fragments/footer :: footer-fragment}"></div>
+</div>
+
+<div id="editCompetenciesModal" role="dialog" aria-modal="true" aria-labelledby="compModalTitle">
+	<div class="modal-card card">
+		<div class="modal-header">
+			<h3 id="compModalTitle">Ajouter une competence</h3>
+			<button id="closeCompetenciesEditModal" aria-label="Fermer la boîte de dialogue">x</button>
+		</div>
+		<div class="modal-body">
+			<form th:action="@{/user/competencies}" method="post" class="event-form">
+				<div class="input-group">
+					<label for="competenceName">Nom de competence</label>
+					<div class="input-wrapper">
+						<input id="competenceName" type="text" name="competenceName" placeholder="Competence" required />
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn-competence-submit">Ajouter</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div id="paymentMethodsModal" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle">
+	<div class="modal-card card">
+		<div class="modal-header">
+			<h3 id="paymentModalTitle">Moyens de paiement</h3>
+			<button type="button" id="closePaymentMethodsModal" class="pm-modal-close" aria-label="Fermer la boîte de dialogue">
+				<i data-lucide="x" aria-hidden="true"></i>
+			</button>
+		</div>
+		<div class="modal-body">
+			<div id="payment-methods-list" style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem;"></div>
+			<h4 style="margin:0 0 0.5rem;font-size:0.95rem;">Ajouter une carte</h4>
+			<form id="addPaymentMethodForm" class="event-form">
+				<div class="input-group">
+					<label for="pmCardholder">Titulaire</label>
+					<input id="pmCardholder" type="text" required />
+				</div>
+				<div class="input-group">
+					<label for="pmCardNumber">Numéro de carte</label>
+					<input id="pmCardNumber" type="text" inputmode="numeric" required />
+				</div>
+				<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;">
+					<div class="input-group">
+						<label for="pmMonth">Mois</label>
+						<input id="pmMonth" type="number" min="1" max="12" required />
+					</div>
+					<div class="input-group">
+						<label for="pmYear">Année</label>
+						<input id="pmYear" type="number" min="2026" required />
+					</div>
+					<div class="input-group">
+						<label for="pmCvv">CVV</label>
+						<input id="pmCvv" type="password" maxlength="4" required />
+					</div>
+				</div>
+				<div class="input-group">
+					<label for="pmLabel">Libellé (optionnel)</label>
+					<input id="pmLabel" type="text" placeholder="Ex. Carte perso" />
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn-event-submit">Enregistrer la carte</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div id="editEventModal" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle">
+	<div class="modal-card card">
+		<div class="modal-header">
+			<h3 id="eventModalTitle">Creer un evenement</h3>
+			<button id="closeEventEditModal" aria-label="Fermer la boîte de dialogue">x</button>
+		</div>
+		<div class="modal-body">
+			<form th:action="@{/event}" th:object="${event}" method="post" class="event-form">
+				<div class="input-group">
+					<label for="eventName">Nom evenement</label>
+					<div class="input-wrapper">
+						<input id="eventName" th:field="*{name}" type="text" placeholder="Nom de l'evenement" required />
+					</div>
+				</div>
+				<div class="input-group">
+					<label for="eventDate">Date de l'evenement</label>
+					<div class="input-wrapper">
+						<input id="eventDate" type="datetime-local" th:field="*{eventDate}" required />
+					</div>
+				</div>
+				<div class="input-group">
+					<label for="eventCapacity">Capacite de l'evenement</label>
+					<div class="input-wrapper">
+						<input id="eventCapacity" type="number" th:field="*{capacity}" placeholder="Capacite de l'evenement" min="1" required />
+					</div>
+				</div>
+				<div class="input-group">
+					<label for="eventLocation">Emplacement de l'evenement</label>
+					<div class="input-wrapper">
+						<input id="eventLocation" type="text" th:field="*{location}" placeholder="Emplacement de l'evenement" required />
+					</div>
+				</div>
+
+				<div class="input-group">
+					<label for="editVisibility">Visibilite</label>
+					<select id="editVisibility" class="custom-select" th:field="*{visibilityType}">
+						<option value="PUBLIC">Public</option>
+						<option value="FRIENDS">Amis</option>
+						<option value="PRIVATE">Prive</option>
+					</select>
+				</div>
+
+				<div class="input-group">
+					<label for="eventDescription">Description de l'evenement</label>
+					<div class="input-wrapper">
+						<input id="eventDescription" type="text" placeholder="Description de l'evenement" th:field="*{description}" required />
+					</div>
+				</div>
+
+				<div class="input-group">
+					<label for="profileEventIsPaid">Evenement payant (optionnel)</label>
+					<select id="profileEventIsPaid" name="isPaid" class="custom-select">
+						<option value="false" selected>Non — gratuit</option>
+						<option value="true">Oui — participation payante</option>
+					</select>
+					<small style="color: var(--text-dim);">Par defaut l'evenement est gratuit.</small>
+				</div>
+				<div class="input-group" id="profileEventPriceGroup" style="display: none;">
+					<label for="profileEventPrice">Montant par participant (EUR)</label>
+					<input id="profileEventPrice" type="number" name="price" min="0.01" step="0.01" placeholder="Ex: 15.00">
+					<small style="color: var(--text-dim);">Ce montant sera facture a chaque participant.</small>
+				</div>
+
+				<input type="hidden" name="returnTo" value="/profil">
+
+				<div class="modal-footer">
+					<button type="submit" class="btn-event-submit">Creer</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<script th:src="@{/js/userProfile.js}"></script>
+<script th:src="@{/js/profilePaymentMethods.js}"></script>
+<script>
+	window.currentUserId = '[[${isConnect}]]';
+	window.viewedUserId = '[[${userProfile.user.id}]]';
+	if (typeof lucide !== 'undefined') {
+		lucide.createIcons();
+	}
+</script>
+<div th:replace="~{fragments/footer :: footer-fragment}"></div>
 
 </body>
 </html>

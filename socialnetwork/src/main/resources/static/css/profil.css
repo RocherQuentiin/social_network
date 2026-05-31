@@ -13,9 +13,23 @@
 
 .card {
     background: var(--bg-card);
-    border: 1px solid var(--border);
+    border: 1.5px solid var(--border-solid);
     border-radius: var(--radius);
     padding: 20px;
+    box-shadow: var(--shadow);
+}
+
+/* Classe d'accessibilité masquée pour les lecteurs d'écran uniquement */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 /* =========================================
@@ -68,6 +82,7 @@
 .user-fullname {
     font-size: 1.4rem;
     font-weight: 800;
+    color: var(--secondary);
     margin-bottom: 5px;
 }
 
@@ -75,6 +90,7 @@
     color: var(--text-dim);
     font-size: 0.95rem;
     margin-bottom: 15px;
+    font-weight: 600;
 }
 
 .location-tag {
@@ -90,7 +106,7 @@
 .stats-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    border-top: 1px solid var(--border);
+    border-top: 1.5px solid var(--border-solid);
     padding-top: 20px;
     margin-bottom: 25px;
 }
@@ -103,19 +119,19 @@
 
 .stat-box .label {
     font-size: 0.7rem;
-    color: var(--text-dim);
+    color: var(--text-muted);
     font-weight: bold;
 }
 
 .stat-box .value {
-    font-size: 12px;
-    font-weight: normal;
+    font-size: 13px;
+    font-weight: 700;
     color: var(--primary);
 }
 
 .btn-primary-full {
     display: block;
-    width: 50%;
+    width: 100%;
     background: var(--primary);
     color: white;
     padding: 12px;
@@ -123,29 +139,40 @@
     text-decoration: none;
     font-weight: bold;
     text-align: center;
-    border: #1c2028 2px solid;
+    border: none;
+    transition: var(--transition);
 }
 
 .btn-primary-full:hover {
-    background: var(--primary);
+    background: var(--secondary);
     color: white;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    padding: 12px 27px;
+    box-shadow: 0 4px 12px rgba(22, 101, 52, 0.2);
 }
 
-.btn-infos{
+.btn-infos {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 15px;
+    margin-bottom: 12px; /* Ajoute un espace sous le premier groupe (Modifier / Données) */
 }
 
+.btn-change-password {
+    margin-top: 0; /* Remplace le margin-top qui pouvait créer un décalage instable */
+    margin-bottom: 10px; /* Ajoute une marge de sécurité en bas du bloc */
+}
+
+.btn-infos .btn-primary-header,
+.btn-change-password .btn-primary-header {
+    width: 100%;
+    text-align: center;
+}
 /* Box 2: Réseaux */
 .network-links {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
     margin-top: 10px;
 }
 
@@ -155,7 +182,16 @@
     align-items: center;
     text-decoration: none;
     color: var(--text-main);
-    padding: 5px 0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: var(--bg-muted);
+    border: 1px solid var(--border-solid);
+    transition: var(--transition);
+}
+
+.network-item:hover {
+    background: var(--primary-light);
+    border-color: var(--primary);
 }
 
 .item-left {
@@ -169,15 +205,14 @@
 }
 
 .item-left span {
-    font-size: 12px;
-    font-weight: normal;
-    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-main);
 }
 
 .arrow-right {
     color: var(--text-dim);
     width: 16px;
-    opacity: 0.5;
 }
 
 /* Box 3: CV */
@@ -197,9 +232,13 @@
     flex-direction: column;
 }
 
+.cv-details strong {
+    color: var(--text-main);
+}
+
 .cv-details span {
     font-size: 0.75rem;
-    color: var(--text-dim);
+    color: var(--text-muted);
 }
 
 /* =========================================
@@ -212,7 +251,6 @@
     gap: 35px;
 }
 
-/* Titres de section au-dessus des boîtes */
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -224,32 +262,34 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--secondary);
 }
 
 .icon-blue {
     color: var(--primary);
-    width: 37px;
-    height: 37px;
-    padding: 8px;
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+    background: var(--primary-light);
+    border-radius: 8px;
 }
 
-.modifier-btn {
+.modifier-btn, .view-all-events-btn {
     color: var(--primary);
     text-decoration: none;
     font-size: 0.85rem;
-    font-weight: bold;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: var(--transition);
 }
 
-.view-all-events-btn {
-    color: var(--primary);
-    text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: bold;
+.modifier-btn:hover, .view-all-events-btn:hover {
+    background: var(--primary-light);
 }
 
-/* Contenu des boîtes de droite */
 .box-content {
     padding: 25px;
 }
@@ -262,8 +302,10 @@
 }
 
 .tag {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border);
+    background: var(--primary-light);
+    border: 1px solid #bbdbc8;
+    color: var(--primary);
+    font-weight: 600;
     padding: 8px 16px;
     border-radius: 20px;
     display: flex;
@@ -274,30 +316,25 @@
 
 .tag i {
     width: 14px;
-    color: var(--text-dim);
+    color: var(--primary);
     cursor: pointer;
 }
 
 .add-tag-btn {
     background: none;
-    border: 1px dashed var(--border);
+    border: 1.5px dashed var(--border-solid);
     color: var(--text-dim);
+    font-weight: 600;
     padding: 8px 16px;
     border-radius: 20px;
     cursor: pointer;
+    transition: var(--transition);
 }
 
-.add-btn-square {
-    background: rgba(29, 155, 240, 0.15);
+.add-tag-btn:hover {
+    border-color: var(--primary);
     color: var(--primary);
-    border: none;
-    border-radius: 8px;
-    width: 34px;
-    height: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
+    background: var(--bg-muted);
 }
 
 /* Projets Grid et Evenements Grid */
@@ -307,73 +344,63 @@
     gap: 20px;
 }
 
-.project-item img , .event-item img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 8px 8px 0 0;
+.project-item, .event-item {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border-solid);
+    border-radius: var(--radius);
+    transition: var(--transition);
+}
+
+.project-item:hover, .event-item:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-md);
 }
 
 .project-info, .event-info {
-    padding: 15px;
+    padding: 20px;
 }
 
-.btn-join-project {
-    padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, var(--primary), rgba(29, 155, 240, 0.8));
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 600;
-    transition: var(--transition);
-    white-space: nowrap;
-    box-shadow: 0 4px 12px rgba(29, 155, 240, 0.25);
+.project-info h4, .event-info h4 {
+    color: var(--secondary);
+    font-size: 1.1rem;
+    margin-bottom: 8px;
 }
 
-.btn-join-project:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(29, 155, 240, 0.35);
+.project-info p, .event-info p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
 }
 
-.btn-join-project:active {
-    transform: translateY(0);
-}
-
-.btn-profil {
-    border: solid 1px var(--primary);
+.details-link {
+    color: var(--primary);
     text-decoration: none;
-    font-size: 13px;
-    color: white;
-    display: flex;
-    align-items: baseline;
-    justify-content: center;
-    padding: 4px 10px;
-    border-radius: 8px;
     font-weight: 700;
-    cursor: pointer;
-    transition: var(--transition);
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }
 
-.btn-profil:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    padding: 8px 27px;
-    background-color: var(--primary);
+.details-link:hover {
+    color: var(--secondary);
 }
 
 .type-tag {
     font-size: 0.7rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--primary-light);
+    color: var(--primary);
+    font-weight: 700;
     padding: 2px 8px;
     border-radius: 4px;
     float: right;
+    margin-left: 5px;
 }
 
 /* Box Ajouter un projet et Ajouter un evenement */
 .add-project-placeholder, .add-event-placeholder {
-    border: 2px dashed var(--border);
+    border: 2px dashed var(--border-solid);
     background: transparent;
     display: flex;
     flex-direction: column;
@@ -382,10 +409,26 @@
     padding: 40px;
     gap: 10px;
     text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.add-project-placeholder:hover, .add-event-placeholder:hover {
+    border-color: var(--primary);
+    background: var(--bg-muted);
+}
+
+.add-project-placeholder strong, .add-event-placeholder strong {
+    color: var(--secondary);
+}
+
+.add-project-placeholder span, .add-event-placeholder span {
+    color: var(--text-muted);
+    font-size: 0.85rem;
 }
 
 .plus-circle {
-    background: rgba(29, 155, 240, 0.15);
+    background: var(--primary-light);
     color: var(--primary);
     width: 45px;
     height: 45px;
@@ -397,7 +440,6 @@
 }
 
 /* --- CENTRES D'INTÉRÊT --- */
-
 .interests-container {
     display: flex;
     flex-wrap: wrap;
@@ -405,8 +447,8 @@
 }
 
 .interest-item {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border);
+    background: var(--bg-muted);
+    border: 1.5px solid var(--border-solid);
     padding: 10px 20px;
     border-radius: 12px;
     display: flex;
@@ -417,101 +459,30 @@
 
 .interest-item:hover {
     border-color: var(--primary);
-    background: rgba(29, 155, 240, 0.05);
-}
-
-/* Style de l'icône dans l'intérêt (Bleu sur fond transparent) */
-.interest-item i {
-    color: var(--primary);
-    background: rgba(29, 155, 240, 0.15);
-    padding: 6px;
-    border-radius: 8px;
-    width: 32px;
-    height: 32px;
+    background: var(--primary-light);
 }
 
 .interest-item span {
     font-size: 0.95rem;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--text-main);
 }
 
+.interest-item i.delete-hobby {
+    color: var(--error);
+    cursor: pointer;
+    padding: 4px;
+}
+
 /* =========================================
-   4. RESPONSIVE
+   4. MODALS & FORMULAIRES ACCESSIBLES
    ========================================= */
-
-@media (max-width: 768px) {
-
-    .profil-layout {
-        grid-template-columns: 1fr;
-        margin: 10px auto;
-        gap: 20px;
-        padding: 0 15px;
-    }
-
-
-    .sidebar-left {
-        max-width: 100%;
-        margin: 0;
-    }
-
-    .projects-grid, .events-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-
-
-    .section-header h3 {
-        font-size: 1rem;
-    }
-
-    .icon-blue {
-        width: 32px;
-        height: 32px;
-        padding: 6px;
-    }
-
-
-    .box-content {
-        padding: 15px;
-    }
-
-
-    .tag, .interest-item {
-        padding: 6px 12px;
-        font-size: 0.85rem;
-    }
-
-    .interest-item {
-        width: 100%;
-        justify-content: flex-start;
-    }
-
-
-    .project-item img {
-        height: 180px;
-    }
-}
-
-@media (max-width: 480px) {
-    .user-fullname {
-        font-size: 1.2rem;
-    }
-
-    .stats-row {
-        gap: 10px;
-    }
-
-    .stat-box .value {
-        font-size: 0.9rem;
-    }
-}
 
 #editEventModal, #userRecommandationModal, #editHobbyModal, #editCompetenciesModal, #paymentMethodsModal {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(17, 24, 39, 0.7);
     backdrop-filter: blur(4px);
     align-items: center;
     justify-content: center;
@@ -522,183 +493,69 @@
 #editEventModal .card, #userRecommandationModal .card, #editHobbyModal .card, #editCompetenciesModal .card, #paymentMethodsModal .card {
     width: 100%;
     max-width: 550px;
-    background: #1c2028;
-    border: 1px solid var(--border);
+    background: var(--bg-card);
+    border: 1.5px solid var(--border-solid);
     border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-/* Header de la modal */
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+    padding: 25px;
+    box-shadow: var(--shadow-md);
 }
 
 .modal-header h3 {
     margin: 0;
-    font-size: 1.2rem;
-    color: var(--text-main);
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--secondary);
 }
 
 #closeEventEditModal, #closeUserRecommandationModal, #closeHobbyEditModal, #closeCompetenciesEditModal {
     background: transparent;
     border: none;
-    color: var(--text-dim);
-    font-size: 1.5rem;
+    color: var(--text-muted);
+    font-size: 1.6rem;
     cursor: pointer;
-    line-height: 1;
 }
 
-#closeEventEditModal:hover, #closeUserRecommandationModal:hover, #closeHobbyEditModal:hover, #closeCompetenciesEditModal:hover{
-    color: white;
-}
-
-
-/* Footer de la modal (options et bouton) */
-.modal-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-.modal-footer .publish-options {
-    gap: 15px;
-}
-
-#saveEventEditBtn {
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 8px 24px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-/* Style pour le sélecteur de rôle dans la modale */
-.modal-body .member-item .member-actions select.role-selector {
-    background-color: #2d2d2d !important;
-    color: white !important;
-    border: 1px solid #444;
-}
-
-/* Force le style sur le sélecteur */
-select.role-selector {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none; /* Supprime le style Windows/macOS */
-
-    background-color: #1a1a1a !important; /* Ta couleur sombre */
-    background-image: none !important;    /* Supprime les dégradés par défaut */
-    color: #ffffff !important;
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid #333 !important;
-}
-
-/* Optionnel : Ajoute une petite flèche car appearance:none l'a enlevée */
-.member-actions {
-    position: relative;
-}
-
-.role-selector:focus {
-    border-color: var(--primary-color);
-}
-
-/* Style pour les options à l'intérieur (important pour certains navigateurs) */
-.role-selector option {
-    background-color: var(--bg-dark);
-    color: var(--text-main);
-}
-
-#saveEventEditBtn:hover {
-    filter: brightness(1.1);
+#closeEventEditModal:hover, #closeUserRecommandationModal:hover, #closeHobbyEditModal:hover, #closeCompetenciesEditModal:hover {
+    color: var(--error);
 }
 
 .input-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    margin-bottom: 15px;
 }
-
-.full-width { grid-column: 1 / -1; }
 
 .input-group label {
     font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text-dim);
+    font-weight: 700;
+    color: var(--text-main);
 }
 
 input, select, textarea {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border);
+    background: var(--bg-muted);
+    border: 1.5px solid var(--border-solid);
     padding: 12px;
     border-radius: 8px;
-    color: white;
+    color: var(--text-main);
     font-family: inherit;
     outline: none;
-    transition: 0.3s;
+    transition: var(--transition);
 }
 
 input:focus, select:focus, textarea:focus {
     border-color: var(--primary);
-    background: rgba(29, 155, 240, 0.05);
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(22, 101, 52, 0.12);
 }
 
-#editEventModal select,
-#editEventModal .custom-select {
-    background: #1c2028;
-    border: 1px solid var(--border);
+/* Custom Select style inside Modals */
+#editEventModal select, #editEventModal .custom-select {
+    background: var(--bg-muted);
+    border: 1.5px solid var(--border-solid);
     color: var(--text-main);
     border-radius: 8px;
     padding: 12px;
-    font-family: inherit;
-    font-size: 0.9rem;
-    outline: none;
-    cursor: pointer;
-    width: 100%;
-}
-
-#editEventModal select option,
-#editEventModal .custom-select option {
-    background: #1c2028;
-    color: white;
-}
-
-#editEventModal select:focus,
-#editEventModal .custom-select:focus {
-    border-color: var(--primary);
-    background: #1c2028;
-}
-
-.alert-error {
-    background: rgba(255, 68, 68, 0.1);
-    color: #ff4444;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.9rem;
-}
-
-.alert-information {
-    background: rgba(135,206,250, 0.1);
-    color: #87cefa;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.9rem;
 }
 
 .btn-event-submit, .btn-submit, .btn-competence-submit {
@@ -707,145 +564,88 @@ input:focus, select:focus, textarea:focus {
     color: white;
     border: none;
     padding: 14px;
-    border-radius: 12px;
+    border-radius: 8px;
     font-weight: 700;
     font-size: 1rem;
     cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-event-submit:hover, .btn-submit:hover, .btn-competence-submit:hover {
+    background: var(--secondary);
+    box-shadow: 0 4px 12px rgba(22, 101, 52, 0.2);
+}
+
+/* Alertes d'erreurs et infos WCAG AAA */
+.alert-error {
+    background: #fee2e2;
+    border: 1.5px solid #fca5a5;
+    color: var(--error);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: var(--transition);
-    margin-top: 10px;
+    gap: 10px;
+    font-weight: 600;
 }
 
-.btn-event-submit:hover, .btn-submit:hover {
-    background: var(--gold);
-    transform: translateY(-2px);
+.alert-information {
+    background: #e0f2fe;
+    border: 1.5px solid #7dd3fc;
+    color: var(--info);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
 }
 
-@media (max-width: 600px) {
-    .event-form > div {
-        grid-template-columns: 1fr !important;
-    }
-}
-
-textarea {
-  width: 100%;
-  max-width: 100%;
-}
-
-.btn-recommandation {
-    padding: 8px 16px;
-    font-size: 14px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s;
-    font-weight: 500;
-    background-color: #2196f3;
-    color: white;
-}
-
-.btn-change-password{
-	margin-top: 20px;
-}
-
-/* Moyens de paiement — fermeture & suppression */
-#paymentMethodsModal .pm-modal-close {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	width: 2.35rem;
-	height: 2.35rem;
-	padding: 0;
-	border-radius: 50%;
-	border: 1px solid rgba(255, 255, 255, 0.14);
-	background: linear-gradient(165deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
-	color: var(--text-dim, #9ca3af);
-	cursor: pointer;
-	transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.15s, box-shadow 0.2s;
-	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
-}
-
-#paymentMethodsModal .pm-modal-close:hover {
-	color: #fff;
-	border-color: rgba(239, 68, 68, 0.55);
-	background: rgba(239, 68, 68, 0.12);
-	box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.15);
-	transform: scale(1.06);
-}
-
-#paymentMethodsModal .pm-modal-close:active {
-	transform: scale(0.96);
-}
-
-#paymentMethodsModal .pm-modal-close svg {
-	width: 1.1rem;
-	height: 1.1rem;
-	stroke-width: 2.25;
-}
-
+/* Moyens de paiement Modal adaptées */
 #paymentMethodsModal .payment-method-row {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 0.75rem;
-	padding: 0.85rem 1rem;
-	border-radius: 10px;
-	border: 1px solid rgba(255, 255, 255, 0.08);
-	background: rgba(0, 0, 0, 0.2);
-}
-
-#paymentMethodsModal .payment-method-row-info {
-	display: flex;
-	flex-direction: column;
-	gap: 0.2rem;
-	min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--border-solid);
+    background: var(--bg-muted);
 }
 
 #paymentMethodsModal .payment-method-row-info strong {
-	font-size: 0.95rem;
-	color: var(--text-main, #f3f4f6);
-}
-
-#paymentMethodsModal .payment-method-row-meta {
-	font-size: 0.78rem;
-	color: var(--text-dim, #9ca3af);
-	line-height: 1.35;
+    color: var(--text-main);
 }
 
 #paymentMethodsModal .btn-delete-payment-method {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	gap: 0.45rem;
-	flex-shrink: 0;
-	padding: 0.45rem 0.85rem;
-	font-size: 0.78rem;
-	font-weight: 600;
-	letter-spacing: 0.02em;
-	border-radius: 9px;
-	border: 1px solid rgba(248, 113, 113, 0.45);
-	background: rgba(248, 113, 113, 0.06);
-	color: #fca5a5;
-	cursor: pointer;
-	transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.12s, box-shadow 0.2s;
-}
-
-#paymentMethodsModal .btn-delete-payment-method svg {
-	width: 0.95rem;
-	height: 0.95rem;
-	stroke-width: 2.1;
+    border: 1px solid rgba(220, 38, 38, 0.4);
+    background: rgba(220, 38, 38, 0.05);
+    color: var(--error);
+    font-weight: 700;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: var(--transition);
 }
 
 #paymentMethodsModal .btn-delete-payment-method:hover {
-	background: rgba(239, 68, 68, 0.18);
-	border-color: rgba(248, 113, 113, 0.85);
-	color: #fecaca;
-	box-shadow: 0 4px 14px rgba(239, 68, 68, 0.18);
+    background: var(--error);
+    color: white;
 }
 
-#paymentMethodsModal .btn-delete-payment-method:active {
-	transform: scale(0.97);
+/* =========================================
+   5. RESPONSIVE
+   ========================================= */
+@media (max-width: 768px) {
+    .profil-layout {
+        grid-template-columns: 1fr;
+        margin: 10px auto;
+        gap: 20px;
+        padding: 0 15px;
+    }
+    .projects-grid, .events-grid {
+        grid-template-columns: 1fr;
+    }
 }

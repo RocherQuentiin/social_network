@@ -1,49 +1,104 @@
+/* ============================================================
+   MOBILITOUS — confirmRegister.css
+   Fond clair, haut contraste AAA et alignement sur la charte
+   ============================================================ */
+
 .confirm-register-page {
-    background-color: var(--bg-dark);
+    background: linear-gradient(160deg, #f0fdf4 0%, #F7F9F7 60%, #ecfdf5 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
     margin: 0;
-    overflow: hidden;
-    background: radial-gradient(circle at center, #1e2530 0%, #15181c 100%);
+    position: relative;
 }
 
 .confirm-register-container {
     width: 100%;
-    max-width: 450px;
+    max-width: 460px;
     padding: 20px;
+    z-index: 1;
 }
 
-.glass-effect {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
+.confirm-register-card {
+    background: #ffffff;
+    border: 1.5px solid var(--border-solid);
     border-radius: 24px;
-    padding: 40px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(10px);
-}
-
-.confirm-register-footer {
-    margin-top: 30px;
+    padding: 44px 40px;
     text-align: center;
-    border-top: 1px solid var(--border);
-    padding-top: 20px;
+    box-shadow: 0 8px 32px rgba(22, 101, 52, 0.1);
 }
 
-.confirm-register-footer p { color: var(--text-dim); font-size: 0.9rem; }
+/* Style de l'icône de succès */
+.success-icon-wrapper {
+    width: 64px;
+    height: 64px;
+    background: var(--primary-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
 
-.confirm-register-footer a {
+.success-icon-wrapper i {
     color: var(--primary);
-    text-decoration: none;
-    font-weight: 600;
+    width: 36px;
+    height: 36px;
+}
+
+.success-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--secondary);
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.subtitle {
+    color: var(--text-main);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+/* Footer et liens de retour */
+.confirm-register-footer {
+    margin-top: 32px;
+    text-align: center;
+    border-top: 1.5px solid var(--border-solid);
+    padding-top: 20px;
 }
 
 .back-home {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    margin-top: 15px;
-    font-size: 0.85rem;
+    gap: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
     color: var(--text-dim) !important;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.back-home:hover, .back-home:focus {
+    color: var(--primary) !important;
+    outline: none;
+}
+
+.back-home:focus-visible {
+    outline: 2px solid var(--primary);
+    border-radius: 4px;
+}
+
+/* Responsive minimal */
+@media (max-width: 480px) {
+    .confirm-register-card {
+        padding: 32px 20px;
+        border-radius: 20px;
+    }
+
+    .success-title {
+        font-size: 1.4rem;
+    }
 }

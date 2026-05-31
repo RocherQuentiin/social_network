@@ -1,14 +1,14 @@
 /* login.css */
 
 .login-page {
-    background-color: var(--bg-dark);
+    background-color: var(--bg-dark); /* #F7F9F7 */
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
     margin: 0;
     overflow: hidden;
-    background: radial-gradient(circle at center, #1e2530 0%, #15181c 100%);
+    background: radial-gradient(circle at center, var(--bg-dark) 0%, var(--bg-muted) 100%);
 }
 
 .login-container {
@@ -18,11 +18,11 @@
 }
 
 .glass-effect {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
+    background: var(--bg-card); /* #ffffff */
+    border: 1.5px solid var(--border-solid); /* #dce8dc - Ajusté en 1.5px pour le contraste AAA */
     border-radius: 24px;
     padding: 40px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--shadow-md);
     backdrop-filter: blur(10px);
 }
 
@@ -34,7 +34,7 @@
 .logo-circle {
     width: 60px;
     height: 60px;
-    background: rgba(29, 155, 240, 0.1);
+    background: var(--primary-light); /* Fond vert clair discret */
     border-radius: 16px;
     display: flex;
     align-items: center;
@@ -47,12 +47,12 @@
 .login-header h2 {
     font-size: 1.8rem;
     font-weight: 800;
-    color: white;
+    color: var(--secondary); /* Vert très sombre accessible au lieu de blanc */
     margin-bottom: 8px;
 }
 
 .subtitle {
-    color: var(--text-dim);
+    color: var(--text-dim); /* Vert-gris de la charte */
     font-size: 0.95rem;
 }
 
@@ -69,7 +69,7 @@
 
 label {
     display: block;
-    color: #e1e8ed;
+    color: var(--text-main); /* #111827 au lieu du gris clair */
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 8px;
@@ -88,13 +88,14 @@ label {
     color: var(--text-dim);
 }
 
+/* Tous les inputs (y compris Nom, Prénom, etc.) partagent désormais ce style d'encadré */
 input {
     width: 100%;
-    background: #00000033;
-    border: 1px solid var(--border);
+    background: var(--bg-muted); /* Fond clair sur fond blanc card */
+    border: 1.5px solid var(--border-solid); /* Encadré propre et visible */
     border-radius: 12px;
     padding: 12px 12px 12px 42px;
-    color: white;
+    color: var(--text-main); /* Écriture sombre accessible */
     font-size: 1rem;
     transition: var(--transition);
 }
@@ -102,13 +103,14 @@ input {
 input:focus {
     outline: none;
     border-color: var(--primary);
-    background: #00000055;
+    background: #ffffff; /* Fond blanc pur au focus pour le contraste */
+    box-shadow: 0 0 0 3px rgba(22, 101, 52, 0.12);
 }
 
 /* BOUTON ET ERREUR */
 .alert-error {
-    background: rgba(255, 68, 68, 0.1);
-    color: #ff4444;
+    background: #fee2e2; /* Rouge d'erreur très clair */
+    color: var(--error); /* #dc2626 */
     padding: 12px;
     border-radius: 8px;
     margin-bottom: 20px;
@@ -116,11 +118,12 @@ input:focus {
     align-items: center;
     gap: 10px;
     font-size: 0.9rem;
+    border: 1px solid #fca5a5;
 }
 
 .alert-information {
-    background: rgba(135,206,250, 0.1);
-    color: #87cefa;
+    background: var(--primary-light); /* #d1fae5 */
+    color: var(--primary); /* #166534 */
     padding: 12px;
     border-radius: 8px;
     margin-bottom: 20px;
@@ -128,6 +131,7 @@ input:focus {
     align-items: center;
     gap: 10px;
     font-size: 0.9rem;
+    border: 1px solid var(--border-solid);
 }
 
 .btn-login-submit {
@@ -149,7 +153,7 @@ input:focus {
 }
 
 .btn-login-submit:hover {
-    background: var(--gold);
+    background: var(--secondary); /* Ajusté sur var(--secondary) pour respecter la cohérence AAA */
     transform: translateY(-2px);
 }
 
@@ -157,7 +161,7 @@ input:focus {
 .login-footer {
     margin-top: 30px;
     text-align: center;
-    border-top: 1px solid var(--border);
+    border-top: 1.5px solid var(--border-solid);
     padding-top: 20px;
 }
 
@@ -167,6 +171,10 @@ input:focus {
     color: var(--primary);
     text-decoration: none;
     font-weight: 600;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
 }
 
 .back-home {
@@ -184,16 +192,20 @@ input:focus {
     text-decoration: none;
 }
 
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
 .msg-error-tiny {
     display: none;
-    color: #ff4444;
+    color: var(--error);
     font-size: 0.75rem;
     margin-top: 5px;
     line-height: 1.2;
 }
 
-input.error { border-color: #ff4444 !important; background: rgba(255, 68, 68, 0.05) !important; }
-input.success { border-color: #00c851 !important; background: rgba(0, 200, 81, 0.05) !important; }
+input.error { border-color: var(--error) !important; background: #fef2f2 !important; }
+input.success { border-color: var(--success) !important; background: var(--primary-light) !important; }
 
 @media (max-width: 600px) {
     .login-form > div {

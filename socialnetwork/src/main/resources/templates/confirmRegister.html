@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmation inscription</title>
+    <title>Confirmation inscription - Mobilitous</title>
 
     <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
@@ -12,21 +12,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body>
+<body class="bg-dark">
 
 <div th:replace="~{fragments/header :: header-fragment}"></div>
 
 <div class="confirm-register-page">
-    <main class="confirm-register-container">
-        <div class="confirm-register-card glass-effect">
+    <main class="confirm-register-container" role="status" aria-live="polite">
+        <div class="confirm-register-card">
 
-            
-			<p class="subtitle">Votre compte a bien été crée.</p>
-          
+            <div class="success-icon-wrapper">
+                <i data-lucide="check-circle" aria-hidden="true"></i>
+            </div>
 
-            <div class="login-footer">
+            <h1 class="success-title">Inscription validée !</h1>
+            <p class="subtitle">Votre compte a bien été créé.</p>
+
+            <div class="confirm-register-footer">
                 <a th:href="@{/}" class="back-home">
-                    <i data-lucide="chevron-left"></i> Retour à l'accueil
+                    <i data-lucide="chevron-left" aria-hidden="true"></i> Retour à l'accueil
                 </a>
             </div>
 

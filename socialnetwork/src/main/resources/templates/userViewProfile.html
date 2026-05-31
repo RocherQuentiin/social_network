@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title th:text="${userProfile.user.firstName + ' ' + userProfile.user.lastName + ' - ISEP Connect'}">Profil</title>
+	<title th:text="${userProfile.user.firstName + ' ' + userProfile.user.lastName + ' - Mobilitous'}">Profil</title>
 	<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
 	<link rel="stylesheet" th:href="@{/css/header.css}">
 	<link rel="stylesheet" th:href="@{/css/profil.css}">
@@ -15,11 +15,11 @@
 <div th:replace="~{fragments/header :: header-fragment}"></div>
 
 <main class="profil-layout">
-	<aside class="sidebar-left">
+	<aside class="sidebar-left" aria-label="Informations du profil">
 		<div class="card profile-card">
 			<div class="avatar-section">
 				<div class="avatar-wrapper">
-					<img th:src="@{${userProfile.user.profilePictureUrl != null ? userProfile.user.profilePictureUrl : '/images/default-avatar.png'}}" alt="Avatar">
+					<img th:src="@{${userProfile.user.profilePictureUrl != null ? userProfile.user.profilePictureUrl : '/images/default-avatar.png'}}" alt="Photo de profil">
 				</div>
 			</div>
 
@@ -27,7 +27,7 @@
 			<p class="user-studies" th:text="${userProfile.profile.profession}">Étudiant Ingénieur - ISEP</p>
 
 			<div class="location-tag" th:if="${userProfile.privacySettings.canSeeLocation}">
-				<i data-lucide="map-pin"></i>
+				<i data-lucide="map-pin" aria-hidden="true"></i>
 				<span th:text="${userProfile.profile.location}">Paris, France</span>
 			</div>
 
@@ -45,28 +45,29 @@
 			<div style="display: flex; flex-direction: column; gap: 10px;">
 				<button class="btn-friend-request"
 				        th:data-id="${userProfile.user.id}"
-				        th:data-action="send">
+				        th:data-action="send"
+				        th:aria-label="'Ajouter ' + ${userProfile.user.firstName} + ' ' + ${userProfile.user.lastName} + ' comme ami'">
 					Ajouter comme ami
 				</button>
 
 				<button id="followBtn"
-						class="btn-primary-full"
-						th:classappend="${isFollow ? 'unfollow' : 'follow'}"
-						th:data-id="${userProfile.user.id}"
-						th:text="${isFollow ? 'Ne plus suivre' : 'Suivre'}">
+				        class="btn-primary-full"
+				        th:classappend="${isFollow ? 'unfollow' : 'follow'}"
+				        th:data-id="${userProfile.user.id}"
+				        th:text="${isFollow ? 'Ne plus suivre' : 'Suivre'}">
 					Suivre
 				</button>
-				
+
 				<button id="recommandationBtn"
-						class="btn-recommandation"
-						th:data-id="${userProfile.user.id}">
+				        class="btn-recommandation"
+				        th:data-id="${userProfile.user.id}">
 					Recommandation
 				</button>
 
 				<a th:if="${userProfile.privacySettings.allowDirectMessages == 'true'}"
 				   th:href="@{/messages(target=${userProfile.user.id})}"
 				   class="btn-primary-full"
-				   style="background: rgba(255,255,255,0.1); border: 1px solid var(--border);">
+				   style="background: var(--bg-muted); border: 1.5px solid var(--border-solid); color: var(--text-main);">
 					Envoyer un message
 				</a>
 			</div>
@@ -74,37 +75,44 @@
 
 		<div class="card networks-card">
 			<h3 class="sidebar-title">Réseaux</h3>
-			<div class="network-links">
+			<nav class="network-links" aria-label="Liens externes et coordonnées">
 				<a th:if="${userProfile.profile.website}" th:href="${userProfile.profile.website}" target="_blank" class="network-item">
-					<div class="item-left"><i data-lucide="globe"></i> <span>Portfolio</span></div>
-					<i data-lucide="external-link" class="arrow-right"></i>
+					<div class="item-left">
+						<i data-lucide="globe" aria-hidden="true"></i>
+						<span>Portfolio <span class="sr-only">(s'ouvre dans un nouvel onglet)</span></span>
+					</div>
+					<i data-lucide="external-link" class="arrow-right" aria-hidden="true"></i>
 				</a>
 				<div class="network-item" th:if="${userProfile.privacySettings.canSeeEmail}">
-					<div class="item-left"><i data-lucide="mail"></i> <span th:text="${userProfile.user.email}">Email</span></div>
+					<div class="item-left">
+						<i data-lucide="mail" aria-hidden="true"></i>
+						<span th:text="${userProfile.user.email}">Email</span>
+					</div>
 				</div>
-			</div>
+			</nav>
 		</div>
 	</aside>
 
-	<section class="main-content">
-		<div class="alert-error" th:if="${error}">
-			<i data-lucide="alert-circle"></i> <span th:text="${error}"></span>
+	<section class="main-content" aria-label="Détails du profil">
+		<div class="alert-error" th:if="${error}" role="alert">
+			<i data-lucide="alert-circle" aria-hidden="true"></i> <span th:text="${error}"></span>
 		</div>
-		<div class="alert-information" th:if="${information}">
-			<i data-lucide="check-circle"></i> <span th:text="${information}"></span>
+		<div class="alert-information" th:if="${information}" role="status">
+			<i data-lucide="check-circle" aria-hidden="true"></i> <span th:text="${information}"></span>
 		</div>
-		<div class="section-container">
+
+		<div class="section-container" aria-labelledby="section-bio">
 			<div class="section-header">
-				<h3><i data-lucide="user" class="icon-blue"></i> À propos</h3>
+				<h3 id="section-bio"><i data-lucide="user" class="icon-blue" aria-hidden="true"></i> À propos</h3>
 			</div>
 			<div class="card box-content">
-				<p th:text="${userProfile.user.bio != null ? userProfile.user.bio : 'Cet utilisateur n a pas encore rédigé de bio.'}">Bio...</p>
+				<p th:text="${userProfile.user.bio != null ? userProfile.user.bio : 'Cet utilisateur n\'a pas encore rédigé de bio.'}">Bio...</p>
 			</div>
 		</div>
 
-		<div class="section-container">
+		<div class="section-container" aria-labelledby="section-formation">
 			<div class="section-header">
-				<h3><i data-lucide="graduation-cap" class="icon-blue"></i> Formation</h3>
+				<h3 id="section-formation"><i data-lucide="graduation-cap" class="icon-blue" aria-hidden="true"></i> Formation</h3>
 			</div>
 			<div class="card box-content">
 				<div class="tags-container">
@@ -114,69 +122,64 @@
 				</div>
 			</div>
 		</div>
-		
-		<div class="section-container">
-				<div class="section-header">
-					<h3>
-						<i data-lucide="settings" class="icon-blue"></i> Compétences
-					</h3>
-				</div>
-				<div class="card box-content">
-				<div class="tags-container" >
+
+		<div class="section-container" aria-labelledby="section-competences">
+			<div class="section-header">
+				<h3 id="section-competences"><i data-lucide="settings" class="icon-blue" aria-hidden="true"></i> Compétences</h3>
+			</div>
+			<div class="card box-content">
+				<div class="tags-container">
 					<div th:data-value="${competence.value}" class="competence-container" th:each="competence : ${userProfile.profile.competencies}">
 						<span class="tag"><span th:text="${competence.value}"></span></span>
 					</div>
 				</div>
-				</div>
+			</div>
 		</div>
-		
-		<div class="section-container">
-				<div class="section-header">
-					<h3>
-						<i data-lucide="heart" class="icon-blue"></i> Centres d'intérêt
-					</h3>
-				</div>
-				<div class="card box-content">
-					<div class="interests-container">
-						<div th:data-value="${hobby.value}" class="interest-item" th:each="hobby : ${userProfile.profile.interests}" >
-							 <span th:text="${hobby.value}"></span>
-						</div>
+
+		<div class="section-container" aria-labelledby="section-interests">
+			<div class="section-header">
+				<h3 id="section-interests"><i data-lucide="heart" class="icon-blue" aria-hidden="true"></i> Centres d'intérêt</h3>
+			</div>
+			<div class="card box-content">
+				<div class="interests-container">
+					<div th:data-value="${hobby.value}" class="interest-item" th:each="hobby : ${userProfile.profile.interests}">
+						<span th:text="${hobby.value}"></span>
 					</div>
 				</div>
 			</div>
+		</div>
 
-		<div class="section-container">
+		<div class="section-container" aria-labelledby="section-experience">
 			<div class="section-header">
-				<h3><i data-lucide="briefcase" class="icon-blue"></i> Expérience Professionnelle</h3>
+				<h3 id="section-experience"><i data-lucide="briefcase" class="icon-blue" aria-hidden="true"></i> Expérience Professionnelle</h3>
 			</div>
 			<div class="projects-grid">
 				<div class="card project-item" style="display: flex; align-items: center; padding: 20px; gap: 20px;">
-					<div class="plus-circle"><i data-lucide="briefcase"></i></div>
+					<div class="plus-circle"><i data-lucide="briefcase" aria-hidden="true"></i></div>
 					<div class="project-info" style="padding: 0;">
-						<h4 th:text="${userProfile.profile.profession != null ? userProfile.profile.profession : 'En recherche d opportunités'}">Poste</h4>
+						<h4 th:text="${userProfile.profile.profession != null ? userProfile.profile.profession : 'En recherche d\'opportunités'}">Poste</h4>
 						<p th:text="${userProfile.profile.company != null ? userProfile.profile.company : 'ISEP'}">Entreprise</p>
 					</div>
 				</div>
 			</div>
 		</div>
-		
-		<div class="section-container">
+
+		<div class="section-container" aria-labelledby="section-projets">
 			<div class="section-header">
-				<h3><i data-lucide="rocket" class="icon-blue"></i> Projets publics</h3>
-				<a th:href="@{/projects/user/{id}(id=${userProfile.user.id})}" class="modifier-btn">Voir tout</a>
+				<h3 id="section-projets"><i data-lucide="rocket" class="icon-blue" aria-hidden="true"></i> Projets publics</h3>
+				<a th:href="@{/projects/user/{id}(id=${userProfile.user.id})}" class="modifier-btn" th:aria-label="'Voir tous les projets de ' + ${userProfile.user.firstName}">Voir tout</a>
 			</div>
 			<div id="user-projects-view" class="projects-grid">
-				<!-- Projects will be loaded dynamically -->
 			</div>
 		</div>
-		
-		<div class="section-container">
+
+		<div class="section-container" aria-labelledby="section-recommandations">
 			<div class="section-header">
-				<h3><i data-lucide="star" class="icon-blue"></i> Recommandation</h3>
+				<h3 id="section-recommandations"><i data-lucide="star" class="icon-blue" aria-hidden="true"></i> Recommandation</h3>
 			</div>
 			<div th:each="recommandations : ${listRecommandation}" class="recommandation-grid">
 				<div class="card recommandation-item" style="display: flex; align-items: center; padding: 20px; gap: 20px;">
-					<div class="plus-circle"><i data-lucide="star"></i></div>
+					<div class="plus-circle"><i data-lucide="star" aria-hidden="true"></i></div>
 					<div class="project-info" style="padding: 0;">
 						<h4><span th:text="${recommandations.score}"></span> / 5.0 par <span th:text="${recommandations.user.firstName}"></span> <span th:text="${recommandations.user.lastName}"></span></h4>
 						<p th:text="${recommandations.reason}"></p>
@@ -185,9 +188,9 @@
 			</div>
 		</div>
 
-		<div class="section-container" th:if="${userProfile.privacySettings.canSeeBirthdate}">
+		<div class="section-container" th:if="${userProfile.privacySettings.canSeeBirthdate}" aria-labelledby="section-infos-complementaires">
 			<div class="section-header">
-				<h3><i data-lucide="calendar" class="icon-blue"></i> Informations</h3>
+				<h3 id="section-infos-complementaires"><i data-lucide="calendar" class="icon-blue" aria-hidden="true"></i> Informations</h3>
 			</div>
 			<div class="card box-content">
 				<p><strong>Date de naissance :</strong> <span th:text="${userProfile.profile.birthdate}">01/01/2000</span></p>
@@ -195,22 +198,20 @@
 			</div>
 		</div>
 	</section>
-	
-	<div id="userRecommandationModal">
+
+	<div id="userRecommandationModal" role="dialog" aria-modal="true" aria-labelledby="modal-rec-title">
 		<div class="modal-card card">
 			<div class="modal-header">
-				<h3>Récommandation de l'utilisateur</h3>
-				<button id=closeUserRecommandationModal aria-label="Fermer">✕</button>
+				<h3 id="modal-rec-title">Recommandation de l'utilisateur</h3>
+				<button id="closeUserRecommandationModal" aria-label="Fermer la boîte de dialogue">✕</button>
 			</div>
 			<div class="modal-body">
-				<form th:action="@{/recommandation}" th:object="${recommandation}" method="post"
-					class="recommandation-form">
-					<input id="userId" name="userRecommandationID"
-       				th:value="${userProfile.user.id}" type="text" style="visibility: hidden;" />
+				<form th:action="@{/recommandation}" th:object="${recommandation}" method="post" class="recommandation-form">
+					<input id="userId" name="userRecommandationID" th:value="${userProfile.user.id}" type="hidden" />
+
 					<div class="input-group">
-						<label for="score">Visibilité</label> <select
-							id="score" class="custom-select"
-							th:field="*{score}">
+						<label for="score">Note d'évaluation</label>
+						<select id="score" class="custom-select" th:field="*{score}">
 							<option value="1">1</option>
 							<option value="2">2</option>
 							<option value="3">3</option>
@@ -222,7 +223,7 @@
 					<div class="input-group">
 						<label for="reason">Raison</label>
 						<div class="input-wrapper">
-							<textarea th:field="*{reason}" id="reason" rows="4" placeholder="Raison"></textarea>
+							<textarea th:field="*{reason}" id="reason" rows="4" placeholder="Rédigez votre recommandation..."></textarea>
 						</div>
 					</div>
 
@@ -230,13 +231,10 @@
 						<button id="btn-submit" type="submit" class="btn-submit">Créer</button>
 					</div>
 				</form>
-
 			</div>
-
 		</div>
 	</div>
 </main>
-
 
 <div th:replace="~{fragments/footer :: footer-fragment}"></div>
 

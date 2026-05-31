@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Confidentialité - ISEP Connect</title>
+	<title>Confidentialité - Mobilitous</title>
 	<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
 	<link rel="stylesheet" th:href="@{/css/header.css}">
 	<link rel="stylesheet" th:href="@{/css/privacy.css}">
@@ -17,21 +17,21 @@
 	<div class="container-narrow">
 
 		<header class="page-header">
-			<h1><i data-lucide="shield-lock" class="icon-blue"></i> Données privées</h1>
+			<h1><i data-lucide="shield-lock" class="icon-blue" aria-hidden="true"></i> Données privées</h1>
 			<p>Contrôlez qui peut voir vos informations et interagir avec vous.</p>
 		</header>
 
-		<div class="alert-error" th:if="${error}">
-			<i data-lucide="alert-circle"></i> <span th:text="${error}"></span>
+		<div class="alert-error" th:if="${error}" role="alert">
+			<i data-lucide="alert-circle" aria-hidden="true"></i> <span th:text="${error}"></span>
 		</div>
-		<div class="alert-information" th:if="${information}">
-			<i data-lucide="check-circle"></i> <span th:text="${information}"></span>
+		<div class="alert-information" th:if="${information}" role="status">
+			<i data-lucide="check-circle" aria-hidden="true"></i> <span th:text="${information}"></span>
 		</div>
 
 		<form th:action="@{/privacy}" method="post" class="privacy-form">
 
-			<section class="form-section card">
-				<h3><i data-lucide="eye"></i> Visibilité des informations</h3>
+			<section class="form-section card" aria-labelledby="section-visibility">
+				<h3 id="section-visibility"><i data-lucide="eye" aria-hidden="true"></i> Visibilité des informations</h3>
 
 				<div class="settings-list">
 					<div class="setting-item">
@@ -39,9 +39,9 @@
 							<label for="canSeeEmail">Adresse Email</label>
 							<span>Afficher votre email sur votre profil</span>
 						</div>
-						<select th:field="*{privacy.canSeeEmail}" id="canSeeEmail" class="custom-select-privacy">
-							<option value="true">Oui</option>
-							<option value="false">Non</option>
+						<select id="canSeeEmail" name="canSeeEmail" class="custom-select-privacy">
+							<option th:selected="${privacy != null ? privacy.canSeeEmail == true : false}" value="true">Oui</option>
+							<option th:selected="${privacy != null ? privacy.canSeeEmail == false : true}" value="false">Non</option>
 						</select>
 					</div>
 
@@ -50,9 +50,9 @@
 							<label for="canSeePhone">Numéro de téléphone</label>
 							<span>Afficher votre numéro de téléphone</span>
 						</div>
-						<select th:field="*{privacy.canSeePhone}" id="canSeePhone" class="custom-select-privacy">
-							<option value="true">Oui</option>
-							<option value="false">Non</option>
+						<select id="canSeePhone" name="canSeePhone" class="custom-select-privacy">
+							<option th:selected="${privacy != null ? privacy.canSeePhone == true : false}" value="true">Oui</option>
+							<option th:selected="${privacy != null ? privacy.canSeePhone == false : true}" value="false">Non</option>
 						</select>
 					</div>
 
@@ -61,9 +61,9 @@
 							<label for="canSeeBirthdate">Date de naissance</label>
 							<span>Rendre votre date de naissance visible</span>
 						</div>
-						<select th:field="*{privacy.canSeeBirthdate}" id="canSeeBirthdate" class="custom-select-privacy">
-							<option value="true">Oui</option>
-							<option value="false">Non</option>
+						<select id="canSeeBirthdate" name="canSeeBirthdate" class="custom-select-privacy">
+							<option th:selected="${privacy != null ? privacy.canSeeBirthdate == true : false}" value="true">Oui</option>
+							<option th:selected="${privacy != null ? privacy.canSeeBirthdate == false : true}" value="false">Non</option>
 						</select>
 					</div>
 
@@ -72,16 +72,16 @@
 							<label for="canSeeLocation">Localisation</label>
 							<span>Afficher votre ville (Paris, etc.)</span>
 						</div>
-						<select th:field="*{privacy.canSeeLocation}" id="canSeeLocation" class="custom-select-privacy">
-							<option value="true">Oui</option>
-							<option value="false">Non</option>
+						<select id="canSeeLocation" name="canSeeLocation" class="custom-select-privacy">
+							<option th:selected="${privacy != null ? privacy.canSeeLocation == true : false}" value="true">Oui</option>
+							<option th:selected="${privacy != null ? privacy.canSeeLocation == false : true}" value="false">Non</option>
 						</select>
 					</div>
 				</div>
 			</section>
 
-			<section class="form-section card">
-				<h3><i data-lucide="message-circle"></i> Interactions</h3>
+			<section class="form-section card" aria-labelledby="section-interactions">
+				<h3 id="section-interactions"><i data-lucide="message-circle" aria-hidden="true"></i> Interactions</h3>
 
 				<div class="settings-list">
 					<div class="setting-item">
@@ -89,9 +89,9 @@
 							<label for="allowDirectMessages">Messages privés</label>
 							<span>Autoriser l'envoi de messages directs</span>
 						</div>
-						<select th:field="*{privacy.allowDirectMessages}" id="allowDirectMessages" class="custom-select-privacy">
-							<option value="true">Oui</option>
-							<option value="false">Non</option>
+						<select id="allowDirectMessages" name="allowDirectMessages" class="custom-select-privacy">
+							<option th:selected="${privacy != null ? privacy.allowDirectMessages == true : false}" value="true">Oui</option>
+							<option th:selected="${privacy != null ? privacy.allowDirectMessages == false : true}" value="false">Non</option>
 						</select>
 					</div>
 
@@ -100,9 +100,9 @@
 							<label for="allowFriendRequests">Demandes de connexion</label>
 							<span>Autoriser les autres à vous ajouter</span>
 						</div>
-						<select th:field="*{privacy.allowFriendRequests}" id="allowFriendRequests" class="custom-select-privacy">
-							<option value="true">Oui</option>
-							<option value="false">Non</option>
+						<select id="allowFriendRequests" name="allowFriendRequests" class="custom-select-privacy">
+							<option th:selected="${privacy != null ? privacy.allowFriendRequests == true : false}" value="true">Oui</option>
+							<option th:selected="${privacy != null ? privacy.allowFriendRequests == false : true}" value="false">Non</option>
 						</select>
 					</div>
 
@@ -111,16 +111,16 @@
 							<label for="allowCommentsOnPosts">Commentaires</label>
 							<span>Autoriser les commentaires sur vos posts</span>
 						</div>
-						<select th:field="*{privacy.allowCommentsOnPosts}" id="allowCommentsOnPosts" class="custom-select-privacy">
-							<option value="true">Oui</option>
-							<option value="false">Non</option>
+						<select id="allowCommentsOnPosts" name="allowCommentsOnPosts" class="custom-select-privacy">
+							<option th:selected="${privacy != null ? privacy.allowCommentsOnPosts == true : false}" value="true">Oui</option>
+							<option th:selected="${privacy != null ? privacy.allowCommentsOnPosts == false : true}" value="false">Non</option>
 						</select>
 					</div>
 				</div>
 			</section>
 
 			<div class="form-actions">
-				<button type="submit" class="btn-primary-large">Sauvegarder</button>
+				<button type="submit" class="btn-primary-large">Sauvegarder les modifications</button>
 			</div>
 		</form>
 	</div>

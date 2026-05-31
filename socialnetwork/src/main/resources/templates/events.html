@@ -1,22 +1,22 @@
 <div th:fragment="events-fragment">
-	<h2 class="section-title" style="color: white; margin-bottom: 20px;">Annonces
-		à la une</h2>
+	<!-- Changement de la couleur blanche inline en classe CSS sémantique Mobilitous -->
+	<h2 class="events-main-title">Annonces à la une</h2>
 
 	<article th:each="event : ${events}" th:with="attendee=${!#lists.isEmpty(
        event.eventAttendee.?[
            user.id == #vars.isConnect and status != 'DECLINED'
        ]
-   )}, acceptedCount=${#lists.size(event.eventAttendee.?[status.toString() == 'ACCEPTED'])}" th:attr="data-event-visibility=${event.visibilityType},  data-event-name=${event.name}, data-event-eventDate=${event.eventDate}, data-creator-lastname=${event.creator.lastName}, data-creator-firstname=${event.creator.firstName}, data-event-location=${event.location}" class="event-card card">
+    )}, acceptedCount=${#lists.size(event.eventAttendee.?[status.toString() == 'ACCEPTED'])}" th:attr="data-event-visibility=${event.visibilityType},  data-event-name=${event.name}, data-event-eventDate=${event.eventDate}, data-creator-lastname=${event.creator.lastName}, data-creator-firstname=${event.creator.firstName}, data-event-location=${event.location}" class="event-card card">
+
 		<div class="event-header">
 			<div class="post-meta">
-				<h3 th:text="${event.name}"
-					style="color: var(- -primary); margin: 0;"></h3>
-				<p>
-					<span th:text="${event.creator.lastName}"></span> <span
-						th:text="${event.creator.firstName}"></span>
+				<!-- Remplacement du style inline incorrect par un balisage CSS propre -->
+				<h3 th:text="${event.name}" class="event-title"></h3>
+				<p class="event-creator">
+					Organisé par : <span th:text="${event.creator.firstName}"></span> <span th:text="${event.creator.lastName}"></span>
 				</p>
 				<span th:if="${event.isPaid}" class="event-paid-badge"
-					th:text="'Payant · ' + ${#numbers.formatDecimal(event.price, 1, 2)} + ' EUR / personne'">Payant</span>
+				      th:text="'Tarif · ' + ${#numbers.formatDecimal(event.price, 1, 2)} + ' EUR / personne'">Payant</span>
 			</div>
 		</div>
 
@@ -25,74 +25,92 @@
 		</div>
 
 		<div class="event-grid-info">
-			<p>
-				<i data-lucide="map-pin"></i> <span th:text="${event.location}"></span>
+			<p class="info-item">
+				<i data-lucide="map-pin" aria-hidden="true"></i>
+				<span class="info-label">Lieu :</span> <span th:text="${event.location}"></span>
 			</p>
-			<p>
-				<i data-lucide="users"></i> <span th:text="${event.capacity}"></span>
-				places
+			<p class="info-item">
+				<i data-lucide="users" aria-hidden="true"></i>
+				<span class="info-label">Capacité :</span> <span th:text="${event.capacity}"></span> places disponibles
 			</p>
-			<p th:if="${event.isPaid}">
-				<i data-lucide="credit-card"></i>
-				<span th:text="${#numbers.formatDecimal(event.price, 1, 2)} + ' EUR / personne'"></span>
+			<p class="info-item" th:if="${event.isPaid}">
+				<i data-lucide="credit-card" aria-hidden="true"></i>
+				<span class="info-label">Frais :</span> <span th:text="${#numbers.formatDecimal(event.price, 1, 2)} + ' EUR / personne'"></span>
 			</p>
-			<p>
-				<i data-lucide="eye"></i> <span th:text="${event.visibilityType}"></span>
+			<p class="info-item">
+				<i data-lucide="eye" aria-hidden="true"></i>
+				<span class="info-label">Visibilité :</span> <span th:text="${event.visibilityType}"></span>
 			</p>
-			<p>
-				<i data-lucide="calendar"></i><span class="event-date-period"
-					th:attr="data-timestamp=${event.eventDate}"></span>
+			<p class="info-item">
+				<i data-lucide="calendar" aria-hidden="true"></i>
+				<span class="info-label">Date :</span> <span class="event-date-period" th:attr="data-timestamp=${event.eventDate}"></span>
 			</p>
 		</div>
 
 		<div class="event-participants">
-			<p class="participants-label">Participants inscrits</p>
+			<h4 class="participants-label">Participants inscrits</h4>
 			<div class="participants-list">
-				<span class="participant-tag"
-					th:each="participant : ${event.eventAttendee}" th:if="${participant.status.toString() == 'ACCEPTED' || (participant.status.toString() == 'PENDING' && !event.isPaid)}">
-					<span th:text="${participant.user.firstName}"></span>
-					<span th:text="${participant.user.lastName}"></span>
-					<span th:if="${participant.status.toString() == 'PENDING'}" class="participant-status-pending">En attente</span>
-					<span th:if="${participant.status.toString() == 'PENDING' && event.creator.id == isConnect}" class="participant-actions">
-						<button type="button" class="btn-event-action btn-event-accept"
-							th:attr="data-requester-id=${participant.user.id}, data-event-id=${event.id}"
-							onclick="acceptEventAttendeeFromBtn(this)">Accepter</button>
-						<button type="button" class="btn-event-action btn-event-decline"
-							th:attr="data-requester-id=${participant.user.id}, data-event-id=${event.id}"
-							onclick="declineEventAttendeeFromBtn(this)">Refuser</button>
-					</span>
-				</span>
-				<span th:if="${#lists.isEmpty(event.eventAttendee)}"
-					style="font-size: 0.8rem; font-style: italic; opacity: 0.5;">Aucun
-					inscrit pour le moment</span>
+                <span class="participant-tag"
+                      th:each="participant : ${event.eventAttendee}" th:if="${participant.status.toString() == 'ACCEPTED' || (participant.status.toString() == 'PENDING' && !event.isPaid)}">
+                    <span th:text="${participant.user.firstName}"></span>
+                    <span th:text="${participant.user.lastName}"></span>
+                    <span th:if="${participant.status.toString() == 'PENDING'}" class="participant-status-pending">(En attente)</span>
+
+                    <span th:if="${participant.status.toString() == 'PENDING' && event.creator.id == isConnect}" class="participant-actions">
+                        <button type="button" class="btn-event-action btn-event-accept"
+                                th:attr="data-requester-id=${participant.user.id}, data-event-id=${event.id}"
+                                th:aria-label="'Accepter ' + ${participant.user.firstName} + ' ' + ${participant.user.lastName}"
+                                onclick="acceptEventAttendeeFromBtn(this)">Accepter</button>
+                        <button type="button" class="btn-event-action btn-event-decline"
+                                th:attr="data-requester-id=${participant.user.id}, data-event-id=${event.id}"
+                                th:aria-label="'Refuser ' + ${participant.user.firstName} + ' ' + ${participant.user.lastName}"
+                                onclick="declineEventAttendeeFromBtn(this)">Refuser</button>
+                    </span>
+                </span>
+				<span th:if="${#lists.isEmpty(event.eventAttendee)}" class="empty-participants-text">
+                    Aucun participant inscrit pour le moment.
+                </span>
 			</div>
 		</div>
 
 		<div class="event-footer">
-			<a
-				th:if="${event.creator.id != isConnect && acceptedCount < event.capacity && !attendee && !event.isPaid}"
-				th:attr="data-id=${event.id}" id="btn-join-event"
-				class="btn-primary-header btn-join-event"> Rejoindre l'événement
+			<a th:if="${event.creator.id != isConnect && acceptedCount < event.capacity && !attendee && !event.isPaid}"
+			   th:attr="data-id=${event.id}" id="btn-join-event"
+			   class="btn-event-main btn-join-free">
+				Rejoindre l'événement <span class="sr-only" th:text="' - ' + ${event.name}"></span>
 			</a>
+
 			<a th:if="${event.creator.id != isConnect && acceptedCount < event.capacity && !attendee && event.isPaid}"
-				class="btn-primary-header btn-join-paid"
-				th:href="@{/event/{id}/payment(id=${event.id})} + '?returnTo=/feed'"> Rejoindre (payant)
+			   class="btn-event-main btn-join-paid"
+			   th:href="@{/event/{id}/payment(id=${event.id})} + '?returnTo=/feed'">
+				Rejoindre (Payant) <span class="sr-only" th:text="' - ' + ${event.name}"></span>
 			</a>
+
 			<button type="button" th:if="${event.creator.id == isConnect && !event.isPaid}"
-				class="btn-event btn-event-requests"
-				th:id="'event-requests-btn-' + ${event.id}"
-				th:attr="data-event-id=${event.id}"
-				onclick="showEventRequests(this.getAttribute('data-event-id'))">Demandes</button>
+			        class="btn-event-secondary btn-requests"
+			        th:id="'event-requests-btn-' + ${event.id}"
+			        th:attr="data-event-id=${event.id}"
+			        onclick="showEventRequests(this.getAttribute('data-event-id'))">
+				Voir les demandes
+			</button>
+
 			<a th:if="${event.creator.id == isConnect}" id="btn-edit"
-				class="btn-primary-header editEventModal"
-				th:attr="data-id=${event.id}, data-name=${event.name}, data-date=${event.eventDate}, data-capacity=${event.capacity}, data-location=${event.location}, data-visibility=${event.visibilityType}, data-description=${event.description}"> Editer l'événement </a>
+			   class="btn-event-secondary editEventModal"
+			   th:attr="data-id=${event.id}, data-name=${event.name}, data-date=${event.eventDate}, data-capacity=${event.capacity}, data-location=${event.location}, data-visibility=${event.visibilityType}, data-description=${event.description}">
+				Éditer l'événement <span class="sr-only" th:text="' ' + ${event.name}"></span>
+			</a>
+
 			<button type="button" th:if="${event.creator.id == isConnect}"
-				class="btn-event btn-event-delete"
-				th:attr="data-event-id=${event.id}, data-event-name=${event.name}"
-				onclick="deleteEventFromBtn(this)">Supprimer</button>
+			        class="btn-event-danger"
+			        th:attr="data-event-id=${event.id}, data-event-name=${event.name}"
+			        onclick="deleteEventFromBtn(this)">
+				Supprimer <span class="sr-only" th:text="' ' + ${event.name}"></span>
+			</button>
+
 			<a th:if="${event.creator.id != isConnect && attendee}"
-				th:attr="data-id=${event.id}" class="btn-event btn-quit">
-				Quitter </a>
+			   th:attr="data-id=${event.id}" class="btn-event-danger btn-quit">
+				Quitter l'événement <span class="sr-only" th:text="' ' + ${event.name}"></span>
+			</a>
 		</div>
 	</article>
 </div>

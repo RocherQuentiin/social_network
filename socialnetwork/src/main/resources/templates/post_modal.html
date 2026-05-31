@@ -1,30 +1,63 @@
 <div th:fragment="post-modal">
-    <div id="postModal" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:1000;">
-        <div class="modal-content" style="max-width:600px; margin:60px auto; background:#fff; padding:16px; border-radius:6px;">
-            <h3>Créer une publication</h3>
-            <form th:action="@{/post}" method="post">
+    <div id="postModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="postModalTitle" style="display: none;">
+        <div class="modal-card card">
+
+            <div class="modal-header">
+                <h3 id="postModalTitle">Créer une publication</h3>
+                <button type="button" id="closePostModal" aria-label="Fermer la boîte de dialogue">✕</button>
+            </div>
+
+            <form th:action="@{/post}" method="post" class="event-form">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <div>
-                    <label for="content">Contenu</label>
-                    <textarea id="content" name="content" rows="4" style="width:100%;" required></textarea>
+
+                <div class="input-group">
+                    <label for="content">Contenu de la publication *</label>
+                    <div class="input-wrapper">
+                        <textarea id="content" name="content" rows="4" placeholder="Partagez un conseil, une info sur un lieu accessible, un sport..." required></textarea>
+                    </div>
                 </div>
-                <div>
+
+                <div class="input-group">
                     <label for="visibilityType">Visibilité</label>
-                    <select id="visibilityType" name="visibilityType">
+                    <select id="visibilityType" name="visibilityType" class="custom-select">
                         <option value="PUBLIC">Public</option>
                         <option value="FRIENDS">Amis</option>
                         <option value="PRIVATE">Privé</option>
                     </select>
                 </div>
-                <div>
-                    <label><input type="checkbox" name="allowComments" checked/> Autoriser les commentaires</label>
+
+                <div class="form-group payment-save-card-row" style="margin-top: 10px;">
+                    <label class="payment-checkbox-label" for="allowComments">
+                        <input type="checkbox" id="allowComments" name="allowComments" checked/>
+                        <span>Autoriser les commentaires sur cette publication</span>
+                    </label>
                 </div>
-                <div style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end;">
-                    <button type="button" id="cancelPost" class="btn">Annuler</button>
-                    <button type="submit" class="btn-primary">Publier</button>
+
+                <div class="modal-footer" style="margin-top: 20px; justify-content: flex-end; gap: 12px;">
+                    <button type="button" id="cancelPost" class="btn-event" style="padding: 0.8rem 1.6rem;">Annuler</button>
+                    <button type="submit" class="btn-event-submit" style="width: auto; margin-top: 0; padding: 0.8rem 2rem;">Publier</button>
                 </div>
             </form>
         </div>
     </div>
     <script th:src="@{/js/post.js}"></script>
+
+    <!-- Petit complément de script pour s'assurer que le bouton croix (✕) ferme la modal de la même façon que le bouton annuler -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const closeCross = document.getElementById('closePostModal');
+            const cancelBtn = document.getElementById('cancelPost');
+            const modal = document.getElementById('postModal');
+
+            if (closeCross && modal) {
+                closeCross.addEventListener('click', function() {
+                    if (cancelBtn) {
+                        cancelBtn.click(); // Déclenche le comportement d'annulation existant dans votre js
+                    } else {
+                        modal.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
 </div>

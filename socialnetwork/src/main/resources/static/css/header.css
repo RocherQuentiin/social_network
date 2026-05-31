@@ -1,19 +1,23 @@
+/* ============================================================
+   MOBILITOUS — header.css
+   Navbar et Footer — thème clair, palette verte, WCAG AAA
+   ============================================================ */
+
 /* ==========================================================================
-   HEADER (NAVBAR)
+   NAVBAR
    ========================================================================== */
 .navbar {
-    background: rgba(15, 20, 25, 0.9);
-    backdrop-filter: blur(10px);
+    background: #ffffff;
+    border-bottom: 1.5px solid var(--border-solid);
     height: 70px;
-    border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     position: sticky;
     top: 0;
     z-index: 1000;
+    box-shadow: 0 2px 8px rgba(22, 101, 52, 0.06);
 }
 
-/* Container pour aligner Logo, Liens et Actions */
 .navbar-container {
     display: flex;
     justify-content: space-between;
@@ -24,14 +28,16 @@
     align-items: center;
 }
 
-/* Alignement du Logo et du texte ISEP Connect */
+/* Logo */
 .navbar-logo {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     text-decoration: none;
-    color: white;
+    color: var(--secondary);      /* #14532d — contraste AAA sur blanc */
     font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: -0.3px;
 }
 
 .logo-box {
@@ -45,50 +51,33 @@
     flex-shrink: 0;
 }
 
+.logo-box svg {
+    stroke: white;
+    width: 18px;
+    height: 18px;
+}
+
 /* Liens de navigation */
 .navbar-links {
     display: flex;
-    gap: 30px;
+    gap: 28px;
 }
 
 .navbar-links a {
-    color: var(--text-dim);
+    color: var(--text-muted);     /* #6b7280 */
     text-decoration: none;
     transition: var(--transition);
     font-size: 0.95rem;
     font-weight: 500;
 }
 
-.navbar-links a:hover, .navbar-links a.active {
-    color: var(--gold);
+.navbar-links a:hover {
+    color: var(--primary);
 }
 
-/* Notification wrapper for badge */
-.notification-icon-wrapper {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-/* Notification badge */
-.notification-badge {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    min-width: 20px;
-    height: 20px;
-    padding: 0 6px;
-    background: var(--accent, #1d9bf0);
-    color: white;
-    border-radius: 10px;
-    font-size: 11px;
-    font-weight: 700;
-    line-height: 1;
-}
-
-/* Barre bleue sous le lien actif */
 .navbar-links a.active {
+    color: var(--primary);
+    font-weight: 600;
     position: relative;
     padding-bottom: 5px;
 }
@@ -101,62 +90,128 @@
     width: 100%;
     height: 2px;
     background: var(--primary);
+    border-radius: 2px;
 }
 
-/* Bouton Déconnexion (Style Charte Graphique) */
+/* Notifications */
+.notification-icon-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.notification-badge {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    background: var(--primary);
+    color: white;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* Bouton principal navbar */
 .btn-primary-header {
     background: var(--primary);
     text-decoration: none;
-    color: white;
+    color: white !important;
     border: none;
-    padding: 8px 18px;
+    padding: 9px 18px;
     border-radius: 8px;
     font-weight: 700;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
-/* 1. On ne touche pas aux liens normaux (ils restent blancs/gris) */
-.mobile-menu a {
-    color: var(--text-main); /* Ou white selon ta charte */
-    text-decoration: none;
-    display: block;
-    padding: 15px 20px;
+.btn-primary-header:hover {
+    background: var(--secondary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(22, 101, 52, 0.2);
 }
 
-/* 2. On cible UNIQUEMENT les boutons de connexion/déconnexion par leur classe */
-.mobile-menu .btn-primary-header-mini {
-    color: var(--primary) !important; /* Ton bleu */
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 0.9rem;
-    /* Optionnel : ajouter une bordure pour faire "bouton" */
-    border: 1px solid var(--primary);
-    margin: 10px 20px;
-    border-radius: 8px;
-    text-align: center;
-}
-
-/* 3. Effet au survol pour le bouton */
-.mobile-menu .btn-primary-header-mini:hover {
-    background: var(--primary);
-    color: white !important;
-}
-/* Menu Burger (Caché par défaut sur grand écran) */
+/* Burger */
 .menu-burger {
     display: none;
     background: none;
     border: none;
-    color: white;
+    color: var(--text-main);
     cursor: pointer;
+    padding: 4px;
+}
+
+/* ==========================================================================
+   MENU MOBILE
+   ========================================================================== */
+.mobile-menu {
+    display: none;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    border-bottom: 1.5px solid var(--border-solid);
+    z-index: 999;
+    flex-direction: column;
+    padding: 16px 20px;
+    box-shadow: 0 8px 20px rgba(22, 101, 52, 0.08);
+}
+
+.mobile-menu.open {
+    display: flex;
+}
+
+.mobile-menu a {
+    color: var(--text-main);      /* #111827 — contraste AAA */
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--border-solid);
+    transition: var(--transition);
+    display: block;
+}
+
+.mobile-menu a:hover {
+    color: var(--primary);
+}
+
+.mobile-menu a:last-child {
+    border-bottom: none;
+}
+
+.mobile-menu .btn-primary-header-mini {
+    color: var(--primary) !important;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border: 1.5px solid var(--primary);
+    margin: 12px 0 4px;
+    border-radius: 8px;
+    text-align: center;
+    padding: 10px !important;
+}
+
+.mobile-menu .btn-primary-header-mini:hover {
+    background: var(--primary);
+    color: white !important;
 }
 
 /* ==========================================================================
    FOOTER
    ========================================================================== */
 .main-footer {
+    background: var(--bg-card);
     padding: 40px 0;
-    border-top: 1px solid var(--border);
+    border-top: 1.5px solid var(--border-solid);
     margin-top: 80px;
 }
 
@@ -173,8 +228,9 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    color: white;
+    color: var(--secondary);
     font-weight: 700;
+    font-size: 0.95rem;
 }
 
 .logo-box-sm {
@@ -187,69 +243,36 @@
     justify-content: center;
 }
 
+.logo-box-sm svg {
+    stroke: white;
+    width: 13px;
+    height: 13px;
+}
+
 .footer-nav {
     display: flex;
     gap: 20px;
 }
 
 .footer-nav a {
-    color: var(--text-dim);
+    color: var(--text-muted);     /* #6b7280 — lisible sur blanc */
     text-decoration: none;
     font-size: 0.85rem;
+    transition: var(--transition);
+}
+
+.footer-nav a:hover {
+    color: var(--primary);
 }
 
 .footer-copy {
-    color: var(--text-dim);
+    color: var(--text-muted);
     font-size: 0.85rem;
 }
 
 /* ==========================================================================
-   MOBILE MENU (Responsive)
+   RESPONSIVE
    ========================================================================== */
-.mobile-menu {
-    display: none;
-    position: fixed;
-    top: 70px;
-    left: 0;
-    width: 100%;
-    background: var(--bg-dark);
-    z-index: 999;
-    flex-direction: column;
-    padding: 20px;
-}
-
-.mobile-menu.open {
-    display: flex;
-}
-
-.mobile-menu a {
-    color: white;
-    text-decoration: none;
-    font-size: 1.1rem;
-    font-weight: 500;
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    transition: var(--transition);
-}
-
-.mobile-menu .btn-primary-header-mini {
-    color: var(--primary) !important; /* Ton bleu */
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 0.9rem;
-    /* Optionnel : ajouter une bordure pour faire "bouton" */
-    border: 1px solid var(--primary);
-    margin: 10px 20px;
-    border-radius: 8px;
-    text-align: center;
-}
-
-/* 3. Effet au survol pour le bouton */
-.mobile-menu .btn-primary-header-mini:hover {
-    background: var(--primary);
-    color: white !important;
-}
-
 @media (max-width: 800px) {
     .navbar-links { display: none; }
     .navbar-actions .btn-primary-header { display: none; }
@@ -257,47 +280,24 @@
 }
 
 @media (max-width: 480px) {
-    .navbar {
-        height: 60px;
-    }
-    
-    .navbar-container {
-        padding: 0 12px;
-    }
-    
-    .navbar-logo {
-        gap: 8px;
-        font-size: 14px;
-    }
-    
-    .logo-box {
-        width: 28px;
-        height: 28px;
-    }
-    
-    .mobile-menu {
-        top: 60px;
-    }
+    .navbar { height: 60px; }
+    .navbar-container { padding: 0 12px; }
+    .navbar-logo { gap: 8px; font-size: 0.9rem; }
+    .logo-box { width: 28px; height: 28px; }
+    .mobile-menu { top: 60px; }
 }
 
 @media (max-width: 850px) {
     .footer-container {
         flex-direction: column;
-        gap: 30px;
+        gap: 24px;
         text-align: center;
     }
-
     .footer-nav {
         flex-direction: column;
-        gap: 15px;
+        align-items: center;
+        gap: 12px;
     }
-
-    .footer-left {
-        justify-content: center;
-    }
-
-    .main-footer {
-        padding: 60px 0 40px;
-        margin-top: 40px;
-    }
+    .footer-left { justify-content: center; }
+    .main-footer { padding: 40px 0; margin-top: 40px; }
 }

@@ -1,96 +1,150 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Accueil - ISEP Connect</title>
-        <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
-        <link rel="stylesheet" th:href="@{/css/header.css}">
-        <link rel="stylesheet" th:href="@{/css/accueil.css}">
-        <script src="https://unpkg.com/lucide@latest"></script>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobilitous — Sport & Accessibilité</title>
+    <link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/accueil.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
 
-    <body>
+<body>
 
-        <div th:replace="~{fragments/header :: header-fragment}"></div>
+<div th:replace="~{fragments/header :: header-fragment}"></div>
 
-        <div class="hero-group">
-            <section class="hero-home">
-                <div class="container">
-                    <div class="hero-content">
-                        <span class="badge-new">Plateforme officielle</span>
-                        <h1>Connectez-vous à la communauté ISEP</h1>
-                        <p class="hero-description">
-                            Rejoignez le réseau exclusif des étudiants et anciens de l'ISEP.
-                            Partagez vos projets, trouvez vos futurs collaborateurs et restez informé de la vie du campus.
-                        </p>
-                        <div class="hero-cta">
-                            <a th:href="@{/login}" class="btn-primary-large">Rejoindre l'aventure ISEP</a>
-                            <a th:href="@{/users}" class="btn-outline-large">En savoir plus</a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="stats-ribbon">
-                <div class="container stats-container">
-                    <div class="stat-card">
-                        <span class="stat-value">+16</span>
-                        <span class="stat-label">Étudiants</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-value">4</span>
-                        <span class="stat-label">Projets</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-value">12</span>
-                        <span class="stat-label">Associations</span>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <section id="features" class="features-section">
-            <div class="container container-padding">
-                <h2 class="section-title">Tout ce dont vous avez besoin</h2>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon"><i data-lucide="search"></i></div>
-                        <h3>Annuaire Intelligent</h3>
-                        <p>Retrouvez n'importe quel étudiant par filière, promotion ou compétences techniques.</p>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="feature-icon"><i data-lucide="code-2"></i></div>
-                        <h3>Showcase Projets</h3>
-                        <p>Mettez en avant vos réalisations techniques et recevez des feedbacks de la communauté.</p>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="feature-icon"><i data-lucide="megaphone"></i></div>
-                        <h3>Annonces & Événements</h3>
-                        <p>Restez informé des dernières actualités du campus et ne manquez aucun événement étudiant.</p>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="feature-icon"><i data-lucide="message-square"></i></div>
-                        <h3>Messagerie Directe</h3>
-                        <p>Échangez instantanément avec vos camarades pour vos projets ou vos questions.</p>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="feature-icon"><i data-lucide="book-open"></i></div>
-                        <h3>Entraide & Cours</h3>
-                        <p>Accédez à des ressources partagées et trouvez des tuteurs pour réussir vos examens.</p>
-                    </div>
+<!-- ===== HERO ===== -->
+<div class="hero-group">
+    <section class="hero-home">
+        <div class="container">
+            <div class="hero-content">
+                    <span class="badge-new">
+                        <i data-lucide="accessibility" style="width:13px;height:13px;vertical-align:-2px;margin-right:5px;"></i>
+                        Plateforme inclusive &amp; accessible
+                    </span>
+                <h1>
+                    Le sport adapté,<br>
+                    <span>accessible à tous.</span>
+                </h1>
+                <p class="hero-description">
+                    Mobilitous connecte les personnes en situation de handicap avec des clubs sportifs,
+                    des événements PMR et une communauté bienveillante.
+                    Trouvez votre sport, rejoignez des groupes, partagez votre parcours.
+                </p>
+                <div class="hero-cta">
+                    <a th:href="@{/register}" class="btn-primary-large">
+                        <i data-lucide="user-plus"></i>
+                        Rejoindre la communauté
+                    </a>
+                    <a th:href="@{/clubs}" class="btn-outline-large">
+                        <i data-lucide="search"></i>
+                        Explorer les clubs
+                    </a>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <div th:replace="~{fragments/footer :: footer-fragment}"></div>
+    <!-- ===== STATS ===== -->
+    <section class="stats-ribbon">
+        <div class="container stats-container">
+            <div class="stat-card">
+                <span class="stat-value">+1 200</span>
+                <span class="stat-label">Membres actifs</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">85+</span>
+                <span class="stat-label">Clubs référencés</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">30+</span>
+                <span class="stat-label">Sports adaptés</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">100%</span>
+                <span class="stat-label">Accessibilité PMR</span>
+            </div>
+        </div>
+    </section>
+</div>
 
-        <script th:src="@{/js/header.js}"></script>
-        <script th:src="@{/js/post.js}"></script>
-        <script>lucide.createIcons();</script>
-    </body>
+<!-- ===== FEATURES ===== -->
+<section id="features" class="features-section">
+    <div class="container container-padding">
+        <h2 class="section-title">Tout ce dont vous avez besoin</h2>
+
+        <div class="features-grid">
+
+            <div class="feature-card highlighted">
+                <div class="feature-icon">
+                    <i data-lucide="map-pin"></i>
+                </div>
+                <h3>Clubs &amp; Lieux accessibles</h3>
+                <p>Trouvez des clubs sportifs adaptés près de chez vous, avec indication PMR, LSF disponible et équipements spécifiques.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i data-lucide="users"></i>
+                </div>
+                <h3>Communauté inclusive</h3>
+                <p>Rejoignez des groupes par sport, handicap ou région. Partagez vos expériences et trouvez des partenaires d'entraînement.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i data-lucide="calendar"></i>
+                </div>
+                <h3>Événements &amp; Compétitions</h3>
+                <p>Restez informé des tournois, sessions d'essai et événements sportifs accessibles dans votre région.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i data-lucide="message-square"></i>
+                </div>
+                <h3>Messagerie directe</h3>
+                <p>Échangez avec les membres, les coachs et les associations en temps réel, en privé ou en groupe.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i data-lucide="shield-check"></i>
+                </div>
+                <h3>Données protégées</h3>
+                <p>Vos informations de santé et d'accessibilité restent sous votre contrôle. Consentement explicite, conforme RGPD.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i data-lucide="trending-up"></i>
+                </div>
+                <h3>Suivi de progression</h3>
+                <p>Suivez vos entraînements, vos objectifs sportifs et partagez vos réussites avec la communauté.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ===== CTA FINALE ===== -->
+<!-- ===== CTA FINALE ===== -->
+<section class="cta-section">
+    <div class="container container-padding">
+        <h2>Prêt à bouger ?</h2>
+        <p>Inscrivez-vous gratuitement et trouvez votre club en moins de 2 minutes.</p>
+        <a th:href="@{/register}" class="btn-cta-white">
+            <i data-lucide="arrow-right"></i>
+            Créer mon compte
+        </a>
+    </div>
+</section>
+
+<div th:replace="~{fragments/footer :: footer-fragment}"></div>
+
+<script th:src="@{/js/header.js}"></script>
+<script>lucide.createIcons();</script>
+</body>
 </html>

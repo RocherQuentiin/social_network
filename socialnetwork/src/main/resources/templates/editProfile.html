@@ -3,11 +3,11 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Modifier mon profil - ISEP Connect</title>
+	<title>Modifier mon profil - Mobilitous</title>
 	<link rel="stylesheet" th:href="@{/css/charteGraphique.css}">
 	<link rel="stylesheet" th:href="@{/css/header.css}">
 	<link rel="stylesheet" th:href="@{/css/editProfil.css}">
-<script src="https://unpkg.com/lucide@latest"></script>
+	<script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-dark">
 
@@ -21,42 +21,37 @@
 			<p>Mettez à jour vos informations pour rester visible auprès de la communauté.</p>
 		</header>
 
-		<div class="alert-error" th:if="${error}">
-			<i data-lucide="alert-circle"></i> <span th:text="${error}"></span>
+		<div class="alert-error" th:if="${error}" role="alert">
+			<i data-lucide="alert-circle" aria-hidden="true"></i> <span th:text="${error}"></span>
 		</div>
-		<div class="alert-information" th:if="${information}">
-			<i data-lucide="check-circle"></i> <span th:text="${information}"></span>
+		<div class="alert-information" th:if="${information}" role="status">
+			<i data-lucide="check-circle" aria-hidden="true"></i> <span th:text="${information}"></span>
 		</div>
 
 		<form th:action="@{/editProfil}" method="post" enctype="multipart/form-data" class="edit-form">
 
-			<section class="form-section card">
-				<h3><i data-lucide="image" class="icon-blue"></i> Apparence</h3>
+			<section class="form-section card" aria-labelledby="section-apparence">
+				<h3 id="section-apparence"><i data-lucide="image" class="icon-blue" aria-hidden="true"></i> Apparence</h3>
 
 				<div class="photos-management">
-					<div class="cover-upload" id="coverTrigger">
-						<img id="coverPictureImg"
-							  type="image" th:src="@{${userProfile.user.coverPictureUrl}}"></img>
-						<div class="overlay"><i data-lucide="camera"></i> Modifier la bannière</div>
-							<input id="coverPictureUrl" type="file" name="coverPictureUrl"
-								   accept="image/*" style="visibility: hidden">
-					</div>
+					<button type="button" class="cover-upload" id="coverTrigger" aria-label="Modifier la photo de bannière">
+						<img id="coverPictureImg" th:src="@{${userProfile.user.coverPictureUrl}}" alt="Photo de bannière actuelle">
+						<div class="overlay"><i data-lucide="camera" aria-hidden="true"></i> Modifier la bannière</div>
+						<input id="coverPictureUrl" type="file" name="coverPictureUrl" accept="image/*" style="display: none;">
+					</button>
 
-					<div class="profile-pic-upload" id="profileTrigger">
+					<button type="button" class="profile-pic-upload" id="profileTrigger" aria-label="Modifier la photo de profil">
 						<div class="avatar-circle">
-							<img id="profilePictureImg" type="image" th:src="@{${userProfile.user.profilePictureUrl}}"
-								 width="100" height="100"></img>
-
-							<div class="overlay"><i data-lucide="camera"></i></div>
+							<img id="profilePictureImg" th:src="@{${userProfile.user.profilePictureUrl}}" width="100" height="100" alt="Photo de profil actuelle">
+							<div class="overlay"><i data-lucide="camera" aria-hidden="true"></i></div>
 						</div>
-						<input type="file"
-							   id="profilePictureUrl" name="profilePictureUrl" accept="image/*" style="visibility: hidden">
-					</div>
+						<input type="file" id="profilePictureUrl" name="profilePictureUrl" accept="image/*" style="display: none;">
+					</button>
 				</div>
 			</section>
 
-			<section class="form-section card">
-				<h3><i data-lucide="user" class="icon-blue"></i> Informations personnelles</h3>
+			<section class="form-section card" aria-labelledby="section-perso">
+				<h3 id="section-perso"><i data-lucide="user" class="icon-blue" aria-hidden="true"></i> Informations personnelles</h3>
 
 				<div class="form-grid">
 					<div class="input-group">
@@ -96,8 +91,8 @@
 				</div>
 			</section>
 
-			<section class="form-section card">
-				<h3><i data-lucide="graduation-cap" class="icon-blue"></i> Études & Travail</h3>
+			<section class="form-section card" aria-labelledby="section-etudes">
+				<h3 id="section-etudes"><i data-lucide="graduation-cap" class="icon-blue" aria-hidden="true"></i> Études & Travail</h3>
 				<div class="form-grid">
 					<div class="input-group">
 						<label for="isepSpecialization">Spécialisation ISEP</label>
@@ -128,30 +123,30 @@
 				</div>
 			</section>
 
-			<section class="form-section card">
-				<h3><i data-lucide="link" class="icon-blue"></i> Liens & Réseaux</h3>
+			<section class="form-section card" aria-labelledby="section-liens">
+				<h3 id="section-liens"><i data-lucide="link" class="icon-blue" aria-hidden="true"></i> Liens & Réseaux</h3>
 				<div class="form-grid">
-				<div class="input-group">
-					<label for="website">Portfolio ou Site web</label>
-					<div class="input-with-icon">
-						<i data-lucide="globe" style="position: absolute; margin: 12px; color: var(--text-dim);"></i>
-						<input th:field="*{userProfile.profile.website}" type="url" id="website" placeholder="https://..." style="padding-left: 40px;">
+					<div class="input-group">
+						<label for="website">Portfolio ou Site web</label>
+						<div class="input-with-icon">
+							<i data-lucide="globe" aria-hidden="true"></i>
+							<input th:field="*{userProfile.profile.website}" type="url" id="website" placeholder="https://...">
+						</div>
 					</div>
-				</div>
-				<div class="input-group">
-					<label for="linkedin">Linkedin</label>
-					<div class="input-with-icon">
-						<i data-lucide="globe" style="position: absolute; margin: 12px; color: var(--text-dim);"></i>
-						<input th:field="*{userProfile.profile.linkedin}" type="url" id="linkedin" placeholder="https://..." style="padding-left: 40px;">
+					<div class="input-group">
+						<label for="linkedin">Linkedin</label>
+						<div class="input-with-icon">
+							<i data-lucide="linkedin" aria-hidden="true"></i>
+							<input th:field="*{userProfile.profile.linkedin}" type="url" id="linkedin" placeholder="https://...">
+						</div>
 					</div>
-				</div>
-				<div class="input-group">
-					<label for="github">GitHub</label>
-					<div class="input-with-icon">
-						<i data-lucide="globe" style="position: absolute; margin: 12px; color: var(--text-dim);"></i>
-						<input th:field="*{userProfile.profile.github}" type="url" id="github" placeholder="https://..." style="padding-left: 40px;">
+					<div class="input-group">
+						<label fiber="github">GitHub</label>
+						<div class="input-with-icon">
+							<i data-lucide="github" aria-hidden="true"></i>
+							<input th:field="*{userProfile.profile.github}" type="url" id="github" placeholder="https://...">
+						</div>
 					</div>
-				</div>
 				</div>
 			</section>
 
@@ -171,7 +166,6 @@
 
 	document.getElementById('profileTrigger').onclick = () => document.getElementById('profilePictureUrl').click();
 	document.getElementById('coverTrigger').onclick = () => document.getElementById('coverPictureUrl').click();
-
 
 	function setupPreview(inputId, imgId) {
 		const input = document.getElementById(inputId);
