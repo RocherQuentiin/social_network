@@ -81,7 +81,7 @@
 
                     <div class="user-card-body">
                         <h3 th:text="${u.firstName} + ' ' + ${u.lastName}"></h3>
-                        <span class="user-promo-label" th:text="'Promo ' + ${u.profile.promoYear}"> </span> <p class="user-major-label" th:text="${u.profile.isepSpecialization}"></p>
+                        <div th:if="${u.profile != null}"><span th:if="${u.profile.promoYear != null}" class="user-promo-label" th:text="'Promo ' + ${u.profile.promoYear}"> </span> <p th:if="${u.profile.isepSpecialization != null}" class="user-major-label" th:text="${u.profile.isepSpecialization}"></p></div> 
                     </div>
 
                     <div class="user-card-footer">
