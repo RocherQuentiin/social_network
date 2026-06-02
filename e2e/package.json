@@ -1,0 +1,27 @@
+{
+  "name": "socialnetwork-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Nightwatch end-to-end tests for MobiliTous Connect",
+  "scripts": {
+    "test": "nightwatch",
+    "test:chrome": "nightwatch --env chrome",
+    "test:firefox": "nightwatch --env firefox",
+    "test:edge": "nightwatch --env edge",
+    "test:safari": "nightwatch --env safari",
+    "test:all-browsers": "npm run test:chrome && npm run test:firefox && npm run test:edge",
+    "test:headless": "nightwatch --env chromeHeadless",
+    "test:ci": "nightwatch --env chromeHeadless,firefoxHeadless,edgeHeadless",
+    "install:edge-driver": "node scripts/install-edgedriver.cjs",
+    "install:gecko-driver": "node scripts/install-geckodriver.cjs"
+  },
+  "devDependencies": {
+    "chromedriver": "^148.0.4",
+    "edgedriver": "^6.1.0",
+    "geckodriver": "^5.0.0",
+    "nightwatch": "^3.9.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
