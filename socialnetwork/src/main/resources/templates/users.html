@@ -15,15 +15,15 @@
 <div th:replace="~{fragments/header :: header-fragment}"></div>
 
 <main class="directory-container">
+
     <section class="directory-hero card" role="search" aria-label="Recherche de membres">
         <div class="hero-inner">
             <h1>Retrouvez des pratiquants et structures</h1>
             <p>Recherchez des membres par nom, spécialité ou promotion, échangez des conseils et partagez vos sessions sportives.</p>
-
             <form th:action="@{/users/search}" method="get" class="search-bar-wrapper">
                 <div class="search-input-group">
                     <i data-lucide="search" aria-hidden="true"></i>
-                    <input id="directorySearch" type="text" name="query" placeholder="Rechercher par nom..." aria-label="Rechercher un membre par son nom">
+                    <input id="directorySearch" type="text" name="query" placeholder="Rechercher par nom..." aria-label="Rechercher un membre">
                 </div>
                 <button type="submit" class="btn-publish">Rechercher</button>
             </form>
@@ -32,24 +32,11 @@
 
     <section class="filters-area" aria-label="Filtres de recherche">
         <div class="filter-row">
-            <span class="filter-label" id="label-filiere">Filières:</span>
-            <div class="filter-chips" role="group" aria-labelledby="label-filiere">
-                <button class="chip active">Toutes</button>
-                <button class="chip">Ingénieur Logiciel</button>
-                <button class="chip">Data Science</button>
-                <button class="chip">Cybersécurité</button>
-                <button class="chip">Systèmes Embarqués</button>
-            </div>
-        </div>
-        <div class="filter-row">
-            <span class="filter-label" id="label-promo">Promo:</span>
-            <div class="filter-chips" role="group" aria-labelledby="label-promo">
-                <button class="chip active">Toutes</button>
-                <button class="chip">2024</button>
-                <button class="chip">2025</button>
-                <button class="chip">2026</button>
-                <button class="chip">2027</button>
-                <button class="chip">2028</button>
+            <span class="filter-label">Type :</span>
+            <div class="filter-chips" id="typeFilter">
+                <button class="chip active" data-type="tous">Tous</button>
+                <button class="chip" data-type="personne">Membres</button>
+                <button class="chip" data-type="lieu">Lieux</button>
             </div>
         </div>
     </section>
@@ -57,32 +44,111 @@
     <div class="section-header">
         <h2>Profils suggérés</h2>
         <div class="view-switcher" role="group" aria-label="Options d'affichage">
-            <span>Affichage:</span>
+            <span>Affichage :</span>
             <button class="active" aria-label="Affichage en grille"><i data-lucide="layout-grid" aria-hidden="true"></i></button>
             <button aria-label="Affichage en liste"><i data-lucide="list" aria-hidden="true"></i></button>
         </div>
     </div>
 
     <div class="user-grid">
-        <article th:each="u : ${users}" class="user-card card">
+
+        <!-- ═══════════════════════════════════════════════
+             CARTE LIEU  (bio contient 📍)
+        ═══════════════════════════════════════════════ -->
+        <article th:each="u : ${users}"
+                 th:if="${u.bio != null && #strings.contains(u.bio, '📍')}"
+                 class="user-card card">
+
             <div class="user-card-top">
-                <div class="avatar-container">
-                    <img th:src="${u.profilePictureUrl != null ? u.profilePictureUrl : '/images/default-avatar.png'}"
-                         class="avatar-directory"
-                         alt="">
-                    <span class="online-badge" aria-label="En ligne"></span>
+                <div class="place-icon">
+                    <i data-lucide="building-2" aria-hidden="true"></i>
                 </div>
-                <button class="btn-more-small" th:aria-label="'Voir les détails du profil de ' + ${u.firstName} + ' ' + ${u.lastName}">
-                    <a th:href="@{'/profil/' + ${u.id}}" style="color: inherit; text-decoration: none; display: flex;" tabindex="-1">
+                <button class="btn-more-small" th:aria-label="'Options pour ' + ${u.firstName}">
+                    <a th:href="@{'/profil/' + ${u.id}}" style="color:inherit;text-decoration:none;display:flex;" tabindex="-1">
                         <i data-lucide="more-vertical" aria-hidden="true"></i>
                     </a>
                 </button>
             </div>
 
             <div class="user-card-body">
-                <h3 th:text="${u.firstName} + ' ' + ${u.lastName}"></h3>
-                <span class="user-promo-label" th:text="${u.profile != null ? 'Promo ' + u.profile.promoYear : 'Promo non renseignée'}"> </span>
-                <p class="user-major-label" th:text="${u.profile?.isepSpecialization}"></p>
+                <h3 th:text="${u.firstName + ' ' + u.lastName}"></h3>
+                <span class="badge-place">
+                    <i data-lucide="map-pin" style="width:11px;height:11px;" aria-hidden="true"></i>
+                    Lieu sportif
+                </span>
+                <!-- Données vides pour que le filtre JS ne plante pas -->
+                <span class="user-promo-label"></span>
+                <p class="user-major-label"></p>
+
+                <!-- Adresse : 1re ligne de la bio -->
+                <th:block th:each="line,stat : ${#strings.arraySplit(u.bio, '\n')}">
+                    <div class="place-info-row"
+                         th:if="${stat.index == 0 && !#strings.isEmpty(#strings.trim(line))}">
+                        <i data-lucide="map-pin" aria-hidden="true"></i>
+                        <span th:text="${#strings.replace(#strings.replace(line,'📍 ADRESSE : ',''),'📍 ','')}"></span>
+                    </div>
+                    <div class="place-info-row"
+                         th:if="${stat.index == 1 && !#strings.isEmpty(#strings.trim(line))}">
+                        <i data-lucide="train-front" aria-hidden="true"></i>
+                        <span th:text="${#strings.replace(#strings.replace(line,'🚇 ACCÈS : ',''),'🚇 ','')}"></span>
+                    </div>
+                    <div class="place-info-row"
+                         th:if="${#strings.contains(line,'♿') && stat.index < 10}">
+                        <i data-lucide="accessibility" aria-hidden="true"></i>
+                        <span th:text="${#strings.replace(#strings.replace(line,'♿ ACCESSIBILITÉ PMR & PSH :',''),'♿ ','PMR · ')}"></span>
+                    </div>
+                </th:block>
+
+                <div class="place-tags">
+                    <span class="place-tag" th:if="${#strings.containsIgnoreCase(u.bio,'tennis')}">Tennis</span>
+                    <span class="place-tag" th:if="${#strings.containsIgnoreCase(u.bio,'football')}">Football</span>
+                    <span class="place-tag" th:if="${#strings.containsIgnoreCase(u.bio,'athlétisme')}">Athlétisme</span>
+                    <span class="place-tag" th:if="${#strings.containsIgnoreCase(u.bio,'basket')}">Basket</span>
+                    <span class="place-tag" th:if="${#strings.containsIgnoreCase(u.bio,'cyclisme')}">Cyclisme</span>
+                    <span class="place-tag" th:if="${#strings.containsIgnoreCase(u.bio,'volley')}">Volley</span>
+                </div>
+            </div>
+
+            <div class="user-card-footer">
+                <a th:href="@{'/profil/' + ${u.id}}" class="btn-friend-request">
+                    <i data-lucide="eye" style="width:13px;height:13px;" aria-hidden="true"></i>
+                    Voir le profil
+                </a>
+            </div>
+
+        </article>
+
+        <!-- ═══════════════════════════════════════════════
+             CARTE PERSONNE  (bio ne contient pas 📍)
+        ═══════════════════════════════════════════════ -->
+        <article th:each="u : ${users}"
+                 th:unless="${u.bio != null && #strings.contains(u.bio, '📍')}"
+                 class="user-card card">
+
+            <div class="user-card-top">
+                <div class="avatar-container">
+                    <img th:src="${u.profilePictureUrl != null ? u.profilePictureUrl : '/images/default-avatar.png'}"
+                         class="avatar-directory"
+                         th:alt="${u.firstName + ' ' + u.lastName}">
+                    <span class="online-badge" aria-label="En ligne"></span>
+                </div>
+                <button class="btn-more-small" th:aria-label="'Options pour ' + ${u.firstName}">
+                    <a th:href="@{'/profil/' + ${u.id}}" style="color:inherit;text-decoration:none;display:flex;" tabindex="-1">
+                        <i data-lucide="more-vertical" aria-hidden="true"></i>
+                    </a>
+                </button>
+            </div>
+
+            <div class="user-card-body">
+                <h3 th:text="${u.firstName + ' ' + u.lastName}"></h3>
+                <span class="badge-person">
+                    <i data-lucide="user" style="width:11px;height:11px;" aria-hidden="true"></i>
+                    Membre
+                </span>
+                <span class="user-promo-label"
+                      th:text="${u.profile != null ? 'Promo ' + u.profile.promoYear : ''}"></span>
+                <p class="user-major-label"
+                   th:text="${u.profile?.isepSpecialization}"></p>
             </div>
 
             <div class="user-card-footer">
@@ -90,30 +156,36 @@
                         class="btn-friend-request"
                         th:data-id="${u.id}"
                         th:data-action="send"
-                        th:aria-label="'Envoyer une demande de contact à ' + ${u.firstName} + ' ' + ${u.lastName}">
-                    <i data-lucide="user-plus" aria-hidden="true"></i> Ajouter
+                        th:aria-label="'Ajouter ' + ${u.firstName} + ' ' + ${u.lastName}">
+                    <i data-lucide="user-plus" style="width:13px;height:13px;" aria-hidden="true"></i>
+                    Ajouter
                 </button>
+
+                <div class="footer-spacer"></div>
 
                 <button th:if="${isConnect != null && u.id.toString() != isConnect.toString()}"
                         class="btn-msg-small"
                         th:data-id="${u.id}"
-                        th:aria-label="'Envoyer un message privé à ' + ${u.firstName} + ' ' + ${u.lastName}">
-                    <i data-lucide="message-square" aria-hidden="true"></i>
+                        th:aria-label="'Message à ' + ${u.firstName}">
+                    <i data-lucide="message-circle" aria-hidden="true"></i>
                 </button>
 
-                <button class="user-view" th:data-id="${u.id}" th:aria-label="'Consulter le profil de ' + ${u.firstName} + ' ' + ${u.lastName}">
+                <button class="user-view"
+                        th:data-id="${u.id}"
+                        th:aria-label="'Voir le profil de ' + ${u.firstName}">
                     <i data-lucide="eye" aria-hidden="true"></i>
                 </button>
             </div>
+
         </article>
+
     </div>
 </main>
 
-<div id="customAlert" class="custom-alert-overlay" role="dialog" aria-modal="true" aria-labelledby="alertTitle" aria-describedby="alertMessage">
+<div id="customAlert" class="custom-alert-overlay" role="dialog" aria-modal="true"
+     aria-labelledby="alertTitle" aria-describedby="alertMessage">
     <div class="custom-alert-card">
-        <div class="alert-icon" id="alertIcon">
-            <i data-lucide="info" aria-hidden="true"></i>
-        </div>
+        <div class="alert-icon"><i data-lucide="info" aria-hidden="true"></i></div>
         <h3 id="alertTitle">Notification</h3>
         <p id="alertMessage">Ceci est un message.</p>
         <button class="btn-alert-confirm" onclick="closeCustomAlert()">D'accord</button>

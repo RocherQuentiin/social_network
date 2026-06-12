@@ -1,305 +1,383 @@
 /* ============================================================
    MOBILITOUS — event.css
-   Normes WCAG AAA (Contrastes élevés & Responsive mobile complet)
+   Tous les styles des cartes d'événements
    ============================================================ */
 
 .events-main-title {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: var(--secondary); /* Contraste maximal */
-    margin-bottom: 24px;
-}
-
-/* CARTE D'ÉVÉNEMENT CONTRASTÉE */
-.event-card {
-    background: var(--bg-card);
-    border: 1.5px solid var(--border-solid);
-    border-radius: var(--radius);
-    padding: 24px;
-    box-shadow: var(--shadow);
-    margin-bottom: 2rem;
-    display: flex;
-    flex-direction: column;
-}
-
-.event-title {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--primary);
-    margin: 0 0 6px 0;
-}
-
-.event-creator {
-    font-size: 0.95rem;
-    color: var(--text-main);
-    font-weight: 600;
-    margin-bottom: 12px;
-}
-
-.event-description {
-    color: var(--text-main);
-    font-size: 1rem;
-    line-height: 1.6;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--secondary);
     margin-bottom: 20px;
 }
 
-/* BLOC INFOS DYNAMIQUE ET RESPONSIVE */
+/* ── CARTE ── */
+.event-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+.event-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+}
+
+/* zone supérieure avec padding */
+.event-card-body {
+    padding: 18px 18px 0;
+}
+
+/* ── EN-TÊTE ── */
+.event-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 2px;
+}
+
+.event-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin: 0;
+    line-height: 1.3;
+}
+
+.event-paid-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #FAEEDA;
+    border: 1px solid #EF9F27;
+    color: #633806;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+.event-creator {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 2px 0 12px;
+}
+.event-creator strong {
+    color: var(--text-main);
+    font-weight: 500;
+}
+
+/* ── DESCRIPTION ── */
+.event-description {
+    border-left: 2.5px solid #3B6D11;
+    padding-left: 10px;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+    line-height: 1.55;
+}
+.event-description p { margin: 0; }
+
+/* ── GRILLE INFOS ── */
 .event-grid-info {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
-    padding: 16px;
-    background: var(--bg-muted);
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    background: #EAF3DE;
     border-radius: 8px;
-    border: 1.5px solid var(--border-solid);
-    margin-bottom: 24px;
+    padding: 10px 12px;
+    margin-bottom: 0;
 }
 
 .info-item {
-    margin: 0;
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 0.95rem;
-    color: var(--text-main);
-    font-weight: 600;
+    gap: 6px;
+    font-size: 12px;
+    color: #27500A;
+    margin: 0;
 }
 
+.info-item svg,
 .info-item i {
-    color: var(--primary);
+    color: #3B6D11;
     flex-shrink: 0;
+    width: 13px;
+    height: 13px;
+    stroke-width: 2px;
 }
 
 .info-label {
-    color: var(--text-dim);
-    margin-right: 4px;
+    color: #4a7c59;
+    margin-right: 2px;
 }
 
-/* BADGES DE PARTICIPATION */
-.event-paid-badge {
-    display: inline-block;
-    background-color: #fffbeb;
-    border: 1.5px solid #d97706; /* Assombri pour WCAG AAA */
-    color: #92400e;
-    padding: 6px 12px;
-    font-size: 0.8rem;
-    font-weight: 800;
-    border-radius: 6px;
-}
-
-/* GESTION ET VALIDATION DES PARTICIPANTS */
+/* ── PARTICIPANTS ── */
 .event-participants {
-    margin-bottom: 24px;
-    padding-top: 20px;
-    border-top: 1.5px solid var(--border-solid);
+    border-top: 1px solid #e5e7eb;
+    padding: 12px 18px;
 }
 
 .participants-label {
-    font-size: 1rem;
-    font-weight: 800;
-    color: var(--secondary);
-    margin-bottom: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
 }
 
 .participants-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-}
-
-.participant-tag {
-    background: #ffffff;
-    border: 1.5px solid var(--border-solid);
-    color: var(--text-main);
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.participant-status-pending {
-    color: #b45309; /* Aligné sur WCAG AAA AAA */
-    font-weight: 800;
-}
-
-.participant-actions {
-    display: flex;
     gap: 6px;
 }
 
-.btn-event-action {
+.participant-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #EAF3DE;
+    border: 1px solid #C0DD97;
+    border-radius: 20px;
     padding: 4px 10px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    border-radius: 4px;
-    cursor: pointer;
-    border: none;
-    transition: var(--transition);
+    font-size: 12px;
+    color: #27500A;
 }
 
-.btn-event-accept { background: var(--primary); color: white; }
-.btn-event-decline { background: var(--error); color: white; }
-.btn-event-action:hover { filter: brightness(1.15); }
+.participant-status-pending {
+    font-size: 11px;
+    color: #854F0B;
+    background: #FAEEDA;
+    border-radius: 10px;
+    padding: 1px 6px;
+    border: 1px solid #FAC775;
+    font-weight: 500;
+}
+
+.participant-actions {
+    display: inline-flex;
+    gap: 3px;
+    margin-left: 2px;
+}
+
+.btn-event-action {
+    height: 22px;
+    padding: 0 8px;
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    font-family: inherit;
+    transition: all 0.15s ease;
+    border: 1px solid transparent;
+}
+
+.btn-event-accept {
+    background: #EAF3DE;
+    color: #27500A;
+    border-color: #97C459;
+}
+.btn-event-accept:hover {
+    background: #3B6D11;
+    color: #fff;
+    border-color: #3B6D11;
+}
+
+.btn-event-decline {
+    background: #FCEBEB;
+    color: #791F1F;
+    border-color: #F09595;
+}
+.btn-event-decline:hover {
+    background: #A32D2D;
+    color: #fff;
+    border-color: #A32D2D;
+}
 
 .empty-participants-text {
-    font-size: 0.95rem;
+    font-size: 12px;
     font-style: italic;
     color: var(--text-muted);
 }
 
-/* ZONE BOUTONS INFÉRIEURE RESPONSIVE */
+/* ── FOOTER BOUTONS ── */
 .event-footer {
     display: flex;
-    gap: 12px;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border-top: 1px solid #e5e7eb;
     flex-wrap: wrap;
-    padding-top: 20px;
-    border-top: 1.5px solid var(--border-solid);
-    margin-top: auto;
 }
 
-/* BOUTONS ACTIONS */
-.btn-event-main, .btn-event-secondary, .btn-event-danger {
-    padding: 10px 20px;
-    font-size: 0.95rem;
-    font-weight: 700;
+.event-footer-spacer { flex: 1; }
+
+/* Rejoindre gratuit */
+.btn-event-main {
+    height: 36px;
+    padding: 0 16px;
+    background: #3B6D11;
+    color: #fff;
+    border: none;
     border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    gap: 6px;
     text-decoration: none;
-    transition: var(--transition);
-    text-align: center;
+    font-family: inherit;
+    transition: background 0.15s ease;
 }
+.btn-event-main:hover { background: #27500A; color: #fff; }
 
-.btn-event-main {
-    background: var(--primary);
-    color: white;
-    border: none;
-}
-
-.btn-event-main:hover {
-    background: var(--secondary);
-    box-shadow: var(--shadow-md);
-}
-
-.btn-event-secondary {
+/* Rejoindre payant */
+.btn-join-paid {
+    height: 36px;
+    padding: 0 16px;
     background: transparent;
-    border: 1.5px solid var(--border-solid);
+    color: #3B6D11;
+    border: 1.5px solid #3B6D11;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    font-family: inherit;
+    transition: all 0.15s ease;
+}
+.btn-join-paid:hover { background: #EAF3DE; color: #3B6D11; }
+
+/* Voir les demandes */
+.btn-event-secondary {
+    height: 34px;
+    padding: 0 12px;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    font-family: inherit;
+    transition: all 0.15s ease;
+}
+.btn-event-secondary:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
     color: var(--text-main);
 }
 
-.btn-event-secondary:hover {
-    background: var(--bg-muted);
-    border-color: var(--text-dim);
+/* Badge vert sur "Demandes" quand il y en a */
+.btn-event-requests-notice {
+    border-color: #97C459;
+    color: #3B6D11;
 }
 
-.btn-event-danger {
-    background: transparent;
-    border: 1.5px solid #fca5a5;
-    color: var(--error);
+.event-requests-badge {
+    background: #EAF3DE;
+    color: #3B6D11;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 1px 7px;
+    border-radius: 10px;
 }
 
-.btn-event-danger:hover {
-    background: #fef2f2;
-    border-color: var(--error);
-}
-
-/* CLASSE D'ACCESSIBILITÉ DES LECTEURS D'ÉCRAN */
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
+/* Icônes éditer / supprimer */
+.btn-event-icon {
+    height: 34px;
+    width: 34px;
     padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
-}
-
-/* ==========================================
-   OPTIMISATION DES COUPURES RESPONSIVES Mobile & Tablettes
-   ========================================== */
-@media (max-width: 768px) {
-    .event-card {
-        padding: 16px;
-    }
-
-    .event-grid-info {
-        grid-template-columns: 1fr; /* Passage sur une seule ligne fluide */
-        gap: 12px;
-    }
-
-    .event-footer {
-        flex-direction: column; /* Alignement vertical complet sur mobile */
-        gap: 10px;
-    }
-
-    .btn-event-main, .btn-event-secondary, .btn-event-danger {
-        width: 100%; /* Prend toute la largeur de l'écran pour faciliter le clic */
-    }
-}
-/* ============================================================
-   STYLISATION DES BOUTONS DE GESTION DE L'ÉVÉNEMENT (CRÉATEUR)
-   ============================================================ */
-
-/* Style de base pour harmoniser les boutons et les liens (Éditer) */
-.btn-event-secondary, .btn-event-danger {
-    padding: 10px 20px;
-    font-size: 0.9rem;
-    font-weight: 700;
+    background: transparent;
+    border: 1px solid #e5e7eb;
     border-radius: 8px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    text-decoration: none; /* Supprime le soulignement pour la balise <a> Éditer */
-    font-family: inherit;
-    transition: var(--transition);
-    text-align: center;
-    box-sizing: border-box;
+    color: var(--text-muted);
+    transition: all 0.15s ease;
+    font-size: 0;
+}
+.btn-event-icon svg {
+    width: 15px;
+    height: 15px;
+    stroke-width: 2px;
+}
+.btn-event-icon:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    color: var(--text-main);
+}
+.btn-event-icon.danger {
+    border-color: #fca5a5;
+    color: #A32D2D;
+}
+.btn-event-icon.danger:hover {
+    background: #FCEBEB;
+    border-color: #A32D2D;
 }
 
-/* Boutons secondaires clairs (Voir les demandes / Éditer l'événement) */
-.btn-event-secondary {
-    background: #ffffff;
-    border: 1.5px solid var(--border-solid); /* Bordure vert très transparent */
-    color: var(--text-main); /* Texte sombre accessible */
-}
-
-.btn-event-secondary:hover, .btn-event-secondary:focus {
-    background: var(--bg-muted); /* Léger fond vert-gris */
-    border-color: var(--text-dim); /* Assombrissement de la bordure */
-    color: var(--primary); /* Accentuation sur le vert d'action */
-    outline: none;
-}
-
-/* Bouton d'alerte / destruction (Supprimer) */
+/* Quitter */
 .btn-event-danger {
+    height: 34px;
+    padding: 0 12px;
     background: transparent;
-    border: 1.5px solid #fca5a5; /* Bordure rouge accessible */
-    color: var(--error); /* Rouge d'erreur de la charte */
+    border: 1px solid #fca5a5;
+    border-radius: 8px;
+    color: #A32D2D;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: inherit;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    margin-left: auto;
+}
+.btn-event-danger:hover {
+    background: #FCEBEB;
+    border-color: #A32D2D;
+    color: #A32D2D;
 }
 
-.btn-event-danger:hover, .btn-event-danger:focus {
-    background: #fef2f2; /* Fond rouge très clair */
-    border-color: var(--error); /* Accentuation de la bordure */
-    color: #991b1b; /* Rouge plus sombre conforme WCAG AAA */
-    outline: none;
+/* SR only */
+.sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0,0,0,0); border: 0;
 }
 
-/* Gestion du focus clavier pour l'accessibilité */
-.btn-event-secondary:focus-visible, .btn-event-danger:focus-visible {
-    outline: 3px solid var(--primary);
-    outline-offset: 2px;
-}
-
-/* Ajustement responsive : pleine largeur sur mobile pour faciliter le clic */
+/* ── RESPONSIVE ── */
 @media (max-width: 768px) {
-    .btn-event-secondary, .btn-event-danger {
-        width: 100%;
-    }
+    .event-grid-info { grid-template-columns: 1fr; gap: 6px; }
+    .event-footer { flex-direction: column; align-items: stretch; }
+    .event-footer-spacer { display: none; }
+    .btn-event-main,
+    .btn-join-paid,
+    .btn-event-secondary,
+    .btn-event-danger { width: 100%; justify-content: center; }
+    .btn-event-danger { margin-left: 0; }
+    .btn-event-icon { width: 100%; border-radius: 8px; font-size: 13px; gap: 6px; }
+    .participant-tag { border-radius: 8px; }
 }

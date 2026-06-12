@@ -72,7 +72,7 @@
 
 .hero-description {
     font-size: 1.15rem;
-    color: var(--text-muted);
+    color: #c5ffd6;
     max-width: 600px;
     margin: 0 auto 40px;
     line-height: 1.7;
@@ -135,6 +135,114 @@
     border-top: 1.5px solid var(--border-solid);
     border-bottom: 1.5px solid var(--border-solid);
     padding: 32px 0;
+}
+
+/* 1. C'est la SECTION globale qui prend maintenant l'image et le filtre noir */
+.hero-home {
+    width: 100%;
+    min-height: 85vh; /* Gère la hauteur ici */
+
+    /* On déplace le filtre et l'image ici pour qu'ils prennent 100% de l'écran */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.75),rgba(0, 0, 0, 0.20),  rgba(0, 0, 0, 0.75)),
+    url('/img/accueil.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    /* On utilise Flexbox pour centrer le container verticalement */
+    display: flex;
+    align-items: center;
+}
+
+/* 2. Le container reste une boîte invisible au milieu pour limiter la largeur du texte */
+.hero-home .container {
+    width: 100%;
+    max-width: 1100px; /* Aligné avec le reste de ton site */
+    margin: 0 auto;    /* Centre la boîte horizontalement */
+    padding: 0 20px;   /* Évite que le texte colle aux bords sur mobile */
+}
+
+/* 3. On nettoie .hero-content (plus besoin d'image ici) */
+.hero-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    text-align: center;
+}
+
+/* --- OPTIMISATION DU CONTENU SUR L'IMAGE --- */
+
+/* Le badge "Plateforme inclusive" */
+.badge-new {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px); /* Effet de flou moderne derrière le badge */
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: inline-flex;
+    align-items: center;
+    color: #8ed5a3;
+}
+
+/* Le titre principal */
+.hero-content h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 30px;
+    max-width: 800px;
+    color: #8ed5a3;
+}
+
+/* Le mot mis en valeur dans le h1 */
+.hero-content h1 span {
+    color: #4ade80; /* Une jolie couleur d'accentuation (ex: un vert d'inclusion/sport) */
+}
+
+/* Zone des boutons de redirection (CTA) */
+.hero-cta {
+    display: flex;
+    gap: 15px; /* Espace entre les deux boutons */
+    flex-wrap: wrap; /* Aligne les boutons l'un sous l'autre sur petit mobile */
+    justify-content: center;
+}
+
+/* Style de base pour les gros boutons */
+.btn-primary-large, .btn-outline-large {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px; /* Espace entre l'icône Lucide et le texte */
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-primary-large {
+    background-color: #4ade80;
+    color: #111827;
+}
+
+.btn-primary-large:hover {
+    background-color: #22c55e;
+    transform: translateY(-2px); /* Léger effet de survol */
+}
+
+.btn-outline-large {
+    background-color: transparent;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+}
+
+.btn-outline-large:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
 }
 
 .stats-container {

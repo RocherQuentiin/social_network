@@ -1,186 +1,105 @@
-const userView = document.querySelectorAll(".user-view");
+/* ============================================================
+   directory.js
+   ============================================================ */
 
-userView.forEach(el => {
-    el.addEventListener('click', callCorrectPage, el);
+/* --- Navigation vers le profil --- */
+document.querySelectorAll('.user-view').forEach(el => {
+    el.addEventListener('click', function() {
+        const userId = this.getAttribute('data-id');
+        window.location.href = '/profil/' + userId;
+    });
 });
 
-function callCorrectPage(el) {
-    let userId = el.currentTarget.getAttribute('data-id');
-    window.location.href = "/profil/" + userId;
-    console.log(userId);
-}
-
-// Message button click handler
+/* --- Message privé --- */
 document.addEventListener('click', function(e) {
-    if (e.target.closest('.btn-msg-small')) {
-        const btn = e.target.closest('.btn-msg-small');
+    const btn = e.target.closest('.btn-msg-small');
+    if (btn) {
         const userId = btn.getAttribute('data-id');
-        if (userId) {
-            openOrCreateConversation(userId);
-        }
+        if (userId) openOrCreateConversation(userId);
     }
 });
 
 async function openOrCreateConversation(userId) {
     try {
-        // Get or create conversation with the user
         const response = await fetch(`/api/messages/conversation/${userId}`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            headers: { 'Content-Type': 'application/json' }
         });
-
         if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Failed to get/create conversation. Status:', response.status, 'Message:', errorText);
-            alert('Impossible de créer la conversation: ' + errorText);
+            alert('Impossible de créer la conversation : ' + await response.text());
             return;
         }
-
         const conversation = await response.json();
-        console.log('Conversation created/fetched:', conversation);
-        
-        // Navigate to messages page and store the conversation ID to auto-select it
         sessionStorage.setItem('selectedConversationId', conversation.id);
         window.location.href = '/messages';
     } catch (error) {
-        console.error('Error opening/creating conversation:', error);
+        console.error('Error:', error);
         alert('Erreur lors de la création de la conversation');
     }
 }
 
-
+/* --- Vue grille / liste --- */
 document.addEventListener('DOMContentLoaded', function() {
     const gridBtn = document.querySelector('.view-switcher button:first-of-type');
     const listBtn = document.querySelector('.view-switcher button:last-of-type');
     const userGrid = document.querySelector('.user-grid');
 
-    // Fonction pour activer la vue Liste
-    listBtn.addEventListener('click', function() {
-        userGrid.classList.add('list-view');
-
-        // Gestion visuelle des boutons
-        listBtn.classList.add('active');
-        gridBtn.classList.remove('active');
-    });
-
-    // Fonction pour activer la vue Grille (Normal)
-    gridBtn.addEventListener('click', function() {
-        userGrid.classList.remove('list-view');
-
-        // Gestion visuelle des boutons
-        gridBtn.classList.add('active');
-        listBtn.classList.remove('active');
-    });
-
-    const searchInput = document.getElementById('directorySearch');
-
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            // .normalize("NFD") permet de trouver "Marie" même si on tape "marie" sans accent
-            activeFilters.search = e.target.value
-                .toLowerCase()
-                .trim()
-                .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-            applyFilters();
+    if (gridBtn && listBtn && userGrid) {
+        gridBtn.addEventListener('click', function() {
+            userGrid.classList.remove('list-view');
+            gridBtn.classList.add('active');
+            listBtn.classList.remove('active');
         });
+        listBtn.addEventListener('click', function() {
+            userGrid.classList.add('list-view');
+            listBtn.classList.add('active');
+            gridBtn.classList.remove('active');
+        });
+    }
+
+    /* --- Recherche + filtre type --- */
+    const searchInput = document.getElementById('directorySearch');
+    const userCards   = document.querySelectorAll('.user-grid article');
+
+    const activeFilters = { search: '', type: 'tous' };
+
+    function isPlace(card) {
+        return card.querySelector('.badge-place') !== null;
     }
 
     function applyFilters() {
         userCards.forEach(card => {
-            const nameElement = card.querySelector('h3');
-            if (!nameElement) return;
+            const name = card.querySelector('h3')?.textContent.toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '') || '';
 
-            const userName = nameElement.textContent
-                .toLowerCase()
-                .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const matchSearch = name.includes(
+                activeFilters.search.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            );
 
-            const matchesSearch = userName.includes(activeFilters.search);
+            const matchType =
+                activeFilters.type === 'tous' ||
+                (activeFilters.type === 'lieu'    &&  isPlace(card)) ||
+                (activeFilters.type === 'personne' && !isPlace(card));
 
-            const userMajorTech = card.querySelector('.user-major-label').textContent.trim();
-            const selectedFiliereTech = filiereMapping[activeFilters.filiere] || "Toutes";
-            const matchesFiliere = selectedFiliereTech === "Toutes" || userMajorTech === selectedFiliereTech;
-
-            const userPromo = card.querySelector('.user-promo-label').textContent;
-            const matchesPromo = activeFilters.promo === "Toutes" || userPromo.includes(activeFilters.promo);
-
-            if (matchesSearch && matchesFiliere && matchesPromo) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-        handleEmptyResults();
-    }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('directorySearch');
-    const filterButtons = document.querySelectorAll('.chip');
-    const userCards = document.querySelectorAll('.user-grid article');
-
-    const filiereMapping = {
-        "Ingénieur Logiciel": "SOFTWARE_ENGINEERING",
-        "Data Science": "DATA_SCIENCE",
-        "Cybersécurité": "CYBERSECURITY",
-        "Systèmes Embarqués": "EMBEDDED_SYSTEMS",
-        "Toutes": "Toutes"
-    };
-
-    const activeFilters = {
-        search: "",
-        filiere: "Toutes",
-        promo: "Toutes"
-    };
-
-    function applyFilters() {
-        userCards.forEach(card => {
-            const userName = card.querySelector('.user-card-body h3').textContent.toLowerCase();
-            const userMajorValue = card.querySelector('.user-major-label').textContent.trim();
-            const userPromo = card.querySelector('.user-promo-label').textContent;
-
-            const matchesSearch = userName.includes(activeFilters.search);
-            const selectedFiliereTech = filiereMapping[activeFilters.filiere];
-
-            const matchesFiliere = activeFilters.filiere === "Toutes" || userMajorValue === selectedFiliereTech;
-
-            const matchesPromo = activeFilters.promo === "Toutes" || userPromo.includes(activeFilters.promo);
-
-            if (matchesSearch && matchesFiliere && matchesPromo) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
+            card.style.display = (matchSearch && matchType) ? '' : 'none';
         });
         handleEmptyResults();
     }
 
-    // Écouteur Recherche
+    /* Recherche */
     if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            activeFilters.search = e.target.value.toLowerCase().trim();
+        searchInput.addEventListener('input', function() {
+            activeFilters.search = this.value.toLowerCase().trim();
             applyFilters();
         });
     }
 
-    // Écouteur Filtres (Chips)
-    filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const row = button.closest('.filter-row');
-            const label = row.querySelector('.filter-label').textContent.toLowerCase();
-            const value = button.textContent;
-
-            row.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            button.classList.add('active');
-
-            if (label.includes('filière')) {
-                activeFilters.filiere = value;
-            } else if (label.includes('promo')) {
-                activeFilters.promo = value;
-            }
-
+    /* Chips type */
+    document.querySelectorAll('#typeFilter .chip').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('#typeFilter .chip').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            activeFilters.type = this.getAttribute('data-type');
             applyFilters();
         });
     });
@@ -188,19 +107,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function handleEmptyResults() {
     const grid = document.querySelector('.user-grid');
-    const visibleCards = document.querySelectorAll('.user-grid article[style="display: block;"]').length;
-    const existingMsg = document.getElementById('no-result-msg');
+    const visible = [...document.querySelectorAll('.user-grid article')]
+        .filter(c => c.style.display !== 'none').length;
+    const existing = document.getElementById('no-result-msg');
 
-    if (visibleCards === 0 && !existingMsg) {
+    if (visible === 0 && !existing) {
         const msg = document.createElement('p');
         msg.id = 'no-result-msg';
-        msg.style.color = 'var(--text-dim)';
-        msg.style.gridColumn = '1 / -1';
-        msg.style.textAlign = 'center';
-        msg.style.padding = '40px';
-        msg.textContent = "Aucun étudiant ne correspond à ces critères.";
+        msg.style.cssText = 'color:var(--text-dim);grid-column:1/-1;text-align:center;padding:40px';
+        msg.textContent = 'Aucun résultat ne correspond à ces critères.';
         grid.appendChild(msg);
-    } else if (visibleCards > 0 && existingMsg) {
-        existingMsg.remove();
+    } else if (visible > 0 && existing) {
+        existing.remove();
     }
 }

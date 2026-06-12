@@ -45,23 +45,42 @@ public class PrivacyController {
 	
 	@PostMapping("/privacy")
     public String SavePrivacy(HttpServletRequest request, Model model, PrivacySettings privacySettings) {
-		Object userIsConnect = Utils.validPage(request, true);
-		model.addAttribute("isConnect", userIsConnect);
-		if(userIsConnect == null) {
-			return "accueil";
-		}
-		System.out.println(privacySettings.getCanSeeLocation());
-		ResponseEntity<PrivacySettings> userPrivacy = this.privacySettingsService.getPrivacySettingsByUserID(UUID.fromString(userIsConnect.toString()));
-    
-		privacySettings.setId(userPrivacy.getBody().getId());
-		privacySettings.setUser(userPrivacy.getBody().getUser());
-		
-		ResponseEntity<PrivacySettings> privacy = this.privacySettingsService.savePrivacy(privacySettings);
-		
-		model.addAttribute("privacy", privacy.getBody());
-		model.addAttribute("information", "Vos données privée ont bien été sauvegarder");
-		
-		
-		return "privacySettings";
-	}
+        Object userIsConnect = Utils.validPage(request, true);
+        model.addAttribute("isConnect", userIsConnect);
+        if (userIsConnect == null) {
+            return "accueil";
+        }
+
+        UUID userId = UUID.fromString(userIsConnect.toString());
+
+        // 1. On récupère les paramètres actuels s'ils existent
+        ResponseEntity<PrivacySettings> userPrivacy = this.privacySettingsService.getPrivacySettingsByUserID(userId);
+
+        if (userPrivacy != null && userPrivacy.getBody() != null) {
+            // CAS 1 : L'utilisateur a déjà des paramètres en BDD, on récupère son ID existant et son User associé
+            privacySettings.setId(userPrivacy.getBody().getId());
+            privacySettings.setUser(userPrivacy.getBody().getUser());
+        } else {
+            // CAS 2 : Première configuration ! L'objet n'existe pas encore en BDD.
+            // Il faut obligatoirement lier l'utilisateur à ces paramètres pour que Hibernate puisse faire le lien.
+
+            // IMPORTANT : Crée un objet User avec l'ID connecté et associe-le
+            User user = new User();
+            user.setId(userId);
+            privacySettings.setUser(user);
+        }
+
+        // 2. On sauvegarde (Hibernate fera un UPDATE pour le CAS 1, ou un INSERT pour le CAS 2)
+        ResponseEntity<PrivacySettings> privacy = this.privacySettingsService.savePrivacy(privacySettings);
+
+        if (privacy != null && privacy.getBody() != null) {
+            model.addAttribute("privacy", privacy.getBody());
+            model.addAttribute("information", "Vos données privées ont bien été sauvegardées.");
+        } else {
+            model.addAttribute("privacy", privacySettings);
+            model.addAttribute("error", "Erreur lors de la sauvegarde.");
+        }
+
+        return "privacySettings";
+    }
 }
