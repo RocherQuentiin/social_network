@@ -48,10 +48,10 @@ var closeRecommandationModal = byId('closeUserRecommandationModal');
 var recommandationBtn = byId('recommandationBtn');
 
 function openModal(){ if(modal) modal.style.display = 'flex'; }
-function closeModal(){ if(modal) modal.style.display = 'none'; currentEditId = null; }
+function closedModal(){ if(modal) modal.style.display = 'none'; currentEditId = null; }
 
 
- if(closeRecommandationModal) closeRecommandationModal.addEventListener('click', function(){ closeModal(); });
+ if(closeRecommandationModal) closeRecommandationModal.addEventListener('click', function(){ closedModal(); });
  if(recommandationBtn) recommandationBtn.addEventListener('click', function(){ openModal(); });
 
 // Load user projects dynamically

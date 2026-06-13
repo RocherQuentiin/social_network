@@ -7,7 +7,6 @@ lucide.createIcons();
     const passwordHashInput = document.getElementById('passwordHash')
     const passwordHashMsg = document.getElementById('passwordHashMsg');
 
-    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@(eleve\.isep\.fr|isep\.fr|ext\.isep\.fr)$/i;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
 
     function setState(el, msgEl, ok, message){
@@ -29,11 +28,6 @@ lucide.createIcons();
             this.classList.remove('success','error');
             emailMsg.style.display='none';
             return;
-        }
-        if(emailRegex.test(val)){
-            setState(this, emailMsg, true);
-        } else {
-            setState(this, emailMsg, false, "L'email doit être une adresse ISEP (eleve.isep.fr, isep.fr, ext.isep.fr)");
         }
     });
 

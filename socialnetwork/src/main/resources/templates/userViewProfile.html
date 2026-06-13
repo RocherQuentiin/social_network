@@ -26,7 +26,7 @@
 			<h2 class="user-fullname" th:text="${userProfile.user.firstName + ' ' + userProfile.user.lastName}">Alexandre Dupont</h2>
 			<p class="user-studies" th:text="${userProfile.profile.profession}">Étudiant Ingénieur - ISEP</p>
 
-			<div class="location-tag" th:if="${userProfile.privacySettings.canSeeLocation}">
+			<div class="location-tag" th:if="${userProfile.privacySettings != null && userProfile.privacySettings.canSeeLocation}">
 				<i data-lucide="map-pin" aria-hidden="true"></i>
 				<span th:text="${userProfile.profile.location}">Paris, France</span>
 			</div>
@@ -59,12 +59,12 @@
 				</button>
 
 				<button id="recommandationBtn"
-				        class="btn-recommandation"
+				        class="btn-primary-full btn-recommandation"
 				        th:data-id="${userProfile.user.id}">
 					Recommandation
 				</button>
 
-				<a th:if="${userProfile.privacySettings.allowDirectMessages == 'true'}"
+				<a th:if="${userProfile.privacySettings != null && userProfile.privacySettings.allowDirectMessages == 'true'}"
 				   th:href="@{/messages(target=${userProfile.user.id})}"
 				   class="btn-primary-full"
 				   style="background: var(--bg-muted); border: 1.5px solid var(--border-solid); color: var(--text-main);">
@@ -83,7 +83,7 @@
 					</div>
 					<i data-lucide="external-link" class="arrow-right" aria-hidden="true"></i>
 				</a>
-				<div class="network-item" th:if="${userProfile.privacySettings.canSeeEmail}">
+				<div class="network-item" th:if="${userProfile.privacySettings != null && userProfile.privacySettings.canSeeEmail}">
 					<div class="item-left">
 						<i data-lucide="mail" aria-hidden="true"></i>
 						<span th:text="${userProfile.user.email}">Email</span>
@@ -106,7 +106,7 @@
 				<h3 id="section-bio"><i data-lucide="user" class="icon-blue" aria-hidden="true"></i> À propos</h3>
 			</div>
 			<div class="card box-content">
-				<p th:text="${userProfile.user.bio != null ? userProfile.user.bio : 'Cet utilisateur n\'a pas encore rédigé de bio.'}">Bio...</p>
+				<p th:text="${userProfile.user.bio}">Bio...</p>
 			</div>
 		</div>
 
@@ -157,8 +157,8 @@
 				<div class="card project-item" style="display: flex; align-items: center; padding: 20px; gap: 20px;">
 					<div class="plus-circle"><i data-lucide="briefcase" aria-hidden="true"></i></div>
 					<div class="project-info" style="padding: 0;">
-						<h4 th:text="${userProfile.profile.profession != null ? userProfile.profile.profession : 'En recherche d\'opportunités'}">Poste</h4>
-						<p th:text="${userProfile.profile.company != null ? userProfile.profile.company : 'ISEP'}">Entreprise</p>
+						<!--<h4 th:text="${userProfile.profile != null && userProfile.profile.profession != null ? userProfile.profile.profession : 'En recherche d'opportunités'}">Poste</h4>
+						<p th:text="${userProfile.profile != null && userProfile.profile.company != null ? userProfile.profile.company : 'ISEP'}">Entreprise</p>-->
 					</div>
 				</div>
 			</div>
@@ -188,7 +188,7 @@
 			</div>
 		</div>
 
-		<div class="section-container" th:if="${userProfile.privacySettings.canSeeBirthdate}" aria-labelledby="section-infos-complementaires">
+		<div class="section-container" th:if="${userProfile.privacySettings != null && userProfile.privacySettings.canSeeBirthdate}" aria-labelledby="section-infos-complementaires">
 			<div class="section-header">
 				<h3 id="section-infos-complementaires"><i data-lucide="calendar" class="icon-blue" aria-hidden="true"></i> Informations</h3>
 			</div>

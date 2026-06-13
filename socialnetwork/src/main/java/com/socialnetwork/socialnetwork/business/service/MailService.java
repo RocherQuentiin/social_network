@@ -17,11 +17,13 @@ import jakarta.mail.internet.MimeMessage;
 import com.socialnetwork.socialnetwork.business.interfaces.service.IMailService;
 
 @Service
-@org.springframework.boot.autoconfigure.condition.ConditionalOnProperty(
-    name = "app.mail.enabled",
-    havingValue = "true",
-    matchIfMissing = false
-)
+/*
+ * @org.springframework.boot.autoconfigure.condition.ConditionalOnProperty(
+ * name = "app.mail.enabled",
+ * havingValue = "true",
+ * matchIfMissing = false
+ * )
+ */
 public class MailService implements IMailService {
 
     private static final Logger LOGGER = Logger.getLogger(MailService.class.getName());
@@ -39,7 +41,8 @@ public class MailService implements IMailService {
         this.from = "isepsocial@outlook.fr";
         this.frontBaseUrl = frontBaseUrl;
 
-        if (host == null || host.isBlank() || username == null || username.isBlank() || password == null || password.isBlank()) {
+        if (host == null || host.isBlank() || username == null || username.isBlank() || password == null
+                || password.isBlank()) {
             this.mailEnabled = false;
             LOGGER.warning("Mail service is disabled because SMTP credentials are not configured.");
             return;
@@ -116,7 +119,8 @@ public class MailService implements IMailService {
                     + "          </div>\r\n" + "        </div>\r\n" + "      </td>\r\n" + "    </tr>\r\n"
                     + "  </table>\r\n" + "</body>\r\n" + "</html>\r\n";
 
-            htmlContent = htmlContent.replace("[LIEN_DE_CONFIRMATION]", confirmationLink).replace("[Prénom]", firstName);
+            htmlContent = htmlContent.replace("[LIEN_DE_CONFIRMATION]", confirmationLink).replace("[Prénom]",
+                    firstName);
             message.setContent(htmlContent, "text/html; charset=UTF-8");
 
             Transport.send(message);
@@ -180,7 +184,8 @@ public class MailService implements IMailService {
                     + "          </div>\r\n" + "        </div>\r\n" + "      </td>\r\n" + "    </tr>\r\n"
                     + "  </table>\r\n" + "</body>\r\n" + "</html>\r\n";
 
-            htmlContent = htmlContent.replace("[LIEN_DE_CONFIRMATION]", confirmationLink).replace("[Prénom]", firstName);
+            htmlContent = htmlContent.replace("[LIEN_DE_CONFIRMATION]", confirmationLink).replace("[Prénom]",
+                    firstName);
             message.setContent(htmlContent, "text/html; charset=UTF-8");
 
             Transport.send(message);
